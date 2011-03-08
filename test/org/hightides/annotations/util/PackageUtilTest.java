@@ -4,6 +4,7 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.hightides.annotations.util.PackageUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,12 +19,7 @@ public class PackageUtilTest {
 	public void testGetPackage() {
 		PackageUtil packageUtil = new PackageUtil("resources/templates", "test");
 		Assert.assertEquals("com.ideyatech", packageUtil.getPackage(new File("test/com/ideyatech/Test.xml")));
-		try {
-			Assert.assertEquals("com.ideyatech", packageUtil.getPackage(new File("src/com/ideyatech/Test.xml")));
-			Assert.fail("Unexpected behavior on invalid path for PackageUtil.getPackage() method.");
-		} catch (Exception e) {
-			// do nothing
-		}
+		Assert.assertNull(packageUtil.getPackage(new File("src/com/ideyatech/Test.xml")));		
 	}
 
 }
