@@ -93,13 +93,13 @@ public class PackageUtil {
 	 * @return 
 	 */
 	public final String getPackage(File outputFile) {
+
 		try {
 			String outputPackage;
 			outputPackage = outputFile.getParentFile().getCanonicalPath().replaceAll("\\\\", "/");
-			int index = outputPackage.indexOf(baseOutputPath);
+			int index = outputPackage.indexOf(baseOutputPath);			
 			if (index<0)
-				throw new InvalidImplementationException("Unable to retrieve package. BaseOutputPath ["
-						+baseOutputPath+"] is invalid.");
+				return null;
 			index += baseOutputPath.length();
 			String packagePath = outputPackage.substring(index);
 			return packagePath.replaceAll("/", "\\.");		
