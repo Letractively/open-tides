@@ -70,7 +70,17 @@ public interface BaseEntityDAO<T extends BaseEntity, ID extends Serializable> {
 	 * @return Single entity
 	 */
 	public T findSingleResultByNamedQuery(String name, Map<String,Object> params);
-	
+
+	/**
+	 * Executes SQL operation by named query. 
+	 * Use for DDL operations.
+	 * 
+	 * @param name
+	 * @param params
+	 * @return
+	 */
+	public int executeByNamedQuery(String name, Map<String,Object> params);
+
 	/**
 	 * Performs a query by example.
 	 * 
@@ -79,7 +89,7 @@ public interface BaseEntityDAO<T extends BaseEntity, ID extends Serializable> {
 	 * @return
 	 */
 	public List<T> findByExample(T example, boolean exactMatch);
-
+	
 	/**
 	 * Performs a query by example.
 	 * 
@@ -165,6 +175,14 @@ public interface BaseEntityDAO<T extends BaseEntity, ID extends Serializable> {
 	 * @param objects
 	 */
 	public void saveAllEntityModel(Collection<T> objects);
+	
+	/**
+	 * Sets the size by flushing when saving multiple entities
+	 * on saveAllEntityModel method.
+	 * 
+	 * @param batchSize
+	 */
+	public void setBatchSize(int batchSize);
 	
 	/**
 	 * Retrieves the jpql statement from preloaded properties file.

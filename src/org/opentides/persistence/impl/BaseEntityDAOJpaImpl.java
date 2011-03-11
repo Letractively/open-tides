@@ -209,6 +209,7 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 			queryObject.setMaxResults(total);	
 		return queryObject.getResultList();
 	}
+	
 	@SuppressWarnings({ "unchecked" })
 	public final T findSingleResultByNamedQuery(final String name, final Map<String,Object> params) {
 		String queryString = getJpqlQuery(name);
@@ -222,6 +223,17 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 		} catch (NoResultException nre) {
 		    return null;		    
 		}
+	}
+
+	@Override
+	public int executeByNamedQuery(String name, Map<String, Object> params) {
+		String queryString = getJpqlQuery(name);
+		Query queryObject = getEntityManager().createQuery(queryString);
+		if (params != null) {
+			for (Map.Entry<String, Object> entry:params.entrySet())
+				queryObject.setParameter(entry.getKey(), entry.getValue());
+		} 
+		return queryObject.executeUpdate();
 	}
 
     public final Class<T> getEntityBeanType() {
@@ -375,10 +387,12 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 		}
 	}
 
-	public int getBatchSize() {
-		return batchSize;
-	}
-
+	/**
+	 * Sets the size by flushing when saving multiple entities
+	 * on saveAllEntityModel method.
+	 * 
+	 * @param batchSize
+	 */
 	public void setBatchSize(int batchSize) {
 		this.batchSize = batchSize;
 	}
