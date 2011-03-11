@@ -93,16 +93,23 @@ public class PackageUtil {
 	 * @return 
 	 */
 	public final String getPackage(File outputFile) {
-
 		try {
-			String outputPackage;
-			outputPackage = outputFile.getParentFile().getCanonicalPath().replaceAll("\\\\", "/");
-			int index = outputPackage.indexOf(baseOutputPath);			
-			if (index<0)
-				return null;
-			index += baseOutputPath.length();
-			String packagePath = outputPackage.substring(index);
-			return packagePath.replaceAll("/", "\\.");		
+			// if outputFolder starts with "/", then there is no need to extract modelPackage
+			// this rule is used for outputting non-Java files (e.g.JSP) which is in a different 
+			// location than the bean
+			if (outputFolder.startsWith("/")) {
+				return "";
+			} else {
+				String outputPackage;
+				outputPackage = outputFile.getParentFile().getCanonicalPath().replaceAll("\\\\", "/");
+				int index = outputPackage.indexOf(baseOutputPath);
+				if (index<0)
+					throw new InvalidImplementationException("Unable to retrieve package. BaseOutputPath ["
+							+baseOutputPath+"] is invalid.");
+				index += baseOutputPath.length();
+				String packagePath = outputPackage.substring(index);
+				return packagePath.replaceAll("/", "\\.");		
+			}
 		} catch (IOException e) {
 			_log.error("Cannot retrieve package value.",e);
 			return "";

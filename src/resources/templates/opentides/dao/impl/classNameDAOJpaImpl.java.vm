@@ -5,11 +5,7 @@ package ${package};
 
 import $modelPackage.$className;
 import ${interfacePackage}.${className}DAO;
-#if ( $isSortable )
-import org.opentides.persistence.impl.BaseSortableEntityDAOJpaImpl;
-#else
 import org.opentides.persistence.impl.BaseEntityDAOJpaImpl;
-#end
 
 
 /**
@@ -18,7 +14,7 @@ import org.opentides.persistence.impl.BaseEntityDAOJpaImpl;
  * @author hightides
  *
  */
-public class ${className}DAOJpaImpl extends#if ( $isSortable ) BaseSortableEntityDAOJpaImpl#else BaseEntityDAOJpaImpl#end<$className, Long>
+public class ${className}DAOJpaImpl extends BaseEntityDAOJpaImpl<$className, Long>
 		implements ${className}DAO {
 //-- Start custom codes. Do not delete this comment line.
 //-- End custom codes. Do not delete this comment line.

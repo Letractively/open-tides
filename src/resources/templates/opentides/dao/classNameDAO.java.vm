@@ -4,11 +4,7 @@
 package ${package};
 
 import $modelPackage.$className;
-#if ( $isSortable )
-import org.opentides.persistence.BaseSortableEntityDAO;
-#else
 import org.opentides.persistence.BaseEntityDAO;
-#end
 
 /**
  * This is the dao interface for $className.
@@ -16,7 +12,7 @@ import org.opentides.persistence.BaseEntityDAO;
  * @author hightides
  */
  
-public interface ${className}DAO extends#if ( $isSortable ) BaseSortableEntityDAO#else BaseEntityDAO#end<$className, Long> {
+public interface ${className}DAO extends BaseEntityDAO<$className, Long> {
 //-- Start custom codes. Do not delete this comment line.
 //-- End custom codes. Do not delete this comment line.
 }

@@ -40,113 +40,108 @@ import org.opentides.bean.SystemCodes;
  */
 public final class AnnotationUtil {
 
-    private static Logger _log = Logger.getLogger(AnnotationUtil.class);
+	private static Logger _log = Logger.getLogger(AnnotationUtil.class);
 
-    private AnnotationUtil() {
+	private AnnotationUtil() {
 
-    }
+	}
 
-    public static final SyncMode getSyncMode(AnnotatedElement element) {
-        Annotation[] classAnnotations = element.getAnnotations();
-        for (Annotation annotation : classAnnotations) {
-            Method m;
-            try {
-                m = annotation.getClass().getDeclaredMethod("synchronizeMode");
-                if (m != null) {
-                    return (SyncMode) m.invoke(annotation);
-                }
-            } catch (SecurityException e1) {
-                _log.error(e1, e1);
-            } catch (NoSuchMethodException e1) {
-                _log.error(e1, e1);
-            } catch (IllegalArgumentException e) {
-                _log.error(e, e);
-            } catch (IllegalAccessException e) {
-                _log.error(e, e);
-            } catch (InvocationTargetException e) {
-                _log.error(e, e);
-            }
-        }
-        return null;
-    }
+	public static final SyncMode getSyncMode(AnnotatedElement element) {
+		Annotation[] classAnnotations = element.getAnnotations();
+		for (Annotation annotation : classAnnotations) {
+			Method m;
+			try {
+				m = annotation.getClass().getDeclaredMethod("synchronizeMode");
+				if (m != null) {
+					return (SyncMode) m.invoke(annotation);
+				}
+			} catch (SecurityException e1) {
+				_log.error(e1, e1);
+			} catch (NoSuchMethodException e1) {
+				_log.error(e1, e1);
+			} catch (IllegalArgumentException e) {
+				_log.error(e, e);
+			} catch (IllegalAccessException e) {
+				_log.error(e, e);
+			} catch (InvocationTargetException e) {
+				_log.error(e, e);
+			}
+		}
+		return null;
+	}
 
-    /**
-     * Checks if the field is a list field (e.g. dropdown, radio button).
-     * 
-     * @param field
-     * @return
-     */
-    public static final boolean isListField(Field field) {
-        if (field.isAnnotationPresent(DropDown.class)
-                || field.isAnnotationPresent(CheckBox.class)
-                || field.isAnnotationPresent(RadioButton.class)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	/**
+	 * Checks if the field is a list field (e.g. dropdown, radio button).
+	 * 
+	 * @param field
+	 * @return
+	 */
+	public static final boolean isListField(Field field) {
+		if (field.isAnnotationPresent(DropDown.class)
+				|| field.isAnnotationPresent(CheckBox.class)
+				|| field.isAnnotationPresent(RadioButton.class)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    public static Boolean isSearchable(Field field) {
-        Annotation[] classAnnotations = field.getAnnotations();
-        for (Annotation annotation : classAnnotations) {
-            Method m;
-            try {
-                m = annotation.getClass().getDeclaredMethod("searchable");
-                if (m != null) {
-                    return (Boolean) m.invoke(annotation);
-                }
-            } catch (Exception e) {
-                // do nothing
-                _log
-                        .error("Unable to find annotation attribute searchable for field ["
-                                + field.getName()
-                                + "] in annotation ["
-                                + annotation.toString() + "]",e);
-            }
-        }
-        return false;
-    }
+	/**
+	 * Checks if a field is annotated with the given annotation.
+	 * 
+	 * @param annotName
+	 * @param field
+	 * @return
+	 */
+	public static Boolean isAnnotatedWith(String annotName, Field field) {
+		Annotation[] classAnnotations = field.getAnnotations();
+		for (Annotation annotation : classAnnotations) {
+			Method m;
+			try {
+				m = annotation.getClass().getDeclaredMethod(annotName);
+				if (m != null) {
+					return (Boolean) m.invoke(annotation);
+				}
+			} catch (Exception e) {
+				// do nothing
+				_log.debug("Unable to find annotation attribute [" + annotName
+						+ "] for field [" + field.getName()
+						+ "] in annotation [" + annotation.toString() + "]", e);
 
-    /**
-     * @param clazz
-     *            - bean class to check the titleField
-     * @param isObject
-     *            - determine if the titleField to retrieve is an
-     *            objectTitleField or not.
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public static String getTitleField(Class clazz) {
-        for (Field field : clazz.getDeclaredFields()) {
-            for (Annotation annotation : field.getAnnotations()) {
-                try {
-                    Method m = annotation.getClass().getDeclaredMethod(
-                            "titleField");
-                    if (m != null) {
-                        if ((Boolean) m.invoke(annotation)) {
-                            if (SystemCodes.class.isAssignableFrom(field
-                                    .getType())) {
-                                return field.getName() + ".value";
-                            } else if (BaseEntity.class.isAssignableFrom(field
-                                    .getType())) {
-                                return field.getName()
-                                        + "."
-                                        + AnnotationUtil.getTitleField(field
-                                                .getType());
-                            } else
-                                return field.getName();
-                        }
-                    }
-                } catch (Exception e) {
-                    // do nothing
-                    _log
-                            .error("Unable to find annotation attribute titleField for field ["
-                                    + field.getName()
-                                    + "] in annotation ["
-                                    + annotation.toString() + "]",e);
-                }
-            }
-        }
-        return "";
-    }
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param clazz
+	 *            - bean class to check the titleField
+	 * @param isObject
+	 *            - determine if the titleField to retrieve is an
+	 *            objectTitleField or not.
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static String getTitleField(Class clazz) {
+		try {
+			for (Field field : clazz.getDeclaredFields()) {
+				if (isAnnotatedWith("titleField", field)) {
+					if (SystemCodes.class.isAssignableFrom(field.getType())) {
+						return field.getName() + ".value";
+					} else if (BaseEntity.class.isAssignableFrom(field.getType())) {
+						return field.getName()
+								+ "."
+								+ AnnotationUtil.getTitleField(field
+										.getType());
+					} else
+						return field.getName();
+				}
+			}
+		} catch (Exception e) {
+			// do nothing
+			_log.debug("Unable to find annotation attribute titleField for class ["
+							+ clazz.getName());
+		}
+		return "";
+	}
 }

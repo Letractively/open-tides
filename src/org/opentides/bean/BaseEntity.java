@@ -106,6 +106,13 @@ public abstract class BaseEntity implements Serializable {
     private List<String> searchProperties;
 
     /**
+     * List of auditable fields. 
+     * Used when default auditable is used.
+     */
+    @Transient
+    private List<AuditableField> auditableFields;
+
+    /**
      * Setter method of Id.
      * 
      * @param id primary key
@@ -301,17 +308,39 @@ public abstract class BaseEntity implements Serializable {
      * For efficiency searchProperties is kept as a class variable so as not to
      * recurse all fields for every access.
      */
-    // TODO: Code below uses high-tides library
     public List<String> getSearchProperties() {
         if (this.searchProperties == null) {
             this.searchProperties = new ArrayList<String>();
             final List<Field> fields = CrudUtil.getAllFields(this.getClass());
             for (Field field : fields) {
-                if (AnnotationUtil.isSearchable(field)) {
+                if (AnnotationUtil.isAnnotatedWith("searchable",field)) {
                     this.searchProperties.add(field.getName());
                 }
             }
         }
         return this.searchProperties;
     }
+    
+    /**
+     * Default implementation, can be overridden if necessary. Returns the list
+     * of field names that are auditable. This method uses
+     * reflection and annotation to generate the list of variables declared with
+     * isAuditable attribute in high-tides field annotation.
+     * 
+     * For efficiency auditableFields is kept as a class variable so as not to
+     * recurse all fields for every access.
+     */
+	public List<AuditableField> getAuditableFields() {
+		if (this.auditableFields == null) {
+            this.auditableFields = new ArrayList<AuditableField>();
+            final List<Field> fields = CrudUtil.getAllFields(this.getClass());
+            for (Field field : fields) {
+            	if (AnnotationUtil.isAnnotatedWith("auditable",field)) {
+                    this.auditableFields.add(new AuditableField(field.getName()));
+                }
+            }
+        }
+        return this.auditableFields;
+	}
+
 }

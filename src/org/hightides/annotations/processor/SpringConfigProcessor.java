@@ -132,6 +132,7 @@ public class SpringConfigProcessor implements Processor {
 		bean.addAttribute("id", params.get("modelName")+"DAO");
 		bean.addAttribute("class", params.get("package")+"."+params.get("className")+"DAOJpaImpl");
 		bean.addAttribute("autowire", "byName");
+		bean.addAttribute("parent", "baseDAO");		
 		SpringXMLUtil.addBean(xmlFilename, bean, params.get("syncMode").toString());
 	}
 	
