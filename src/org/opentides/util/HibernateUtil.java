@@ -65,7 +65,7 @@ public class HibernateUtil {
      * Database connection jndi name.
      * Optional but if this has value, url, username and password is ignored.
      */
-    private static String jndiPath;
+    private static String jndiName;
     
     /**
      * Persistence name in hibernate.
@@ -85,13 +85,13 @@ public class HibernateUtil {
         	AnnotationConfiguration ac =  new AnnotationConfiguration();
         	Properties properties = XMLPersistenceUtil.getProperties("META-INF/persistence.xml", persistenceUnitName);
         	ac.setProperties(properties);
-        	if (StringUtil.isEmpty(jndiPath)) {
+        	if (StringUtil.isEmpty(jndiName)) {
 	            ac.setProperty("hibernate.connection.driver_class", driverClassName);
 	            ac.setProperty("hibernate.connection.url", url);
 	            ac.setProperty("hibernate.connection.username", username);
 	            ac.setProperty("hibernate.connection.password", password);
         	} else
-        		ac.setProperty("hibernate.connection.datasource", jndiPath);
+        		ac.setProperty("hibernate.connection.datasource", jndiName);
             for (String clazz:entityClasses) {
             	ac.addAnnotatedClass(Class.forName(clazz));
             }
@@ -139,14 +139,24 @@ public class HibernateUtil {
 	}
 
 	/**
-	 * When jndiPath is set, other database settings 
-	 * (e.g. driverClassName, url, username and password)
-	 * are ignored.
+	 * Deprecated. Use jndiName instead.
 	 * 
 	 * @param jndiPath
 	 */
+	@Deprecated
 	public void setJndiPath(String jndiPath) {
-		HibernateUtil.jndiPath = jndiPath;
+		HibernateUtil.jndiName = jndiPath;
+	}
+	
+	/**
+	 * When jndiName is set, other database settings 
+	 * (e.g. driverClassName, url, username and password)
+	 * are ignored.
+	 * 
+	 * @param jndiName
+	 */
+	public void setJndiName(String jndiName) {
+		HibernateUtil.jndiName = jndiName;
 	}
 
 	/**
