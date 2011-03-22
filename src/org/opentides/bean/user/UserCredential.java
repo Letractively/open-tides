@@ -26,7 +26,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.opentides.bean.BaseEntity;
-import org.opentides.util.AcegiUtil;
 
 
 @Entity
@@ -80,9 +79,6 @@ public class UserCredential extends BaseEntity{
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	public void setPasswordEncrypted(String clearPassword) {
-		this.password = AcegiUtil.getEncryptedPassword(clearPassword);
 	}
 	public String getUsername() {
 		return username;

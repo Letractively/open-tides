@@ -22,10 +22,10 @@ package org.opentides.service;
 import java.util.List;
 import java.util.Map;
 
-import org.acegisecurity.concurrent.SessionInformation;
-import org.acegisecurity.event.authentication.AuthenticationSuccessEvent;
 import org.opentides.bean.PasswordReset;
 import org.opentides.bean.user.BaseUser;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.session.SessionInformation;
 
 
 

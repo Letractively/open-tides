@@ -19,10 +19,11 @@
 
 package org.opentides.bean.user;
 
+import java.util.Collection;
 import java.util.Date;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.userdetails.User;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * This class is used by ACEGI to represent the currently logged
@@ -47,7 +48,7 @@ public class SessionUser extends User {
 	private Date   lastLogin;
 
 	public SessionUser(String username, String password, boolean isEnabled,
-			GrantedAuthority[] authorities) {
+			Collection<GrantedAuthority> authorities) {
 		super(username, password, isEnabled, true, true, true, authorities);
 	}
 

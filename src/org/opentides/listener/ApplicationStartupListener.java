@@ -19,7 +19,6 @@
 
 package org.opentides.listener;
 
-import org.acegisecurity.providers.encoding.PasswordEncoder;
 import org.apache.log4j.Logger;
 import org.opentides.persistence.evolve.DBEvolveManager;
 import org.opentides.util.AcegiUtil;
@@ -44,8 +43,6 @@ public class ApplicationStartupListener implements ApplicationListener {
 
 	private Boolean debug = false;
 
-	private PasswordEncoder passwordEncoder = null;
-
 	private String propertyName;
 
 	private DBEvolveManager evolveManager;
@@ -63,10 +60,6 @@ public class ApplicationStartupListener implements ApplicationListener {
 		_log.info("Initializing debug mode to " + debug);
 		AcegiUtil.setDebug(debug);
 
-		_log.info("Password encryption: "
-				+ ((passwordEncoder != null) ? "enabled" : "none"));
-		AcegiUtil.setPasswordEncoder(passwordEncoder);
-
 		_log.info("Checking for schema evolve...");
 		evolveManager.evolve();
 
@@ -78,14 +71,6 @@ public class ApplicationStartupListener implements ApplicationListener {
 	 */
 	public void setDebug(Boolean debug) {
 		this.debug = debug;
-	}
-
-	/**
-	 * 
-	 * @param passwordEncoder
-	 */
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		this.passwordEncoder = passwordEncoder;
 	}
 
 	/**

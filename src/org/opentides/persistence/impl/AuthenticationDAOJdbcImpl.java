@@ -20,14 +20,13 @@ package org.opentides.persistence.impl;
 
 import java.util.Map;
 
-import org.opentides.bean.user.SessionUser;
-
-import org.acegisecurity.userdetails.UserDetails;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
-import org.acegisecurity.userdetails.jdbc.JdbcDaoImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opentides.bean.user.SessionUser;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 
 /**
  * This class is responsible in retrieving the user information.
@@ -43,7 +42,7 @@ public class AuthenticationDAOJdbcImpl extends JdbcDaoImpl {
 		" from USER_PROFILE P, USERS U where P.ID=U.USERID and U.USERNAME=?";
 	
 	@SuppressWarnings("unchecked")
-	@Override
+	@Override 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 		try {
             UserDetails user = super.loadUserByUsername(username);

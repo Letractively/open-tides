@@ -19,12 +19,14 @@
 
 package org.opentides.util;
 
-import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.encoding.PasswordEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.log4j.Logger;
 import org.opentides.bean.user.SessionUser;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * This class is an ACEGI helper that retrieves the currently logged in user.
@@ -34,9 +36,7 @@ import org.opentides.bean.user.SessionUser;
 public class AcegiUtil {
 	
 	private static Logger _log = Logger.getLogger(AcegiUtil.class);
-	
-	private static PasswordEncoder passwordEncoder = null;	
-	
+		
 	// flag to allow null user (user not logged-in) 
 	// turn this flag to false when deploying to production
 	private static Boolean debug = false;
@@ -59,8 +59,9 @@ public class AcegiUtil {
 		}
         if (debug) {
             // in debug mode, we provide temporary Acegi user
-            SessionUser user = new SessionUser("debug","debug",true,
-                    new GrantedAuthority[] {new GrantedAuthorityImpl("SUPER_USER")});
+            Collection<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
+            auths.add(new GrantedAuthorityImpl("SUPER_USER"));
+            SessionUser user = new SessionUser("debug","debug",true, auths);
             user.setId(999999l);
             user.setFirstName("Superuser");
             user.setLastName("Debugger");
@@ -86,11 +87,10 @@ public class AcegiUtil {
 	public static boolean currentUserHasPermission(String permission) {
 		SessionUser user = AcegiUtil.getSessionUser();
 		if (user!=null) {
-			GrantedAuthority[] granted = user.getAuthorities();
-			for (int i=0; i<granted.length; i++) {
-				if (permission.equals(granted[i].getAuthority()))
-					return true;
-			}
+		    for (GrantedAuthority auth: user.getAuthorities()) {
+		        if (permission.equals(auth.getAuthority()))
+		            return true;
+		    }
 		}
 		return false;
 	}
@@ -109,22 +109,5 @@ public class AcegiUtil {
     public static Boolean getDebug() {
         return debug;
     }
-    /**
-	 * @param clearPassword
-	 * @return
-	 */
-	public static String getEncryptedPassword(String clearPassword) {
-		if (passwordEncoder==null)
-			return clearPassword;
-		else {
-			return passwordEncoder.encodePassword(clearPassword, null);
-		}
-	}
 
-	/**
-	 * @param passwordEncoder
-	 */
-	public static void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-		AcegiUtil.passwordEncoder = passwordEncoder;
-	}
 }

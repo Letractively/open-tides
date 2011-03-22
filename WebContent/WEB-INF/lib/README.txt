@@ -1,38 +1,53 @@
-This document lists the libraries used by Spring Template.
-
-ACEGI:
-acegi-security-1.0.6.jar - acegi core classes
-oro-2.0.8.jar - dependency of ACEGI
+This document lists the libraries used by Open-tides.
 
 VIEW:
-spring-webmvc.jar - for spring mvc
 standard.jar - standard taglibs
 jstl.jar - for jstl taglibs
 
 SPRING:
-spring.jar - core spring
+org.springframework.aop-3.0.5.RELEASE.jar
+org.springframework.asm-3.0.5.RELEASE.jar
+org.springframework.aspects-3.0.5.RELEASE.jar
+org.springframework.beans-3.0.5.RELEASE.jar
+org.springframework.context-3.0.5.RELEASE.jar
+org.springframework.context.support-3.0.5.RELEASE.jar
+org.springframework.core-3.0.5.RELEASE.jar
+org.springframework.expression-3.0.5.RELEASE.jar
+org.springframework.jdbc-3.0.5.RELEASE.jar
+org.springframework.orm-3.0.5.RELEASE.jar
+org.springframework.transaction-3.0.5.RELEASE.jar
+org.springframework.web-3.0.5.RELEASE.jar
+org.springframework.web.servlet-3.0.5.RELEASE.jar
+
+SPRING DEPENDENCIES:
+asm-all.jar
+aop-alliance-1.0.jar
+
+SPRING SECURITY:
+spring-security-acl-3.0.5.RELEASE.jar
+spring-security-config-3.0.5.RELEASE.jar
+spring-security-core-3.0.5.RELEASE.jar
+spring-security-taglibs-3.0.5.RELEASE.jar
+spring-security-web-3.0.5.RELEASE.jar
 
 COMMON:
-jta.jar - for java transactions
 log4j-1.2.15.jar - for logging
-c3p0-0.9.1.2.jar - for db connection and statement pooling
-common-upload.jar - for file upload
+c3p0-0.9.1.jar - for db connection and statement pooling
+commons-fileupload.jar
+commons-io.jar
+commons-logging.jar
 
 HIBERNATE/JPA:
-antlr-2.7.6.jar - required by Hibernate core.
-asm-attrs.jar - required by Hibernate core.
-asm.jar - required by Hibernate core.
-cglib-2.1.3.jar - required by Hibernate core.
-commons-collections-3.1.jar - required by Hibernate core and Velocity
-commons-logging.jar - required by Hibernate core.
-dom4j.jar - required by Hibernate core. also used for xml transformation
-hibernate3.jar - required by Hibernate core.
-ejb3-persistence.jar - JPA library
-hibernate-annotations.jar - Hibernate annotations core
-hibernate-commons-annotations.jar - required by annotations
-hibernate-entitymanager.jar - required by Hibernate for jpa
-javassist.jar - required by Hibernate for jpa
-jboss-archive-browsing - required by Hibernate for jpa
+jta-1.1.jar - required by Hibernate
+javasssist-3.12.0.GA.jar - required by Hibernate 
+dom4j-1.6.1.jar - required by Hibernate
+antlr-2.7.6.jar - required by Hibernate
+commons-collections-3.1.jar - required by Hibernate
+slf4j-api-1.6.1.jar - required by Hibernate
+hibernate-jpa-2.0-api-1.0.0.Final.jar - needed for JPA support
+hibernate3.jar - required by Hibernate
+cglib-2.2.jar - for specifying proxy in persistence
+mysql-connector-java-5.1.15-bin.jar
 
 WEBSERVICE:
 commons-httpclient-3.0.1.jar - for web service client requests

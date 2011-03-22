@@ -34,12 +34,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.acegisecurity.context.SecurityContextHolder;
 import org.hightides.annotations.util.AnnotationUtil;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.persistence.listener.EntityDateListener;
 import org.opentides.util.AcegiUtil;
 import org.opentides.util.CrudUtil;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * 

@@ -50,7 +50,7 @@ public class BaseTidesTest extends AbstractJpaTests {
     @Override
     protected String[] getConfigLocations() {
         return new String[] { 
-                "file:WebContent/WEB-INF/tides/tidesContext*.xml",
+                "file:WebContent/WEB-INF/tides/tidesContext-*.xml",
                 "file:WebContent/WEB-INF/tides/testConfig.xml" 
               };
     }
@@ -96,7 +96,7 @@ public class BaseTidesTest extends AbstractJpaTests {
     }
     
     @Test
-    public void emptyTest() {
+    public void testEmpty() {
     	// this is just to avoid JUnit warning
     }
 }

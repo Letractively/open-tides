@@ -24,9 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.acegisecurity.concurrent.SessionInformation;
-import org.acegisecurity.concurrent.SessionRegistry;
-import org.acegisecurity.event.authentication.AuthenticationSuccessEvent;
 import org.apache.log4j.Logger;
 import org.opentides.InvalidImplementationException;
 import org.opentides.bean.MailMessage;
@@ -40,6 +37,9 @@ import org.opentides.persistence.UserGroupDAO;
 import org.opentides.service.MailingService;
 import org.opentides.service.UserService;
 import org.opentides.util.StringUtil;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 
 public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		UserService {

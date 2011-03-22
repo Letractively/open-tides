@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-	
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">	
 	<!-- URL mapping to Controller -->
 	<bean id="coreUrlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -12,7 +10,7 @@
 			<props>
 				<prop key="/login.jspx">coreViewMapController</prop>
 				<prop key="/denied.jspx">coreViewMapController</prop>
-				<prop key="/request-password-reset.jspx">requestPasswordReset</prop>		
+				<prop key="/request-password-reset.jspx">requestPasswordReset</prop>
 				<prop key="/confirm-password-reset.jspx">confirmPasswordReset</prop>
 				<prop key="/change-password.jspx">changePassword</prop>
 				<prop key="/download-file.jspx">downloadFileInfo</prop>
@@ -24,8 +22,8 @@
 				<prop key="/widget-persist.jspx">persistWidgetController</prop>
 				<prop key="/widget-external.jspx">externalWidgetController</prop>
 				<prop key="/generate-report.jspx">generateReportController</prop>
-				<prop key="/admin/report.jspx">reportController</prop>	
-				<prop key="/admin/lookup.jspx">systemCodesController</prop>	
+				<prop key="/admin/report.jspx">reportController</prop>
+				<prop key="/admin/lookup.jspx">systemCodesController</prop>
 				<prop key="/admin/people.jspx">userController</prop>
 				<prop key="/admin/widget.jspx">widgetController</prop>
 				<prop key="/admin/usergroup.jspx">userGroupController</prop>
@@ -38,19 +36,18 @@
 	<!-- Generic view mapping to load initial pages -->
 	<bean id="coreViewMapController" class="org.opentides.controller.ViewMapController">
 		<property name="viewMap">
-		<map>
-			<entry key="login.jspx" value="acegi-login" />
-			<entry key="denied.jspx" value="access-denied" />
-		</map>
+			<map>
+				<entry key="login.jspx" value="acegi-login" />
+				<entry key="denied.jspx" value="access-denied" />
+			</map>
 		</property>
-		<property name="defaultView" value="index"/>
+		<property name="defaultView" value="index" />
 	</bean>
-	
-	<bean id="userController"
-		class="org.opentides.controller.UserController">
-		<property name="service" ref="userService"/>		
-		<property name="userGroupService" ref="userGroupService"/>
-		<property name="systemCodesService" ref="systemCodesService"/>
+
+	<bean id="userController" class="org.opentides.controller.UserController">
+		<property name="service" ref="userService" />
+		<property name="userGroupService" ref="userGroupService" />
+		<property name="systemCodesService" ref="systemCodesService" />
 		<property name="commandName" value="user" />
 		<property name="commandClass" value="org.opentides.bean.user.BaseUser" />
 		<property name="formView" value="core/user/user-form" />
@@ -60,12 +57,11 @@
 			<ref bean="userValidator" />
 		</property>
 		<property name="pageSize" value="${search.page.size}" />
-		<property name="numLinks" value="${search.links.displayed}" />	
+		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
-	
-	<bean id="systemCodesController" 
-		class="org.opentides.controller.SystemCodesController">
-		<property name="service" ref="systemCodesService"/>
+
+	<bean id="systemCodesController" class="org.opentides.controller.SystemCodesController">
+		<property name="service" ref="systemCodesService" />
 		<property name="commandName" value="systemCode" />
 		<property name="commandClass" value="org.opentides.bean.SystemCodes" />
 		<property name="formView" value="core/systemcode/systemcode-form" />
@@ -75,24 +71,22 @@
 			<ref bean="systemCodesValidator" />
 		</property>
 		<property name="pageSize" value="${search.page.size}" />
-		<property name="numLinks" value="${search.links.displayed}" />	
+		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
-	
-	<bean id="systemMonitorController"
-		class="org.opentides.controller.SystemMonitorController"
+
+	<bean id="systemMonitorController" class="org.opentides.controller.SystemMonitorController"
 		autowire="byName">
 	</bean>
-	
-	<bean id="userGroupMatrixController"
-		class="org.opentides.controller.UserGroupMatrixController"
+
+	<bean id="userGroupMatrixController" class="org.opentides.controller.UserGroupMatrixController"
 		autowire="byName">
 	</bean>
-	
-	<bean id="widgetController"
-		class="org.opentides.controller.WidgetController" autowire="byName">
-		<property name="service" ref="widgetService"/>
-		<property name="userService" ref="userService"/>
-		<property name="userWidgetsService" ref="userWidgetsService"/>		
+
+	<bean id="widgetController" class="org.opentides.controller.WidgetController"
+		autowire="byName">
+		<property name="service" ref="widgetService" />
+		<property name="userService" ref="userService" />
+		<property name="userWidgetsService" ref="userWidgetsService" />
 		<property name="commandName" value="widget" />
 		<property name="commandClass" value="org.opentides.bean.Widget" />
 		<property name="formView" value="core/widget/widget-form" />
@@ -102,12 +96,11 @@
 			<ref bean="widgetValidator" />
 		</property>
 		<property name="pageSize" value="${search.page.size}" />
-		<property name="numLinks" value="${search.links.displayed}" />	
+		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
-	
-	<bean id="reportController"
-		class="org.opentides.controller.ReportController">
-		<property name="service" ref="reportService"/>
+
+	<bean id="reportController" class="org.opentides.controller.ReportController">
+		<property name="service" ref="reportService" />
 		<property name="commandName" value="report" />
 		<property name="commandClass" value="org.opentides.bean.DynamicReport" />
 		<property name="formView" value="core/report/report-form" />
@@ -117,9 +110,9 @@
 			<ref bean="reportValidator" />
 		</property>
 		<property name="pageSize" value="${search.page.size}" />
-		<property name="numLinks" value="${search.links.displayed}" />	
+		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
-	
+
 	<bean id="loadWidgetController" autowire="byName"
 		class="org.opentides.controller.LoadWidgetController">
 		<property name="viewName" value="core/widget/widget-load" />
@@ -136,88 +129,87 @@
 	<bean id="addWidgetController" autowire="byName"
 		class="org.opentides.controller.AddWidgetController">
 		<property name="formView" value="core/widget/widget-add" />
-		<property name="dashboardView" value="home"/>
+		<property name="dashboardView" value="home" />
 	</bean>
 	<bean id="externalWidgetController" class="org.opentides.controller.ExternalWidgetController"
 		autowire="byName">
 		<property name="viewName" value="core/widget/externalprovider/widget-external" />
 	</bean>
 	<bean id="downloadFileInfo" autowire="byName"
-		class="org.opentides.controller.DownloadFileInfoController"/>
-		
+		class="org.opentides.controller.DownloadFileInfoController" />
+
 	<bean id="viewFileInfoImageController" autowire="byName"
-		class="org.opentides.controller.ViewFileInfoImageController"/>
-		
+		class="org.opentides.controller.ViewFileInfoImageController" />
+
 	<bean id="requestPasswordReset" autowire="byName"
 		class="org.opentides.controller.RequestPasswordResetController">
 		<property name="commandName" value="passwordReset" />
 		<property name="commandClass" value="org.opentides.bean.PasswordReset" />
 		<property name="formView" value="forgot-password" />
-		<property name="successView" value="user-message"/>
-		<property name="validator" ref="requestPasswordResetValidator"/>
+		<property name="successView" value="user-message" />
+		<property name="validator" ref="requestPasswordResetValidator" />
 	</bean>
-	
+
 	<bean id="confirmPasswordReset" autowire="byName"
 		class="org.opentides.controller.ConfirmPasswordResetController">
 		<property name="commandName" value="passwordReset" />
 		<property name="commandClass" value="org.opentides.bean.PasswordReset" />
 		<property name="formView" value="forgot-password" />
-		<property name="successView" value="forgot-password"/>
-		<property name="validator" ref="confirmPasswordResetValidator"/>
+		<property name="successView" value="forgot-password" />
+		<property name="validator" ref="confirmPasswordResetValidator" />
 	</bean>
-	
+
 	<bean id="changePassword" autowire="byName"
 		class="org.opentides.controller.ChangePasswordController">
 		<property name="commandName" value="passwordReset" />
 		<property name="commandClass" value="org.opentides.bean.PasswordReset" />
 		<property name="formView" value="forgot-password" />
-		<property name="successView" value="user-message"/>
-		<property name="validator" ref="changePasswordValidator"/>
+		<property name="successView" value="user-message" />
+		<property name="validator" ref="changePasswordValidator" />
 	</bean>
-	
-	<bean id="userGroupController"
-		class="org.opentides.controller.UserGroupController">
-		<property name="service" ref="userGroupService"/>
+
+	<bean id="userGroupController" class="org.opentides.controller.UserGroupController">
+		<property name="service" ref="userGroupService" />
 		<property name="commandName" value="usergroup" />
 		<property name="commandClass" value="org.opentides.bean.user.UserGroup" />
 		<property name="formView" value="core/usergroup/usergroup-form" />
 		<property name="searchView" value="core/usergroup/usergroups" />
 		<property name="refreshView" value="core/usergroup/usergroup-refresh" />
 		<property name="pageSize" value="${search.page.size}" />
-		<property name="numLinks" value="${search.links.displayed}" />	
-	</bean>
-	
-	<bean id="generateReportController"
-		class="org.opentides.controller.GenerateReportController">
-		<property name="service" ref="reportService"/>
+		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
 
-	<bean id="viewSessionController" class="org.opentides.controller.ViewSessionController" autowire="byName">
-	    <property name="viewName" value="core/user/user-session"/>
+	<bean id="generateReportController" class="org.opentides.controller.GenerateReportController">
+		<property name="service" ref="reportService" />
 	</bean>
-	<bean id="paramResolver" class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver"> 
-        <property name="paramName" value="methodName"/> 
-    </bean>  
+
+	<bean id="viewSessionController" class="org.opentides.controller.ViewSessionController"
+		autowire="byName">
+		<property name="viewName" value="core/user/user-session" />
+	</bean>
+	<bean id="paramResolver"
+		class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">
+		<property name="paramName" value="methodName" />
+	</bean>
 	<!-- Validators -->
-	<bean id="systemCodesValidator"
-		class="org.opentides.validator.SystemCodesValidator">
-			<property name="systemCodesService" ref="systemCodesService" />
+	<bean id="systemCodesValidator" class="org.opentides.validator.SystemCodesValidator">
+		<property name="systemCodesService" ref="systemCodesService" />
 	</bean>
-	<bean id="userValidator" 
-		class="org.opentides.validator.UserValidator">
+	<bean id="userValidator" class="org.opentides.validator.UserValidator">
 		<property name="userDAO" ref="coreUserDAO" />
-	</bean>	
+	</bean>
 	<bean id="widgetValidator" autowire="byName"
 		class="org.opentides.validator.WidgetValidator" />
 	<bean id="reportValidator" autowire="byName"
-		class="org.opentides.validator.ReportValidator" />		
+		class="org.opentides.validator.ReportValidator" />
 	<bean id="requestPasswordResetValidator" autowire="byName"
-		class="org.opentides.validator.RequestPasswordResetValidator"/>
+		class="org.opentides.validator.RequestPasswordResetValidator" />
 	<bean id="confirmPasswordResetValidator" autowire="byName"
-		class="org.opentides.validator.ConfirmPasswordResetValidator"/>
+		class="org.opentides.validator.ConfirmPasswordResetValidator" />
 	<bean id="changePasswordValidator" autowire="byName"
-		class="org.opentides.validator.ChangePasswordValidator"/>
-		
+		class="org.opentides.validator.ChangePasswordValidator" />
+
 	<!-- multipart resolver -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 </beans>

@@ -54,7 +54,7 @@ public class AddWidgetController extends AbstractController {
 			HttpServletResponse response) throws Exception {
 		// is Form Submit?
 		if ("POST".equals(request.getMethod())) {
-			Map<Object, Object> model = new HashMap<Object, Object>();
+			Map<String, Object> model = new HashMap<String, Object>();
 			try {
 				userWidgetsService.addUserWidgets(AcegiUtil.getSessionUser().getRealId(), 
 						request.getParameter("mergedCheckboxes"));

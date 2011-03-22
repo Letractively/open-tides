@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 import org.scannotation.AnnotationDB;
 import org.scannotation.ClasspathUrlFinder;
 
@@ -82,7 +82,7 @@ public class HibernateUtil {
         	db.scanArchives(urls);
         	Set<String> entityClasses = db.getAnnotationIndex().get(javax.persistence.Entity.class.getName());
             // Create the SessionFactory
-        	AnnotationConfiguration ac =  new AnnotationConfiguration();
+        	Configuration ac =  new Configuration();
         	Properties properties = XMLPersistenceUtil.getProperties("META-INF/persistence.xml", persistenceUnitName);
         	ac.setProperties(properties);
         	if (StringUtil.isEmpty(jndiName)) {

@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
  	
 	<!-- Message source for this context, loaded from localized "messages_xx" files -->
@@ -41,7 +41,6 @@
 	<!-- Application Startup Listener -->
 	<bean id="startupListener" class="org.opentides.listener.ApplicationStartupListener">
 		<property name="debug" value="${application.mode.debug}"/>
- 	    <property name="passwordEncoder"><ref bean="passwordEncoder"/></property>
 		<property name="propertyName" value="${property.name}"/>
 		<property name="evolveManager" ref="evolveManager"/>
 	</bean>
@@ -53,4 +52,5 @@
 	<bean id="auditLogListener" class="org.opentides.persistence.listener.AuditLogListener">
 		<property name="autoLoadObjects" value="${auditlog.autoloadobjects}" />
 	</bean>
+
 </beans>

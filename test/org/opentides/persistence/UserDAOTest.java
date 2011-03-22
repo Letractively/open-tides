@@ -41,17 +41,6 @@ public class UserDAOTest extends BaseTidesTest {
         
         userGroupDAO.saveEntityModel(group1);
         userGroupDAO.saveEntityModel(group2);
-        
-        // a user can be member of multiple user group
-//        user = new BaseUser();
-//        user.addGroup(group1);
-//        user.addGroup(group2);
-//        UserCredential userAccount = new UserCredential();
-//        userAccount.setPassword("test");
-//        userAccount.setUsername("multiple");
-//        userAccount.setUser(user);
-//        user.setCredential(userAccount);
-//        coreUserDAO.saveEntityModel(user);
 
     }
 	
@@ -129,6 +118,18 @@ public class UserDAOTest extends BaseTidesTest {
 	
     @Test
 	public void testFindByUsergroupName() {
+    
+        // a user can be member of multiple user group
+        user = new BaseUser();
+        user.addGroup(group1);
+        user.addGroup(group2);
+        user.setEmailAddress("multiple@unittest.com");
+        UserCredential userAccount = new UserCredential();
+        userAccount.setPassword("test");
+        userAccount.setUsername("multiple");
+        userAccount.setUser(user);
+        user.setCredential(userAccount);
+        coreUserDAO.saveEntityModel(user);
         
         List<BaseUser> users1 = coreUserDAO.findByUsergroupName("group1");
         assertEquals(1, users1.size());

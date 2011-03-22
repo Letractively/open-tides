@@ -25,10 +25,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.acegisecurity.concurrent.SessionInformation;
 import org.apache.log4j.Logger;
 import org.opentides.service.UserService;
 import org.opentides.util.StringUtil;
+import org.springframework.security.core.session.SessionInformation;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 

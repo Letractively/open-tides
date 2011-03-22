@@ -19,10 +19,12 @@
 
 package org.opentides.security;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.ConfigAttribute;
-import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.vote.AccessDecisionVoter;
+import java.util.Collection;
+
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 /**
  * This class provides a positive vote for user with role "SUPER_USER".
@@ -38,23 +40,24 @@ public class SuperUserVoter implements AccessDecisionVoter {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
-	public boolean supports(Class arg0) {
-		return true;
-	}
-
+    /* (non-Javadoc)
+     * @see org.springframework.security.access.AccessDecisionVoter#supports(java.lang.Class)
+     */
+    @Override
+    public boolean supports(Class<?> arg0) {
+        return true;
+    }
 	/**
 	 * Grant access if user has authentication of "SUPER_USER"
 	 */
-	public int vote(Authentication authentication, Object arg1,
-			ConfigAttributeDefinition config) {
-		for (int i = 0; i < authentication.getAuthorities().length; i++) {
-			if (SUPER_USER.equals(
-					authentication.getAuthorities()[i].getAuthority())) {
-				return ACCESS_GRANTED;
-			}
-		}
+	public int vote(Authentication authentication, 
+	        Object arg1,
+	        Collection<ConfigAttribute> attributes) {
+	    for (GrantedAuthority auth:authentication.getAuthorities()) {
+            if (SUPER_USER.equals(auth)) {
+                return ACCESS_GRANTED;
+            }
+	    }
 		return ACCESS_ABSTAIN;
 	}
-
 }

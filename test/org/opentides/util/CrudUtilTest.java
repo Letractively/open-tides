@@ -274,7 +274,7 @@ public class CrudUtilTest {
 	@Test
 	public void testGetAllFields() throws SecurityException, NoSuchFieldException {
 		List<Field> fields = CrudUtil.getAllFields(TestCodes.class);
-		Assert.assertEquals(22, fields.size());
+		Assert.assertEquals(21, fields.size());
 		Field keyField = TestCodes.class.getDeclaredField("key");
 		Field statusField = TestCodes.class.getDeclaredField("status");
 		Field createDateField = BaseEntity.class.getDeclaredField("createDate");
