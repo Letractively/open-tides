@@ -89,6 +89,7 @@
 				<include name="**/*.tld" />
 				<include name="**/*.cfg.xml" />
 				<include name="**/*.vm" />
+				<exclude name="**/resource/java/*" />
 				<exclude name="**/*Test.class" />
 				<exclude name="**/hightides.properties" />
 			</fileset>
