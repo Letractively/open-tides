@@ -28,7 +28,7 @@ import org.opentides.bean.user.BaseUser;
 import org.opentides.service.UserService;
 import org.opentides.service.UserWidgetsService;
 import org.opentides.service.WidgetService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
@@ -55,7 +55,7 @@ public class PersistWidgetController extends MultiActionController {
 		//		2. acegi security
 		
 		String order = req.getParameter("order");
-		BaseUser user = userService.load(AcegiUtil.getSessionUser().getRealId());
+		BaseUser user = userService.load(SecurityUtil.getSessionUser().getRealId());
 		String[] col = order.split("\\|");
 		int countCol = 1;
 		for (int i=0;i<col.length;i++) {
@@ -93,7 +93,7 @@ public class PersistWidgetController extends MultiActionController {
 		if (status.equals(""+WidgetService.WIDGET_STATUS_MINIMIZE) || status.equals(""+WidgetService.WIDGET_STATUS_SHOW) 
 				|| status.equals(""+WidgetService.WIDGET_STATUS_REMOVE)) {
 			String widgetName = req.getParameter("widgetName");
-			BaseUser user = userService.load(AcegiUtil.getSessionUser().getRealId());
+			BaseUser user = userService.load(SecurityUtil.getSessionUser().getRealId());
 			UserWidgets userWidgets = userWidgetsService.findSpecificUserWidgets(user, widgetName);
 			if (userWidgets != null) {
 				try {

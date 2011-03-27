@@ -28,7 +28,7 @@ import org.springframework.security.core.userdetails.User;
 /**
  * This class is used by ACEGI to represent the currently logged
  * user for the session. To retrieve the SessionUser object
- * use AcegiUtil.getSessionUser();
+ * use SecurityUtil.getSessionUser();
  * 
  * @author allantan
  *

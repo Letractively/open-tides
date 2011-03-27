@@ -37,7 +37,7 @@ import javax.persistence.Transient;
 import org.hightides.annotations.util.AnnotationUtil;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.persistence.listener.EntityDateListener;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.CrudUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -252,7 +252,7 @@ public abstract class BaseEntity implements Serializable {
         if (this.auditUserId == null
                 && SecurityContextHolder.getContext() != null
                 && SecurityContextHolder.getContext().getAuthentication() != null) {
-            final SessionUser user = AcegiUtil.getSessionUser();
+            final SessionUser user = SecurityUtil.getSessionUser();
             this.auditUserId = user.getRealId();
             this.auditOfficeName = user.getOffice();
             this.auditUsername = user.getUsername();

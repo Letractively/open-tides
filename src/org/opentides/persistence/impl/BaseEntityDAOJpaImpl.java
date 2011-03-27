@@ -42,7 +42,7 @@ import org.opentides.bean.user.BaseUser;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.listener.ApplicationStartupListener;
 import org.opentides.persistence.BaseEntityDAO;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.CrudUtil;
 import org.opentides.util.StringUtil;
 
@@ -333,9 +333,9 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 			if (!bpe.isDisableProtection()) {
 				// retrieve list of available security filters
 				for (String key:securityFilter.keySet()) {
-					if (AcegiUtil.currentUserHasPermission(key)) {
+					if (SecurityUtil.currentUserHasPermission(key)) {
 						String filterClause = securityFilter.get(key);
-						SessionUser sessionUser = AcegiUtil.getSessionUser();
+						SessionUser sessionUser = SecurityUtil.getSessionUser();
 						BaseUser user = getEntityManager().find(BaseUser.class, sessionUser.getId());
 						return CrudUtil.replaceSQLParameters(filterClause, user);
 					}

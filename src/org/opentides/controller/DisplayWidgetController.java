@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.opentides.bean.UserWidgets;
 import org.opentides.service.UserWidgetsService;
 import org.opentides.service.WidgetService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -56,7 +56,7 @@ public class DisplayWidgetController extends AbstractController {
 			HttpServletResponse res) throws Exception {
 		String modelAndView = getViewName();
 		
-		List<UserWidgets> userWidgets = userWidgetsService.findUserWidgets(AcegiUtil.getSessionUser().getRealId(), WidgetService.WIDGET_STATUS_MINIMIZE, WidgetService.WIDGET_STATUS_SHOW);
+		List<UserWidgets> userWidgets = userWidgetsService.findUserWidgets(SecurityUtil.getSessionUser().getRealId(), WidgetService.WIDGET_STATUS_MINIMIZE, WidgetService.WIDGET_STATUS_SHOW);
 		Map<String, Object> model = new HashMap<String, Object>();
 		int i=0;
 		StringBuffer sbParams = new StringBuffer();

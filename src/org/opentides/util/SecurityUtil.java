@@ -24,19 +24,22 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.opentides.bean.user.SessionUser;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * This class is an ACEGI helper that retrieves the currently logged in user.
+ * This class is an Spring Security helper that retrieves the currently logged in user.
  * 
  * @author allantan
  */
-public class AcegiUtil {
+public class SecurityUtil {
 	
-	private static Logger _log = Logger.getLogger(AcegiUtil.class);
+	private static Logger _log = Logger.getLogger(SecurityUtil.class);
 		
+	private static PasswordEncoder passwordEncoder;
+	
 	// flag to allow null user (user not logged-in) 
 	// turn this flag to false when deploying to production
 	private static Boolean debug = false;
@@ -53,7 +56,7 @@ public class AcegiUtil {
 		} catch (NullPointerException npe) {
 		    // SecurityContextholder.getContext() could return null or
 		    // SecurityContextholder.getContext().getAuthentication could return null;
-		    _log.warn("No security context found on Acegi.");
+		    _log.warn("No security context found on Spring Security.");
 		} catch (Exception e) {
 			_log.error(e,e);
 		}
@@ -76,7 +79,7 @@ public class AcegiUtil {
 	 * @return 
 	 */
 	public SessionUser getUser() {
-		return AcegiUtil.getSessionUser();
+		return SecurityUtil.getSessionUser();
 	}
 	/**
 	 * Static helper to check if currently logged-in user has access
@@ -85,7 +88,7 @@ public class AcegiUtil {
 	 * @return
 	 */
 	public static boolean currentUserHasPermission(String permission) {
-		SessionUser user = AcegiUtil.getSessionUser();
+		SessionUser user = SecurityUtil.getSessionUser();
 		if (user!=null) {
 		    for (GrantedAuthority auth: user.getAuthorities()) {
 		        if (permission.equals(auth.getAuthority()))
@@ -94,11 +97,24 @@ public class AcegiUtil {
 		}
 		return false;
 	}
+	
+	/** Static helper that encrypts the given password
+	 *  into its appropriate encryption settings.
+	 * @param cleartext
+	 * @return
+	 */
+	public static String encryptPassword(String cleartext) {
+	    if (passwordEncoder!=null) {
+	        return passwordEncoder.encodePassword(cleartext, null);
+	    } else
+	        return cleartext;
+	}
+	
 	/**
 	 * @param debug the debug to set
 	 */
 	public static void setDebug(Boolean debug) {
-		AcegiUtil.debug = debug;
+		SecurityUtil.debug = debug;
 	}
 	
 	/**
@@ -108,6 +124,14 @@ public class AcegiUtil {
      */
     public static Boolean getDebug() {
         return debug;
+    }
+    /**
+     * Setter method for passwordEncoder.
+     *
+     * @param passwordEncoder the passwordEncoder to set
+     */
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        SecurityUtil.passwordEncoder = passwordEncoder;
     }
 
 }

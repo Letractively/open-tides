@@ -26,7 +26,7 @@ import org.opentides.bean.Auditable;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.listener.ApplicationStartupListener;
 import org.opentides.persistence.AuditLogDAO;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.DateUtil;
 import org.opentides.util.HibernateUtil;
 import org.opentides.util.StringUtil;
@@ -57,7 +57,7 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
 			if (userId==null) {
 				_log.warn("No userId specified for audit logging on object ["+entity.getClass().getName()
 							+ "] for message ["+message+"]. Retrieving user from interceptor.");
-				SessionUser user = AcegiUtil.getSessionUser();
+				SessionUser user = SecurityUtil.getSessionUser();
 				userId = user.getRealId();
 				officeName = user.getOffice();	
 				username = user.getUsername();

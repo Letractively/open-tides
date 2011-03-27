@@ -36,7 +36,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 import org.opentides.bean.Widget;
 import org.opentides.service.WidgetService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
 import org.opentides.util.UrlUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -216,7 +216,7 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 		for (Widget widget:findByExample(example, true)) {
 			if (StringUtil.isEmpty(widget.getAccessCode()))
 				widgets.add(widget);
-			else if (AcegiUtil.currentUserHasPermission(widget.getAccessCode())) 
+			else if (SecurityUtil.currentUserHasPermission(widget.getAccessCode())) 
 				widgets.add(widget);					
 		}
 		return widgets;

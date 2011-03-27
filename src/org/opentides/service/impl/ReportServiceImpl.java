@@ -49,7 +49,7 @@ import org.opentides.bean.ReportDefinition;
 import org.opentides.bean.SortedProperties;
 import org.opentides.persistence.ReportDAO;
 import org.opentides.service.ReportService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.FileUtil;
 import org.opentides.util.StringUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -341,7 +341,7 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 		for (DynamicReport report:findByExample(example, true)) {
 			if (StringUtil.isEmpty(report.getAccessCode()))
 				reports.add(report);
-			else if (AcegiUtil.currentUserHasPermission(report.getAccessCode())) 
+			else if (SecurityUtil.currentUserHasPermission(report.getAccessCode())) 
 				reports.add(report);					
 		}
 		return reports;

@@ -66,7 +66,9 @@ public class UserValidator implements Validator {
 				"error.required-short", new Object[]{"Confirm Password"},"Confirm password is required.");
 		}
 		
-		if (!user.getCredential().getNewPassword().equals(user.getCredential().getConfirmPassword())) {
+		if (!StringUtil.isEmpty(user.getCredential().getNewPassword()) &&
+		    !StringUtil.isEmpty(user.getCredential().getConfirmPassword()) &&
+		    !user.getCredential().getNewPassword().equals(user.getCredential().getConfirmPassword())) {
 			e.reject("error.password-confirmation-did-not-match", "Password confirmation did not match.");
 		}
 	}

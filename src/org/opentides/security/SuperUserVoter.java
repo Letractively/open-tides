@@ -54,7 +54,7 @@ public class SuperUserVoter implements AccessDecisionVoter {
 	        Object arg1,
 	        Collection<ConfigAttribute> attributes) {
 	    for (GrantedAuthority auth:authentication.getAuthorities()) {
-            if (SUPER_USER.equals(auth)) {
+            if (SUPER_USER.equals(auth.getAuthority())) {
                 return ACCESS_GRANTED;
             }
 	    }

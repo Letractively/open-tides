@@ -21,7 +21,7 @@ package org.opentides.listener;
 
 import org.apache.log4j.Logger;
 import org.opentides.persistence.evolve.DBEvolveManager;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -58,7 +58,7 @@ public class ApplicationStartupListener implements ApplicationListener {
 		_log.info("Starting up system using " + propertyName + " properties.");
 
 		_log.info("Initializing debug mode to " + debug);
-		AcegiUtil.setDebug(debug);
+		SecurityUtil.setDebug(debug);
 
 		_log.info("Checking for schema evolve...");
 		evolveManager.evolve();

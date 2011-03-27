@@ -15,25 +15,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-<c:if test="${ot_version == '0.1'}"> 
-<input type="image" src="${url_context}/images/db_edit.ico" title="<spring:message code="label.edit"/>"
-	onclick="IDEYATECH.util.loadPage('row-${id}',
-			'${url_context}/${page}?action=update&codeId=${id}');"/>
-</c:if>
-
-<c:if test="${ot_version == '0.2'}"> 
-<input type="image" src="${url_context}/images/db_edit.gif" title="<spring:message code="label.edit"/>" alt="Edit"
-	onclick="IDEYATECH.crud.editRecord('${prefix}-row-${id}',
-			'${url_context}/${page}?action=update&codeId=${id}');"/>
-</c:if>
-
-<c:if test="${ot_version == '0.3'}"> 
-<input type="image" src="${url_context}<spring:theme code="db_edit"/>"" title="<spring:message code="label.edit"/>" alt="Edit"
-	onclick="IDEYATECH.crud.editRecord('${prefix}-row-${id}',
-			'${url_context}/${page}?action=update&codeId=${id}${urlParam}');"/>
-</c:if>
-
-<c:if test="${ot_version == '0.5'}"> 
+<c:if test="${ot_version == '1.0'}"> 
 <input type="image" src="${url_context}<spring:theme code="db_edit"/>"" title="<spring:message code="label.edit"/>" alt="Edit"
 	onclick="IDEYATECH.crud.editRecord('${prefix}-row-${id}',
 			'${url_context}/${page}?action=update&codeId=${id}${urlParam}');"/>

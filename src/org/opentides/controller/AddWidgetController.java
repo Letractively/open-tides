@@ -31,7 +31,7 @@ import org.opentides.bean.Widget;
 import org.opentides.service.UserService;
 import org.opentides.service.UserWidgetsService;
 import org.opentides.service.WidgetService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -56,7 +56,7 @@ public class AddWidgetController extends AbstractController {
 		if ("POST".equals(request.getMethod())) {
 			Map<String, Object> model = new HashMap<String, Object>();
 			try {
-				userWidgetsService.addUserWidgets(AcegiUtil.getSessionUser().getRealId(), 
+				userWidgetsService.addUserWidgets(SecurityUtil.getSessionUser().getRealId(), 
 						request.getParameter("mergedCheckboxes"));
 				model.put("frameRedirect", true);
 				return new ModelAndView(formView,model);
@@ -70,7 +70,7 @@ public class AddWidgetController extends AbstractController {
 		} else {
 			Map<String,Object> model = new HashMap<String,Object>();
 			List<Widget> widgets = widgetService.getCurrentUserWidgets();
-			List<UserWidgets> installedWidgets = userWidgetsService.findUserWidgets(AcegiUtil.getSessionUser().getRealId(), WidgetService.WIDGET_STATUS_MINIMIZE, WidgetService.WIDGET_STATUS_SHOW);
+			List<UserWidgets> installedWidgets = userWidgetsService.findUserWidgets(SecurityUtil.getSessionUser().getRealId(), WidgetService.WIDGET_STATUS_MINIMIZE, WidgetService.WIDGET_STATUS_SHOW);
 			for (Widget widget:widgets) {
 				for (UserWidgets userWidget:installedWidgets) {
 					if (userWidget.getWidget() == widget)

@@ -28,7 +28,7 @@ import org.opentides.persistence.UserWidgetsDAO;
 import org.opentides.service.UserService;
 import org.opentides.service.UserWidgetsService;
 import org.opentides.service.WidgetService;
-import org.opentides.util.AcegiUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -53,7 +53,7 @@ public class UserWidgetsServiceImpl extends BaseCrudServiceImpl<UserWidgets>
 	 */
 	public void addUserWidgets(long userId, String selectedWidgets) {
 		String[] widgetIds = selectedWidgets.split(",");
-		BaseUser user = userService.load(AcegiUtil.getSessionUser().getRealId());
+		BaseUser user = userService.load(SecurityUtil.getSessionUser().getRealId());
 		for (String widgetId:widgetIds) {
 			
 			int[] pos = getColumnRowOfUserWidget(userId);

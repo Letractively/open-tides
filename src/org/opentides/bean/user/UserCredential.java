@@ -26,6 +26,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.opentides.bean.BaseEntity;
+import org.opentides.util.SecurityUtil;
 
 
 @Entity
@@ -65,42 +66,88 @@ public class UserCredential extends BaseEntity{
 	public UserCredential() {
 		enabled=false;
 	}
-	public Boolean isEnabled() {
-		return enabled;
-	}
-	public Boolean getEnabled() {
-		return enabled;
-	}
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
 
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
-	
-	public String getNewPassword() {
-		return newPassword;
-	}
-	public void setNewPassword(String newPassword) {
-		this.newPassword = newPassword;
-	}
-	/* (non-Javadoc)
+	/**
+     * Getter method for username.
+     *
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+    /**
+     * Setter method for username.
+     *
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    /**
+     * Getter method for newPassword.
+     *
+     * @return the newPassword
+     */
+    public String getNewPassword() {
+        return newPassword;
+    }
+    /**
+     * Setter method for newPassword.
+     *
+     * @param newPassword the newPassword to set
+     */
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+    /**
+     * Getter method for confirmPassword.
+     *
+     * @return the confirmPassword
+     */
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+    /**
+     * Setter method for confirmPassword.
+     *
+     * @param confirmPassword the confirmPassword to set
+     */
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+    /**
+     * Getter method for enabled.
+     *
+     * @return the enabled
+     */
+    public Boolean getEnabled() {
+        return enabled;
+    }
+    /**
+     * Setter method for enabled.
+     *
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+    /**
+     * Never allow password to be returned.
+     * @return the password
+     */
+    public String getPassword() {
+        return "";
+    }
+    
+    /**
+     * Ensures that password is enrypted according to configured passwordEncoder.
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = SecurityUtil.encryptPassword(password);
+    }
+
+    /* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

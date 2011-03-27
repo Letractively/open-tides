@@ -33,6 +33,7 @@ import org.opentides.bean.user.UserGroup;
 import org.opentides.editor.SystemCodeEditor;
 import org.opentides.editor.UserGroupEditor;
 import org.opentides.service.UserGroupService;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -45,20 +46,19 @@ import org.springframework.web.bind.ServletRequestDataBinder;
  */
 public class UserController extends BaseCrudController<BaseUser> {
 	private UserGroupService userGroupService;
-	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	protected void preCreateAction(BaseUser command) {
 		UserCredential credential = command.getCredential();
 		if (!StringUtil.isEmpty(credential.getNewPassword()))
-			credential.setPassword(passwordEncoder.encodePassword(credential.getNewPassword(), null));
+			credential.setPassword(SecurityUtil.encryptPassword(credential.getNewPassword()));
 	}
 
 	@Override
 	protected void preUpdateAction(BaseUser command) {
 		UserCredential credential = command.getCredential();
         if (!StringUtil.isEmpty(credential.getNewPassword()))
-            credential.setPassword(passwordEncoder.encodePassword(credential.getNewPassword(), null));
+            credential.setPassword(SecurityUtil.encryptPassword(credential.getNewPassword()));
 	}
 
 	/**
@@ -92,13 +92,4 @@ public class UserController extends BaseCrudController<BaseUser> {
 		this.userGroupService = userGroupService;
 	}
 
-    /**
-     * Setter method for passwordEncoder.
-     *
-     * @param passwordEncoder the passwordEncoder to set
-     */
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }	
-	
 }

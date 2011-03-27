@@ -76,7 +76,7 @@ public interface Auditable {
     String getReference();
 
     /**
-     * Returns the user ID who made the change. This is needed because AcegiUtil
+     * Returns the user ID who made the change. This is needed because SecurityUtil
      * is not able to return correct user session on Hibernate Interceptor.
      * 
      * @return Long - userId
