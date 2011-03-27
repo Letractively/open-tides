@@ -5,9 +5,7 @@
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 <idy:header title_webpage="label.users">
-  <script src="${url_yui}/yahoo-dom-event/yahoo-dom-event.js"></script>
-  <script src="${url_yui}/animation/animation-min.js"></script>
-  <script src="${url_yui}/connection/connection-min.js"></script>
+  <script src="${url_jquery}"></script>
   <script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
 </idy:header>
     <!-- BODY -->
@@ -42,8 +40,8 @@
                   		</c:forEach>
                   		</td>
                   		<td>
-							<ot:update_button id="${record.id}" page="admin/people.jspx" prefix="user"/>
-                    		<ot:delete_button id="${record.id}" page="admin/people.jspx" title="${record.emailAddress}" prefix="user"/>                  		
+							<ot:update_button id="${record.id}" page="admin/users.jspx" prefix="user"/>
+                    		<ot:delete_button id="${record.id}" page="admin/users.jspx" title="${record.emailAddress}" prefix="user"/>                  		
                   		</td>	
             		</tr>
             		</c:forEach>
@@ -53,8 +51,8 @@
             			</td>
             		</tr>
             	</table>
-            	<ot:add_button page="admin/people.jspx" prefix="user"/>
-            	<ot:paging results="${results}" baseURL="/admin/people.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" />	            	
+            	<ot:add_button page="admin/users.jspx" prefix="user"/>
+            	<ot:paging results="${results}" baseURL="/admin/users.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" />	            	
         	</div>
         </div>
         </div>    

@@ -55,8 +55,8 @@
 		
 		<p>
 			<label for="buttons">&nbsp;</label>	
-		  	<idy:submit_button id="${user.id}" page="admin/people.jspx" formName="user-form-${user.id}" prefix="user"/>
-  			<idy:cancel_button id="${user.id}" page="admin/people.jspx" prefix="user"/>
+		  	<idy:submit_button id="${user.id}" page="admin/users.jspx" formName="user-form-${user.id}" prefix="user"/>
+  			<idy:cancel_button id="${user.id}" page="admin/users.jspx" prefix="user"/>
 		</p>
 	</div>
 </form:form>

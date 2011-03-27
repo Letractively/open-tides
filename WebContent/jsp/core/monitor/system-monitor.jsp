@@ -7,10 +7,6 @@
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
 <idy:header title_webpage="label.welcome">
-	<script src="${url_yui}/yahoo-dom-event/yahoo-dom-event.js"></script>
-    <script src="${url_yui}/animation/animation-min.js"></script>
-	<script src="${url_yui}/container/container.js" type="text/javascript"></script>	
-  	<script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
 </idy:header>
 
 <!-- BODY -->

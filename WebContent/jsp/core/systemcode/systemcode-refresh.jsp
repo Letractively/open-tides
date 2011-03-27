@@ -5,19 +5,19 @@
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 
 <c:if test="${newRow}">
-<tr id="lookup-row-${systemCode.id}" status="new">
+<tr id="system-row-${systemCode.id}" status="new">
 </c:if>
 	<td><c:out value="${systemCode.category}" /></td>
 	<td><c:out value="${systemCode.key}" /></td>
 	<td><c:out value="${systemCode.value}" /></td>
 	<td>
-		<ot:update_button id="${systemCode.id}" page="admin/lookup.jspx" prefix="lookup"/>
-		<ot:delete_button id="${systemCode.id}" page="admin/lookup.jspx" title="${systemCode.key}" prefix="lookup"/>                  		
+		<ot:update_button id="${systemCode.id}" page="admin/system-codes.jspx" prefix="system"/>
+		<ot:delete_button id="${systemCode.id}" page="admin/system-codes.jspx" title="${systemCode.key}" prefix="system"/>                  		
 	</td>
 <c:if test="${newRow}">
 </tr>
 <script language="javascript">
-IDEYATECH.crud.cancelNew('lookup-');
-IDEYATECH.crud.refreshTable('lookup-table-results', {})
+IDEYATECH.crud.cancelNew('system-');
+IDEYATECH.crud.refreshTable('system-table-results', {})
 </script>
 </c:if>

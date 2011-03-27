@@ -16,8 +16,8 @@
 		</c:forEach>
 	</td>
 	<td>
-		<ot:update_button id="${user.id}" page="admin/people.jspx" prefix="user"/>
-		<ot:delete_button id="${user.id}" page="admin/people.jspx" title="${user.emailAddress}" prefix="user"/>                  		
+		<ot:update_button id="${user.id}" page="admin/users.jspx" prefix="user"/>
+		<ot:delete_button id="${user.id}" page="admin/users.jspx" title="${user.emailAddress}" prefix="user"/>                  		
 	</td>	
 <c:if test="${newRow}">
 </tr>

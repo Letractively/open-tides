@@ -6,7 +6,7 @@
 
 <td colspan="4">
 <form:form commandName="systemCode" id="systemCode-form-${systemCode.id}"action="">
-	<ot:form_title isNew="${systemCode.isNew}" formName="lookup-codes"/>
+	<ot:form_title isNew="${systemCode.isNew}" formName="system-codes"/>
 	
 	<div class="content">	
 		<spring:bind path="systemCode.*">
@@ -14,7 +14,7 @@
 			<div class='errorBox'>
 			<!-- this is a hack to crud.js to handle validation messages. -->
 			<c:if test="${systemCode.isNew}">
-			<!-- <tr id="lookup-row-new"> -->
+			<!-- <tr id="system-row-new"> -->
 			</c:if>
 				<form:errors path="*" />
             </div>
@@ -46,8 +46,8 @@
 			</form:select>
 		</div>
 		<div class="button">
-		  	<ot:submit_button id="${systemCode.id}" page="admin/lookup.jspx" formName="systemCode-form-${systemCode.id}" prefix="lookup"/>
-  			<ot:cancel_button id="${systemCode.id}" page="admin/lookup.jspx" prefix="lookup"/>
+		  	<ot:submit_button id="${systemCode.id}" page="admin/system-codes.jspx" formName="systemCode-form-${systemCode.id}" prefix="system"/>
+  			<ot:cancel_button id="${systemCode.id}" page="admin/system-codes.jspx" prefix="system"/>
 		</div>
 	</div>
 </form:form>
