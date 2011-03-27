@@ -61,17 +61,6 @@
 			</map>
 		</property>
 	</bean>
-
-	<!-- Define security dataSource -->
-   <bean id="userAuthenticationDao"
-		class="org.springframework.security.core.userdetails.memory.InMemoryDaoImpl">
-		<property name="userMap">
-			<value>
-				allan=allan,ROLE_ADMIN
-				admin=ideyatech,ROLE_ADMIN
-			</value>
-		</property>
-	</bean>
 	
 	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
      	<constructor-arg value="256"/>

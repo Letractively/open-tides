@@ -23,8 +23,8 @@
 				<prop key="/widget-external.jspx">externalWidgetController</prop>
 				<prop key="/generate-report.jspx">generateReportController</prop>
 				<prop key="/admin/report.jspx">reportController</prop>
-				<prop key="/admin/lookup.jspx">systemCodesController</prop>
-				<prop key="/admin/people.jspx">userController</prop>
+				<prop key="/admin/system-codes.jspx">systemCodesController</prop>
+				<prop key="/admin/users.jspx">userController</prop>
 				<prop key="/admin/widget.jspx">widgetController</prop>
 				<prop key="/admin/usergroup.jspx">userGroupController</prop>
 				<prop key="/admin/system-monitor.jspx">systemMonitorController</prop>
@@ -51,7 +51,7 @@
 		<property name="commandName" value="user" />
 		<property name="commandClass" value="org.opentides.bean.user.BaseUser" />
 		<property name="formView" value="core/user/user-form" />
-		<property name="searchView" value="core/user/users" />
+		<property name="searchView" value="core/user/user-list" />
 		<property name="refreshView" value="core/user/user-refresh" />
 		<property name="validator">
 			<ref bean="userValidator" />
@@ -65,7 +65,7 @@
 		<property name="commandName" value="systemCode" />
 		<property name="commandClass" value="org.opentides.bean.SystemCodes" />
 		<property name="formView" value="core/systemcode/systemcode-form" />
-		<property name="searchView" value="core/systemcode/systemcodes" />
+		<property name="searchView" value="core/systemcode/systemcode-list" />
 		<property name="refreshView" value="core/systemcode/systemcode-refresh" />
 		<property name="validator">
 			<ref bean="systemCodesValidator" />
@@ -99,7 +99,8 @@
 		<property name="numLinks" value="${search.links.displayed}" />
 	</bean>
 
-	<bean id="reportController" class="org.opentides.controller.ReportController">
+	<bean id="reportController" autowire="byName" 
+		class="org.opentides.controller.ReportController">
 		<property name="service" ref="reportService" />
 		<property name="commandName" value="report" />
 		<property name="commandClass" value="org.opentides.bean.DynamicReport" />
@@ -173,7 +174,7 @@
 		<property name="commandName" value="usergroup" />
 		<property name="commandClass" value="org.opentides.bean.user.UserGroup" />
 		<property name="formView" value="core/usergroup/usergroup-form" />
-		<property name="searchView" value="core/usergroup/usergroups" />
+		<property name="searchView" value="core/usergroup/usergroup-list" />
 		<property name="refreshView" value="core/usergroup/usergroup-refresh" />
 		<property name="pageSize" value="${search.page.size}" />
 		<property name="numLinks" value="${search.links.displayed}" />

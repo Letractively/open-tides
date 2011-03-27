@@ -20,6 +20,8 @@
 	<bean id="hibernateUtil" class="org.opentides.util.HibernateUtil" init-method="initialize">
 		<property name="jndiPath" value="${database.jndi}" />
 	</bean>	
+	
+	<bean id="securityUtil" class="org.opentides.util.SecurityUtil" autowire="byName" />
 
 	<!-- Default View Resolver -->	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
