@@ -15,20 +15,13 @@
 <%@ attribute name="multipart" type="java.lang.String"%>
 <%@ attribute name="urlParam" type="java.lang.String"%>
 <%@ attribute name="formName" required="true" type="java.lang.String"%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 
 <c:set var='varName' value='${fn:replace(prefix, "-", "_")}' />
-<c:if test="${multipart == true}">
-	<!-- Create iframe and change form target to that iframe -->
-	<iframe id="${prefix}-row-${id}-iframe" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>	
-	<script language="javascript">
-		alert('execute');
-		$('${formName}').attr('target','${prefix}-row-${id}-iframe');
-	</script>
-</c:if>
 <c:if test="${id>0}">
 	<c:if test="${ot_version == '1.0'}">
 		<input type="button" value="<spring:message code="label.submit" />"
@@ -37,7 +30,6 @@
 	    	divId: '${prefix}-row-${id}', 
 	    	postdata: 'action=update&codeId=${id}${urlParam}', 
 	    	append: 'false', 
-	    	evaluate: 'true',
 	    	formName: '${formName}',
 	    	multipart: '<c:out value="${multipart}" default="false"/>'
 	    }
@@ -53,7 +45,6 @@
 	    	divId: '${prefix}-table-results',
 	    	postdata: 'action=create${urlParam}', 
 	    	append: 'true', 
-			evaluate: 'true',
 	    	formName: '${formName}',
 	    	multipart: '<c:out value="${multipart}" default="false"/>'
 	    }
