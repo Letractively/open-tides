@@ -6,7 +6,7 @@
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 <idy:header title_webpage="label.users">
   <script src="${url_jquery}"></script>
-  <script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
+  <script src="${url_script}/crud.js"></script>
 </idy:header>
     <!-- BODY -->
     <div id="bd">

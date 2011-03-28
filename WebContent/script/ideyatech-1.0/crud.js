@@ -76,12 +76,15 @@ IDEYATECH.util = function() {
 		var str = __hackResponse(response);
 		var userCallback = args[1];
 		IDEYATECH.util.updateInnerHTML(args[0], str);
-		if (!IDEYATECH.util.isEmpty(userCallback)) {
+		if (typeof userCallback == 'function') {
 			try {
 				userCallback.call();
 			} catch (err) {
 			}
 		}
+		if (args[2]) 
+		  	__evaluateJS(str);
+		
 	};
 
 	/**
@@ -97,12 +100,14 @@ IDEYATECH.util = function() {
 			var parent = document.getElementById(args[0]);
 			var userCallback = args[1];
 			IDEYATECH.util.updateInnerHTML(parent.id, parent.innerHTML + str);
-			if (!IDEYATECH.util.isEmpty(userCallback)) {
+			if (typeof userCallback == 'function') {
 				try {
 					userCallback.call();
 				} catch (err) {
 				}
 			}
+			if (args[2]) 
+	  			__evaluateJS(response);
 		} else {
 			if (!IDEYATECH.util.isEmpty(rootId))
 				args[0] = rootId;
@@ -316,7 +321,7 @@ IDEYATECH.crud = function() {
 			if (confirm('Are you sure to delete [' + title + ']?')) {
 				var args = [ divId ];
 				var successCallback = function(data) {
-					$('#' + args[0]).fadeOut('slow')
+					$('#' + args[0]).fadeOut('slow');
 				};
 
 				$.ajax(url, {
@@ -342,11 +347,17 @@ IDEYATECH.crud = function() {
 		 *            prefix of element for add form, appended to '-row-new'
 		 * @param {String}
 		 *            url of the form
+		 * @param {String}
+		 * 			  optional - callback function upon successful transaction
 		 */
 		addRecord : function(prefix, url) {
 			var args = {
-				divId : prefix + 'row-new'
+				divId : prefix + 'row-new',
+				evaluate: true
 			};
+			if (typeof addCallback ==  'function') {
+				args['callback'] = addCallback;
+			}
 			IDEYATECH.util.loadPage(url, args);
 		},
 		/**
@@ -357,11 +368,17 @@ IDEYATECH.crud = function() {
 		 *            prefix of element for add form, appended to '-row-new'
 		 * @param {String}
 		 *            url of the form
+		 * @param {String}
+		 * 			  optional - callback function upon successful transaction
 		 */
-		editRecord : function(prefix, url) {
+		editRecord : function(prefix, url, callback) {
 			var args = {
-				divId : prefix
+				divId : prefix,
+				evaluate: true
 			};
+			if (typeof editCallback ==  'function') {
+				args['callback'] = editCallback;
+			}
 			IDEYATECH.util.loadPage(url, args);
 		}
 	};
@@ -412,86 +429,6 @@ IDEYATECH.checkbox = function() {
 			$('#' + targetName).value = checkBoxValues;
 			form.submit();
 			return true;
-		}
-	};
-}();
-
-/**
- * Provides common animation functions.
- * 
- * @class anim
- * @namespace IDEYATECH
- */
-IDEYATECH.anim = function() {
-
-	/**
-	 * Private helper that removes element called by __fade_element
-	 */
-	var __remove = function() {
-		var el = this.getEl();
-		el.parentNode.removeChild(el);
-	};
-
-	var __fadeOut = {
-		color : {
-			to : '#fff'
-		},
-		backgroundColor : {
-			from : '#c00000',
-			to : '#fff'
-		}
-	};
-
-	return {
-		/**
-		 * Fades and remove element
-		 * 
-		 * @method fadeElement
-		 * @param {Object}
-		 *            argument - can include any of the following - divId =
-		 *            element id to be faded - callback = method to execute
-		 *            after loading - remove = should we remove the element
-		 *            after fade - fadeFrom = fade color from - fadeTo = fade
-		 *            color to
-		 */
-		fadeElement : function(o) {
-			var removeDiv = $('#' + o.argument['divId']);
-			if (!IDEYATECH.util.isEmpty(o.argument['fadeFrom']))
-				__fadeOut['backgroundColor']['from'] = o.argument['fadeFrom'];
-			if (!IDEYATECH.util.isEmpty(o.argument['fadeTo'])) {
-				__fadeOut['color']['to'] = o.argument['fadeTo'];
-				__fadeOut['backgroundColor']['to'] = o.argument['fadeTo'];
-			}
-			var fade = new YAHOO.util.ColorAnim(removeDiv, __fadeOut);
-			fade.onComplete.subscribe(__remove);
-			fade.animate();
-		}
-	};
-}();
-
-/**
- * Javascript loading pop-up
- */
-
-IDEYATECH.loading = function() {
-	var loader;
-
-	return {
-		hide : function() {
-			loader.hide();
-		},
-		show : function() {
-			loader = new YAHOO.widget.Panel("wait", {
-				width : "300px",
-				fixedcenter : true,
-				close : false,
-				draggable : false,
-				zindex : 4,
-				modal : true,
-				visible : false
-			});
-			loader.render(document.body);
-			loader.show();
 		}
 	};
 }();

@@ -23,6 +23,6 @@
 </tr>
 <script language="javascript">
 IDEYATECH.crud.cancelNew('user-');
-IDEYATECH.crud.refreshTable('user-table-results', {})
+IDEYATECH.crud.refreshTable('user-table-results', {});
 </script>
 </c:if>

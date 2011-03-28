@@ -179,6 +179,12 @@ hr.broad {
 }
 
 /* LOGIN FORM */
+.login {
+	margin:0 auto 5em;
+	position: relative;
+	width:35%;
+	top: 5em;
+}
 #loginForm label {
 	width: 5.5em;
 	text-align: right;

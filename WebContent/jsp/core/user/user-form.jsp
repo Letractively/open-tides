@@ -37,7 +37,7 @@
 			<c:if test="${user.isNew}"><sup class="required">*</sup></c:if></p>
 		<p> <label for="confirm-password"><spring:message code="label.confirm-password" /> </label>
 			<form:password path="credential.confirmPassword" size="40" maxlength="100" />
-			<c:if test="${user.isNew}"><sup class="required">*</sup></c:if></p>
+			<c:if test="${user.isNew}"><sup class="required">*</sup></c:if></p>			
 		<p>	<label for="groups"><spring:message code="label.usergroups" /></label>
 			<c:if test="${groups != null}">
 				<form:select path="groups" size="4" multiple="true">  					
