@@ -54,7 +54,6 @@ public class UserGroup extends BaseEntity implements BaseCriteria {
 	private Set<BaseUser> users;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userGroup", fetch = FetchType.EAGER)
-	@org.hibernate.annotations.Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<UserRole> roles;
 
 	@Transient

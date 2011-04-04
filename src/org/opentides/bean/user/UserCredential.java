@@ -131,6 +131,7 @@ public class UserCredential extends BaseEntity{
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
+    
     /**
      * Never allow password to be returned.
      * @return the password
