@@ -26,9 +26,9 @@ import org.opentides.bean.Auditable;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.listener.ApplicationStartupListener;
 import org.opentides.persistence.AuditLogDAO;
-import org.opentides.util.SecurityUtil;
 import org.opentides.util.DateUtil;
 import org.opentides.util.HibernateUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
 
 /**

@@ -116,7 +116,6 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         return false; 
     } 
     
-    @SuppressWarnings("unchecked")
 	@Override
     public void postFlush(Iterator iterator) 
                     throws CallbackException { 

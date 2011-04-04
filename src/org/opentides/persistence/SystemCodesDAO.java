@@ -22,20 +22,10 @@ package org.opentides.persistence;
 
 import java.util.List;
 
-import org.opentides.bean.SystemCategory;
 import org.opentides.bean.SystemCodes;
 
 
-@SuppressWarnings("deprecation")
 public interface SystemCodesDAO extends BaseEntityDAO<SystemCodes, Long> {
-	
-	/**
-	 * Return List of SystemCodes by Category.
-	 * @param category
-	 * @return
-	 */
-	@Deprecated
-	public List<SystemCodes> getSystemCodesByCategory(SystemCategory category);
 	
 	/**
 	 * Return List of SystemCodes by Category.

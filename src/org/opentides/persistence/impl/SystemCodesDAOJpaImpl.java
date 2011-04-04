@@ -24,24 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opentides.bean.SystemCategory;
 import org.opentides.bean.SystemCodes;
 import org.opentides.persistence.SystemCodesDAO;
 
 @SuppressWarnings("deprecation")
 public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Long> implements
 		SystemCodesDAO {
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.ideyatech.core.persistence.SystemCodesDAO#findByCategoryName(java.lang.String)
-	 */
-	@Deprecated
-	public List<SystemCodes> getSystemCodesByCategory(SystemCategory category) {
-		SystemCodes example = new SystemCodes();
-		example.setCategory(category.getName());
-		return findByExample(example,true);
-	}
 
 	/**
 	 * Retrieves SystemCodes for the given category
