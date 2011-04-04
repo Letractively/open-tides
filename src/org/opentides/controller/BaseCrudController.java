@@ -36,7 +36,6 @@ import org.opentides.InvalidImplementationException;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.FileInfo;
 import org.opentides.bean.SearchResults;
-import org.opentides.bean.SystemCategory;
 import org.opentides.bean.SystemCodes;
 import org.opentides.bean.Uploadable;
 import org.opentides.service.BaseCrudService;
@@ -629,20 +628,6 @@ public class BaseCrudController<T extends BaseEntity> extends
             String categoryName) {
         SystemCodes example = new SystemCodes();
         example.setCategory(categoryName);
-        return systemCodesService.findByExample(example, true);
-    }
-
-    /**
-     * Retrieves all registered system codes for a category.
-     * 
-     * @param category
-     * @return
-     */
-    @Deprecated
-    protected final List<SystemCodes> getSystemCodesByCategory(
-            SystemCategory category) {
-        SystemCodes example = new SystemCodes();
-        example.setCategory(category.getName());
         return systemCodesService.findByExample(example, true);
     }
 
