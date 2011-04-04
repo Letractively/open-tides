@@ -53,6 +53,11 @@ public @interface TextField{
 	boolean searchable() default false;
 	
 	/**
+	 * Determines if the field is included in audit logs; default value is <code><b>false</b></code>.
+	 */
+	boolean auditable() default false;
+
+	/**
 	 * Determines if the field is the unique identifier or primary key; default value is <code><b>false</b></code>.
 	 */
 	boolean titleField() default false;
