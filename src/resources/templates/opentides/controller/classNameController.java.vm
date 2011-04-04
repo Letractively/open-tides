@@ -25,7 +25,6 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 #end
 #if	( $containsByCategory )
-import org.opentides.bean.SystemCategory;
 import org.opentides.bean.SystemCodes;
 import org.opentides.editor.SystemCodeEditor;
 #end
@@ -53,10 +52,6 @@ import org.springframework.web.bind.ServletRequestDataBinder;
  */
  
 public class ${className}Controller extends BaseCrudController<${className}> {
-#if	( $containsByCategory )
-	
-	private SystemCategory systemCategory;
-#end
 #foreach( $field in $objectFields )
 	private ${field.objectClass}Service ${field.objectName}Service;
 #end
@@ -139,15 +134,7 @@ public class ${className}Controller extends BaseCrudController<${className}> {
 #end	
 	}
 #end
-#if	( $containsByCategory )
-	
-	/**
-	 * @param category the category to set
-	 */
-	public void setSystemCategory(SystemCategory category) {
-		this.systemCategory = category;
-	}
-#end
+
 #if	( $containsByObject )
 #foreach( $field in $objectFields )
 	/**
