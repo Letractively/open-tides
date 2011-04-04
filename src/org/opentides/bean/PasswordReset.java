@@ -25,6 +25,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author allanctan
@@ -50,7 +51,10 @@ public class PasswordReset extends BaseEntity implements BaseCriteria {
 	@Column(name="STATUS_")
 	private String status;
 	
+	@Transient
 	private transient String password;
+
+	@Transient
 	private transient String confirmPassword;
 	
 	/**

@@ -45,13 +45,13 @@ public class BaseSortableEntity extends BaseEntity implements Sortable {
      * Temporary variable for order direction (e.g. ASC or DESC).
      */
     @Transient
-    private String orderFlow;
+    private transient String orderFlow;
 
     /**
      * Temporary variable for order field
      */
     @Transient
-    private String orderOption;
+    private transient String orderOption;
 
     /**
      * Getter method of order flow.

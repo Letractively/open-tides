@@ -63,13 +63,6 @@ public class SystemCodes extends BaseProtectedEntity
 	
 	public SystemCodes() {
 	}
-
-	@Deprecated
-	public SystemCodes(SystemCategory systemCategory, String key) {
-		super();
-		setCategory(systemCategory.toString());
-		this.key = key;
-	}
 	
 	public SystemCodes(String key) {
 		super();
@@ -91,15 +84,7 @@ public class SystemCodes extends BaseProtectedEntity
 		this.value = value;
 		this.skipAudit=skipAudit;
 	}
-	
-    @Deprecated
-	public SystemCodes(SystemCategory systemCategory, String key, String value) {
-		super();
-		setCategory(systemCategory.toString());
-		this.key = key;
-		this.value = value;
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

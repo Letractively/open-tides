@@ -37,8 +37,8 @@ import javax.persistence.Transient;
 import org.hightides.annotations.util.AnnotationUtil;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.persistence.listener.EntityDateListener;
-import org.opentides.util.SecurityUtil;
 import org.opentides.util.CrudUtil;
+import org.opentides.util.SecurityUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -56,7 +56,8 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = -2166505182954839082L;
     
     /**
-     * Primary key.
+     * Primary key. Annotation is transfered to getter method to allow
+     * overridding from subclass.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -82,52 +83,51 @@ public abstract class BaseEntity implements Serializable {
      * Used by AuditLog. 
      */
     @Transient
-    private Long auditUserId;
+    private transient Long auditUserId;
     
     /**
      * Username who created, updated or deleted the entity.
      * Used by AuditLog. 
      */
     @Transient
-    private String auditUsername;
+    private transient String auditUsername;
     
     /**
      * Office of the user who created, updated or deleted the entity.
      * Used by AuditLog. 
      */
     @Transient
-    private String auditOfficeName;
+    private transient String auditOfficeName;
     
     /**
      * List of searchable properties. 
      * Used when default search properties is used.
      */
     @Transient
-    private List<String> searchProperties;
+    private transient List<String> searchProperties;
 
     /**
      * List of auditable fields. 
      * Used when default auditable is used.
      */
     @Transient
-    private List<AuditableField> auditableFields;
+    private transient List<AuditableField> auditableFields;
 
     /**
      * Setter method of Id.
      * 
      * @param id primary key
      */
-    public final void setId(final Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
     /**
-     * Getter method of id.
-     * 
-     * @return the id
+	 * Getter method of Id
+     * @return
      */
-    public final Long getId() {
-        return this.id;
+    public Long getId() {
+    	return this.id;
     }
 
     /**

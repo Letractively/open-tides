@@ -61,7 +61,7 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     /**
      * Class type of object being tracked.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     @Column(name = "ENTITY_CLASS", nullable = false, updatable = false)
     private Class entityClass;
     
@@ -131,7 +131,7 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
      * @param owner username of who made the change.
      * @param ownerOffice group of user who made the change.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public AuditLog(final String message, 
             final Long entityId, 
             final Class entityClass,
@@ -173,7 +173,7 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
      * 
      * @return the entityClass
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public final Class getEntityClass() {
         return this.entityClass;
     }
@@ -184,7 +184,7 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
      * @param entityClass
      *            the entityClass to set
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     protected final void setEntityClass(final Class entityClass) {
         this.entityClass = entityClass;
     }
