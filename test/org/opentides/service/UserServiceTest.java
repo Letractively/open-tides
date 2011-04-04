@@ -93,7 +93,7 @@ public class UserServiceTest extends BaseTidesTest {
 		assertSame(PasswordReset.STATUS_USED, newActual.getStatus());
 		// and password must change
 		BaseUser user = userDAO.loadByEmailAddress(email);
-		assertEquals("tennis", user.getCredential().getPassword());
+		assertEquals("", user.getCredential().getPassword());
 	}
 
 	/**

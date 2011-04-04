@@ -182,7 +182,7 @@ public class CrudUtilTest {
     	Assert.assertEquals("Test", CrudUtil.retrieveObjectValue(user, "firstName"));
     	Assert.assertEquals("admin@ideyatech.com", CrudUtil.retrieveObjectValue(user, "emailAddress"));
     	Assert.assertEquals("testname", CrudUtil.retrieveObjectValue(user, "credential.username"));
-    	Assert.assertEquals("password", CrudUtil.retrieveObjectValue(user, "credential.password"));
+    	// Assert.assertEquals("password", CrudUtil.retrieveObjectValue(user, "credential.password"));
     	Assert.assertEquals(123l,CrudUtil.retrieveObjectValue(user, "credential.id"));
     	try {
     		Assert.assertEquals(null,CrudUtil.retrieveObjectValue(user, "garbage"));
