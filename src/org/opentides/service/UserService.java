@@ -25,6 +25,7 @@ import java.util.Map;
 import org.opentides.bean.PasswordReset;
 import org.opentides.bean.user.BaseUser;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionInformation;
 
 
@@ -73,7 +74,11 @@ public interface UserService extends BaseCrudService<BaseUser> {
 	 /**
 	  * Updates last login of the user from a login event
 	  */
-	 public void updateLastLogin(AuthenticationSuccessEvent authenticationSuccessEvent);
+	 public void updateLogin(AuthenticationSuccessEvent authenticationSuccessEvent);
+	 /**
+	  * Logs the event of logout
+	  */
+	 public void updateLogout(Authentication auth);
 	 /**
 	  * Returns the list of user session that is logged-in to the system.
 	  * @return

@@ -29,15 +29,18 @@ import org.opentides.InvalidImplementationException;
 import org.opentides.bean.MailMessage;
 import org.opentides.bean.PasswordReset;
 import org.opentides.bean.user.BaseUser;
+import org.opentides.bean.user.SessionUser;
 import org.opentides.bean.user.UserCredential;
 import org.opentides.bean.user.UserGroup;
 import org.opentides.persistence.PasswordResetDAO;
 import org.opentides.persistence.UserDAO;
 import org.opentides.persistence.UserGroupDAO;
+import org.opentides.persistence.impl.AuditLogDAOImpl;
 import org.opentides.service.MailingService;
 import org.opentides.service.UserService;
 import org.opentides.util.StringUtil;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 
@@ -57,11 +60,11 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	private UserGroupDAO userGroupDAO;
 
 	private MailMessage resetPasswordMailMessage;
-	
+
 	private MailingService mailingService;
-	
+
 	private SessionRegistry sessionRegistry;
-	
+
 	/**
 	 * @return the roles
 	 */
@@ -81,7 +84,9 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		UserDAO userDAO = (UserDAO) getDao();
 		if (!userDAO.isRegisteredByEmail(emailAddress)) {
 			throw new InvalidImplementationException(
-					"Email ["+emailAddress+"] was not validated prior to calling this service. Please validate first.");
+					"Email ["
+							+ emailAddress
+							+ "] was not validated prior to calling this service. Please validate first.");
 		}
 		PasswordReset passwd = new PasswordReset();
 		String token = StringUtil.generateRandomString(tokenLength);
@@ -128,7 +133,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 				true);
 		if (actuals == null || actuals.size() == 0) {
 			_log.info("Failed to confirm password reset. No records matched in password reset database for email "
-							+ emailAddress);
+					+ emailAddress);
 			return false;
 		}
 		// check if password reset is active and not expired
@@ -156,9 +161,8 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	public boolean confirmPasswordResetByCipher(PasswordReset passwd) {
 		String decrypted = StringUtil.decrypt(passwd.getCipher());
 		if (StringUtil.isEmpty(decrypted)) {
-			_log
-					.info("Failed attempt to confirm password reset due to wrong cipher key.["
-							+ passwd.getCipher() + "]");
+			_log.info("Failed attempt to confirm password reset due to wrong cipher key.["
+					+ passwd.getCipher() + "]");
 			return false;
 		}
 		String token = decrypted.substring(0, tokenLength);
@@ -183,9 +187,8 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		List<PasswordReset> actuals = passwordResetDAO.findByExample(example,
 				true);
 		if (actuals == null || actuals.size() == 0) {
-			_log
-					.info("Failed to reset password. No records found in password reset for email "
-							+ passwd.getEmailAddress());
+			_log.info("Failed to reset password. No records found in password reset for email "
+					+ passwd.getEmailAddress());
 			return false;
 		}
 		PasswordReset actual = actuals.get(0);
@@ -227,7 +230,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 			UserGroup userGroup = new UserGroup();
 			userGroup.setName("Super User");
 			userGroup.setDescription("With all roles");
-			
+
 			// Let's super user role
 			List<String> roleNames = new ArrayList<String>();
 			roleNames.add("SUPER_USER");
@@ -241,36 +244,91 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		}
 		return !exist;
 	}
-	 /*
-	  * Updates last login of the user from a login event
-	  */
-	public void updateLastLogin(AuthenticationSuccessEvent authenticationSuccessEvent) {
-		String username = authenticationSuccessEvent.getAuthentication().getName();
+
+	/**
+	 * Updates last login of the user from a login event. Also logs the event in
+	 * history log.
+	 */
+	public void updateLogin(
+			AuthenticationSuccessEvent authenticationSuccessEvent) {
+		String username = authenticationSuccessEvent.getAuthentication()
+				.getName();
+		String completeName = username;
+		Object userObj = authenticationSuccessEvent.getAuthentication()
+				.getPrincipal();
+		if (userObj instanceof SessionUser) {
+			SessionUser user = (SessionUser) userObj;
+			completeName = user.getCompleteName() + " [" + username + "] ";
+		}
 		UserDAO userDAO = (UserDAO) getDao();
 		userDAO.updateLastLogin(username);
+		// also add log to audit history log
+		BaseUser user = userDAO.loadByUsername(username);
+		// force the audit user details
+		user.setAuditUserId(user.getId());
+		if (user.getOffice() != null)
+			user.setAuditOfficeName(user.getOffice().getValue());
+		user.setAuditUsername(username);
+		AuditLogDAOImpl.logEvent(completeName + " has logged-in.", user);
 	}
 
-	 /**
-	  * Returns the list of user session that is logged-in to the system.
-	  * @return
-	  */
-	public List<SessionInformation> getAllLoggedUsers() {
-	    List<SessionInformation> results = new ArrayList<SessionInformation>();
-	    for(Object prince: sessionRegistry.getAllPrincipals()) {
-	    	for(SessionInformation si: sessionRegistry.getAllSessions(prince, false)) { 
-	    		results.add(si);
-	    	}
-	    }
-	    return results;
+	/**
+	 * Records the logout event and save to history log for audit tracking
+	 * purposes.
+	 */
+	@Override
+	public void updateLogout(Authentication auth) {
+		Object userObj = auth.getPrincipal();
+		if (userObj instanceof SessionUser) {
+			SessionUser sessionUser = (SessionUser) userObj;
+			String username = sessionUser.getUsername();
+			String completeName = sessionUser.getCompleteName() + " ["
+					+ username + "] ";
+			UserDAO userDAO = (UserDAO) getDao();
+			// also add log to audit history log
+			BaseUser user = userDAO.loadByUsername(username);
+			// force the audit user details
+			user.setAuditUserId(user.getId());
+			if (user.getOffice() != null)
+				user.setAuditOfficeName(user.getOffice().getValue());
+			user.setAuditUsername(username);
+			AuditLogDAOImpl.logEvent(completeName + " has logged-out.", user);
+		}
 	}
-	
-	/* (non-Javadoc)
+
+	/**
+	 * Returns the list of user session that is logged-in to the system.
+	 * 
+	 * @return
+	 */
+	public List<SessionInformation> getAllLoggedUsers() {
+		List<SessionInformation> results = new ArrayList<SessionInformation>();
+		for (Object prince : sessionRegistry.getAllPrincipals()) {
+			for (SessionInformation si : sessionRegistry.getAllSessions(prince,
+					false)) {
+				results.add(si);
+			}
+		}
+		return results;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.ideyatech.core.service.UserService#forceLogout(java.lang.String)
 	 */
 	public void forceLogout(String username) {
 		// let's logout all sessions of this user
-		for (SessionInformation si:sessionRegistry.getAllSessions(username, false)) {
-			si.expireNow();
+		for (Object prince : sessionRegistry.getAllPrincipals()) {
+			if (prince instanceof SessionUser) {
+				SessionUser user = (SessionUser) prince;
+				if (user.getUsername().equals(username)) {
+					for (SessionInformation si : sessionRegistry
+							.getAllSessions(prince, false)) {
+						si.expireNow();
+					}
+				}
+			}
 		}
 	}
 
@@ -323,9 +381,11 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	}
 
 	/**
-	 * @param sessionRegistry the sessionRegistry to set
+	 * @param sessionRegistry
+	 *            the sessionRegistry to set
 	 */
 	public final void setSessionRegistry(SessionRegistry sessionRegistry) {
 		this.sessionRegistry = sessionRegistry;
 	}
+
 }
