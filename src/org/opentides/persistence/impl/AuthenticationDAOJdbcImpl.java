@@ -18,6 +18,10 @@
  */
 package org.opentides.persistence.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -38,14 +42,14 @@ public class AuthenticationDAOJdbcImpl extends JdbcDaoImpl {
 
 	private static Log _log = LogFactory.getLog(AuthenticationDAOJdbcImpl.class);	
 	private static String loadUserByUsernameQuery = 
-		"select U.USERID ID, FIRSTNAME, LASTNAME, EMAIL, P.OFFICE OFFICE, '' POSITION,'' COMPANY,'' PICTUREURL" +
+		"select U.USERID ID, FIRSTNAME, LASTNAME, EMAIL, P.OFFICE OFFICE, P.LASTLOGIN LASTLOGIN, '' POSITION,'' COMPANY,'' PICTUREURL" +
 		" from USER_PROFILE P, USERS U where P.ID=U.USERID and U.USERNAME=?";
 	
-	@SuppressWarnings("unchecked")
 	@Override 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
 		try {
             UserDetails user = super.loadUserByUsername(username);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SessionUser sessUser = new SessionUser(user.getUsername(), user.getPassword(), user.isEnabled(), user.getAuthorities());
             Map<String,Object> result = getJdbcTemplate().queryForMap(loadUserByUsernameQuery.replace("?", "'"+username+"'"));
             sessUser.setFirstName(result.get("FIRSTNAME").toString());
@@ -56,7 +60,13 @@ public class AuthenticationDAOJdbcImpl extends JdbcDaoImpl {
             sessUser.setPosition(result.get("POSITION").toString());
             sessUser.setCompany(result.get("COMPANY").toString());
             sessUser.setPictureUrl(result.get("PICTUREURL").toString());
-            sessUser.setId((Long) result.get("ID"));
+            if (result.get("LASTLOGIN") != null) {
+				try {
+					sessUser.setLastLogin(format.parse(result.get("LASTLOGIN").toString()));
+				} catch (ParseException e) {
+					sessUser.setLastLogin(Calendar.getInstance().getTime());
+				}
+			}            sessUser.setId((Long) result.get("ID"));
             return sessUser;
 		} catch (UsernameNotFoundException ex1) {
 			_log.error(ex1);
