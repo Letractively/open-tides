@@ -35,7 +35,6 @@ import org.opentides.editor.UserGroupEditor;
 import org.opentides.service.UserGroupService;
 import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 
