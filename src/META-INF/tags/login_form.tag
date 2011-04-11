@@ -12,7 +12,7 @@
 	<div id="loginMessage" align="left">
 		<c:if test="${not empty param.login_error}">
 			<div class='errorBox'>
-				<spring:message code='err.login-failed-please-try-again' />
+				<spring:message code='error.${param.login_error}' />
 				<br />
 				<c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
 			</div>
