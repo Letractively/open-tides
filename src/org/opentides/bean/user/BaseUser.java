@@ -38,14 +38,17 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+import org.opentides.bean.Auditable;
+import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseCriteria;
 import org.opentides.bean.BaseProtectedEntity;
 import org.opentides.bean.SystemCodes;
 
 @Entity
 @Table(name = "USER_PROFILE")
-public class BaseUser extends BaseProtectedEntity implements BaseCriteria {
+public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Auditable {
 
 	private static final long serialVersionUID = 7634675501487373408L;
 	
@@ -89,12 +92,18 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLogin;
 	
+	@Transient
+	private transient boolean skipAudit;
+	
+	@Transient
+	private transient String auditMessage;
+	
 	public BaseUser() {
 		super();
 		this.setCredential(new UserCredential());
 		groups = new HashSet<UserGroup>();
 	}
-
+	
 	/**
 	 * Creates a clone of this object containing basic information including the following:
 	 * firstName, lastName, middleName, emailAddress, lastLogin, and image.
@@ -257,6 +266,39 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria {
 	}
 
 	@Override
+	public String toString() {
+		return this.lastName + ", " + this.firstName;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	@Override
+	public AuditableField getPrimaryField() {
+		return new AuditableField("username","Username");
+	}
+
+	public final void setAuditMessage(String auditMessage) {
+		this.auditMessage = auditMessage;
+	}
+
+	public String getAuditMessage() {
+		return this.auditMessage;
+	}
+
+	public final void setSkipAudit(Boolean skipAudit) {
+		this.skipAudit = skipAudit;
+	}
+
+	public Boolean skipAudit() {
+		return skipAudit;
+	}
+	
+	public String getReference() {
+		return null;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
@@ -281,10 +323,4 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria {
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return this.lastName + ", " + this.firstName;
-	}
-
 }
