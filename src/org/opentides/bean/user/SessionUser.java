@@ -22,6 +22,7 @@ package org.opentides.bean.user;
 import java.util.Collection;
 import java.util.Date;
 
+import org.opentides.util.StringUtil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -52,10 +53,29 @@ public class SessionUser extends User {
 		super(username, password, isEnabled, true, true, true, authorities);
 	}
 
+	/**
+	 * Returns the complete name by concatenating
+	 * lastName and firstName.
+	 * @return
+	 */
+	public String getCompleteName() {
+		String name = "";
+		if (!StringUtil.isEmpty(lastName))
+			name += lastName + ", ";
+		name += firstName;
+		return name;		
+	}
+
+	/**
+	 * @return the firstName
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
+	/**
+	 * @param firstName the firstName to set
+	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
