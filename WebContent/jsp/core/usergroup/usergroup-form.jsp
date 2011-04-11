@@ -19,14 +19,16 @@
             </div>
 		</c:if>
 		</spring:bind>
-    	<p> <label for="name"><spring:message code="label.name" /></label>
+    	<p class="name"> <label for="name"><spring:message code="label.name" /></label>
 			<form:input path="name" size="40" maxlength="100" /> </p>
-		<p> <label for="description"><spring:message code="label.description" /></label>
+		<p class="description"> <label for="description"><spring:message code="label.description" /></label>
 			<form:input path="description" size="40" maxlength="100" /> </p>
-		<p>	<label for="roles"><spring:message code="label.roles" /></label>		
+		<p  class="roles">	<label for="roles"><spring:message code="label.roles" /></label>		
 		<c:forEach items="${roles}" var="role">
+            <span class="role-checkbox">
 			<form:checkbox path="roleNames" value="${role.key}"/>
 			<c:out value="${role.value}"/>
+            </span>
 		</c:forEach>
 		</p>
 		<div class="button">

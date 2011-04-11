@@ -3,16 +3,15 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>  
+
 <c:if test="${newRow}">
 <tr id="usergroup-row-${usergroup.id}" status="new">
 </c:if>
 	<td><c:out value="${usergroup.name}" /></td>
 	<td><c:out value="${usergroup.description}" /></td>
 	<td>
-		<c:forEach items="${usergroup.roleNames}" var="role" varStatus="status">
-		<c:if test="${status.index > 0}"> | </c:if>
-		<c:out value="${role}" />
-		</c:forEach>
+		 ${fn:length(usergroup.roleNames)}
 	</td>
 	<td>
 		<ot:update_button id="${usergroup.id}" page="admin/usergroup.jspx" prefix="usergroup"/>
