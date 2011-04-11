@@ -104,12 +104,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
 	private transient Date startDate;
 	@Transient
 	private transient Date endDate;
-	@Transient
-	private transient Boolean outOfOfficeHours;
-	@Transient
-	private transient int officeStartHour;
-	@Transient
-	private transient int officeEndHour;
 	
 	@Transient
 	private transient String entityName = "";
@@ -314,14 +308,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
 		this.endDate = endDate;
 	}
 
-	public Boolean getOutOfOfficeHours() {
-		return outOfOfficeHours;
-	}
-
-	public void setOutOfOfficeHours(Boolean outOfOfficeHours) {
-		this.outOfOfficeHours = outOfOfficeHours;
-	}
-
 	public void setMessage(String message) {
 		this.message = message;
 	}
@@ -343,19 +329,4 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
 		this.entityName = entityName;
 	}
 
-	public int getOfficeStartHour() {
-		return officeStartHour;
-	}
-
-	public void setOfficeStartHour(int officeStartHour) {
-		this.officeStartHour = officeStartHour;
-	}
-
-	public int getOfficeEndHour() {
-		return officeEndHour;
-	}
-
-	public void setOfficeEndHour(int officeEndHour) {
-		this.officeEndHour = officeEndHour;
-	}
 }
