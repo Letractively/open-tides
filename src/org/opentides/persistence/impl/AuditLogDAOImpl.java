@@ -89,13 +89,6 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
 	protected String appendClauseToExample(AuditLog example, boolean exactMatch) {
 		StringBuilder append = new StringBuilder("");
 		
-		if (example.getOutOfOfficeHours() != null && example.getOutOfOfficeHours()){
-			append.append(" not hour(obj.createDate) between ");
-			append.append(example.getOfficeStartHour());
-			append.append(" and ");
-			append.append(example.getOfficeEndHour());
-		}
-		
 		if (example.getStartDate() != null){
 			if (!StringUtil.isEmpty(append.toString())){
 				append.append(" and ");
@@ -113,21 +106,7 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
 			append.append(" obj.createDate <= '");
 			append.append(endDate + "'");
 		}
-		
-		/*if (example.getStartDate() != null && example.getEndDate() != null){
-			
-			String startDate = DateFormatUtils.format(example.getStartDate(), "yyyy-MM-dd") + " 00:00:00";
-			String endDate = DateFormatUtils.format(example.getEndDate(), "yyyy-MM-dd") + " 23:59:59";
-			if (example.getOutOfOfficeHours()){
-				append.append("obj.createDate between '").append(startDate)
-					.append("' and '").append(endDate).append("' ");	
-			}else{
-				// retrieves only those entries that are within the date range as well as within office hours
-				append.append("obj.createDate between '").append(startDate)
-					.append("' and '").append(endDate).append("'")
-					.append(" and (hour(obj.createDate) >= 8 and hour(obj.createDate) <= 16) ");
-			}
-		}*/
+
 		return append.toString();
 	}
 }
