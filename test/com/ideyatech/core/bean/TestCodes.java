@@ -21,7 +21,6 @@ import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseCriteria;
 import org.opentides.bean.BaseEntity;
-import org.opentides.bean.SystemCategory;
 import org.opentides.bean.SystemCodes;
 
 @Entity
@@ -86,19 +85,6 @@ public class TestCodes extends BaseEntity implements Serializable, BaseCriteria,
 		this.key = key;
 		this.value = value;
 	}	
-	
-	public TestCodes(SystemCategory systemCategory, String key, String value) {
-		super();
-		setCategory(systemCategory.toString());
-		this.key = key;
-		this.value = value;
-	}
-	
-	public TestCodes(SystemCategory systemCategory, String key) {
-		super();
-		setCategory(systemCategory.toString());
-		this.key = key;
-	}
 	
 	public TestCodes(String key) {
 		super();
