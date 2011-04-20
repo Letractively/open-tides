@@ -98,6 +98,12 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 	@Transient
 	private transient String auditMessage;
 	
+	@Transient
+	private transient String friendlyMessage;
+	
+	@Transient
+	private transient String friendlyName = "Base User";
+	
 	public BaseUser() {
 		super();
 		this.setCredential(new UserCredential());
@@ -322,5 +328,15 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 		} else if (!emailAddress.equals(other.emailAddress))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String getFriendlyName() {
+		return friendlyName;
+	}
+
+	@Override
+	public String getFriendlyMessage() {
+		return friendlyMessage;
 	}
 }

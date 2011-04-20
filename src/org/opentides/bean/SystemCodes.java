@@ -56,7 +56,13 @@ public class SystemCodes extends BaseProtectedEntity
 	private transient String orderFlow;
 	
 	@Transient
-	private transient String auditMessage = "";
+	private transient String auditMessage;
+	
+	@Transient
+	private transient String friendlyMessage;
+	
+	@Transient
+	private transient String friendlyName = "System Codes";
 	
 	@Transient
 	private transient Boolean skipAudit = false;
@@ -205,7 +211,7 @@ public class SystemCodes extends BaseProtectedEntity
 	}
 
 	public AuditableField getPrimaryField() {
-		return new AuditableField("key","Key");
+		return new AuditableField("value","Value");
 	}
 
 	/**
@@ -251,4 +257,21 @@ public class SystemCodes extends BaseProtectedEntity
 		this.orderFlow = orderFlow;
 	}
 
+	@Override
+	public String getFriendlyName() {
+		return friendlyName;
+	}
+
+	@Override
+	public String getFriendlyMessage() {
+		return friendlyMessage;
+	}
+
+	public void setFriendlyMessage(String friendlyMessage) {
+		this.friendlyMessage = friendlyMessage;
+	}
+
+	public void setFriendlyName(String friendlyName) {
+		this.friendlyName = friendlyName;
+	}
 }

@@ -102,5 +102,19 @@ public interface Auditable {
      * @return String - username
      */
     String getAuditUsername();
+    
+    /**
+     * Returns the basic readable name of the auditable object
+     * 
+     * @return friendlyName
+     */
+    String getFriendlyName();
 
+    /**
+     * Returns customized friendly log message. When empty, audit logging uses
+     * standard audit message.
+     * 
+     * @return friendlyMessage
+     */
+    String getFriendlyMessage();
 }

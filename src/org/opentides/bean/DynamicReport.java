@@ -15,10 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hightides.annotations.Controller;
-import org.hightides.annotations.Dao;
-import org.hightides.annotations.Page;
-import org.hightides.annotations.Service;
 import org.hightides.annotations.TextArea;
 import org.hightides.annotations.TextField;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -181,5 +177,15 @@ public class DynamicReport extends BaseSortableEntity implements BaseCriteria, A
 				this.screenshot = files;
 			}
 		}
+	}
+
+	@Override
+	public String getFriendlyName() {
+		return null;
+	}
+
+	@Override
+	public String getFriendlyMessage() {
+		return null;
 	}
 }

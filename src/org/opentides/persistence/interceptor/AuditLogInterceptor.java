@@ -123,38 +123,67 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         	synchronized(inserts) {
 	        	for (Auditable entity:inserts) {
 	        		if (!entity.skipAudit()) {
-	        			if (StringUtil.isEmpty(entity.getAuditMessage()))
-	        				AuditLogDAOImpl.logEvent(
-	        						CrudUtil.buildCreateMessage(entity), entity); 
-	        			else
-	        				AuditLogDAOImpl.logEvent(
-	        						entity.getAuditMessage(), entity);         				
+	        			String friendlyMessage = null;
+	        			String auditMessage = null;
+	        			
+	        			if (StringUtil.isEmpty(entity.getFriendlyMessage())){
+	        				friendlyMessage = CrudUtil.buildFriendlyCreateMessage(entity);
+	        			}else{
+	        				friendlyMessage = entity.getFriendlyMessage();
+	        			}
+	        			
+	        			if (StringUtil.isEmpty(entity.getAuditMessage())){
+	        				auditMessage = CrudUtil.buildCreateMessage(entity);
+	        			}else{
+	        				auditMessage = entity.getAuditMessage();
+	        			}
+	        			
+	        			AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);	
 	        		}
 	        	}
         	}
         	synchronized(deletes) {
 	        	for (Auditable entity:deletes) {
 	        		if (!entity.skipAudit()) {
-	        			if (StringUtil.isEmpty(entity.getAuditMessage()))
-	        				AuditLogDAOImpl.logEvent(
-	        						CrudUtil.buildDeleteMessage(entity), entity); 
-	        			else
-	        				AuditLogDAOImpl.logEvent(
-	        						entity.getAuditMessage(), entity);         				
+	        			String friendlyMessage = null;
+	        			String auditMessage = null;
+	        			
+	        			if (StringUtil.isEmpty(entity.getFriendlyMessage())){
+	        				friendlyMessage = CrudUtil.buildFriendlyDeleteMessage(entity);
+	        			}else{
+	        				friendlyMessage = entity.getFriendlyMessage();
+	        			}
+	        			
+	        			if (StringUtil.isEmpty(entity.getAuditMessage())){
+	        				auditMessage = CrudUtil.buildDeleteMessage(entity);
+	        			}else{
+	        				auditMessage = entity.getAuditMessage();
+	        			}
+	        			
+	        			AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);       				
 	        		}
 	        	}        	
         	}
         	synchronized (updates) {
                	for (Auditable entity:updates) {
 	        		if (!entity.skipAudit()) {
-	        			if (StringUtil.isEmpty(entity.getAuditMessage())) {
-			        		Auditable old = oldies.get(entity.getId());
-			        		String message = CrudUtil.buildUpdateMessage(old, entity);
-			        		if (!StringUtil.isEmpty(message))
-			        		AuditLogDAOImpl.logEvent(message, entity); 
-	        			} else
-	        				AuditLogDAOImpl.logEvent(
-	        						entity.getAuditMessage(), entity);        				
+	        			String friendlyMessage = null;
+	        			String auditMessage = null;
+	        			
+	        			if (StringUtil.isEmpty(entity.getFriendlyMessage())){
+	        				friendlyMessage = CrudUtil.buildFriendlyUpdateMessage(entity);
+	        			}else{
+	        				friendlyMessage = entity.getFriendlyMessage();
+	        			}
+	        			
+	        			if (StringUtil.isEmpty(entity.getAuditMessage())){
+	        				Auditable old = oldies.get(entity.getId());
+			        		auditMessage = CrudUtil.buildUpdateMessage(old, entity);
+	        			}else{
+	        				auditMessage = entity.getAuditMessage();
+	        			}
+	        			
+	        			AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);	
 	        		}
                	}
         	}

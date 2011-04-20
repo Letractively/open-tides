@@ -415,4 +415,14 @@ public class Widget extends BaseSortableEntity implements BaseCriteria, Auditabl
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	@Override
+	public String getFriendlyName() {
+		return "Widget";
+	}
+
+	@Override
+	public String getFriendlyMessage() {
+		return null;
+	}
 }

@@ -82,6 +82,23 @@ public class CrudUtil {
     }
     
     /**
+     * Creates the friendly message for auditable obj
+     * @param obj
+     * @return
+     */
+    public static String buildFriendlyCreateMessage(Auditable obj){
+    	StringBuffer message = new StringBuffer("Added new ");
+    	message.append(obj.getFriendlyName());
+    	AuditableField primaryField = obj.getPrimaryField();
+    	if (primaryField != null){
+    		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
+        	if (value!=null) 
+        		message.append(": " + value.toString());
+    	}
+    	return message.toString();
+    }
+    
+    /**
      * Creates the logging message for update audit logs 
      * @param obj
      * @return
@@ -126,6 +143,23 @@ public class CrudUtil {
     }
     
     /**
+     * Creates the friendly message for update logs
+     * @param obj
+     * @return
+     */
+    public static String buildFriendlyUpdateMessage(Auditable obj){
+    	StringBuffer message = new StringBuffer("Updated ");
+    	message.append(obj.getFriendlyName());
+    	AuditableField primaryField = obj.getPrimaryField();
+    	if (primaryField != null){
+    		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
+        	if (value!=null) 
+        		message.append(": " + value.toString());
+    	}
+    	return message.toString();
+    }
+    
+    /**
      * Creates the logging message for new audit logs 
      * @param obj
      * @return
@@ -140,6 +174,18 @@ public class CrudUtil {
     	if (value!=null) 
     		message.append(value.toString());
     	return message.toString();    	
+    }
+    
+    public static String buildFriendlyDeleteMessage(Auditable obj){
+    	StringBuffer message = new StringBuffer("Deleted ");
+    	message.append(obj.getFriendlyName());
+    	AuditableField primaryField = obj.getPrimaryField();
+    	if (primaryField != null){
+    		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
+        	if (value!=null) 
+        		message.append(": " + value.toString());
+    	}
+    	return message.toString();
     }
 
     /**

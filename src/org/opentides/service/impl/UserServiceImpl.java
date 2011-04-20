@@ -269,7 +269,8 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		if (user.getOffice() != null)
 			user.setAuditOfficeName(user.getOffice().getValue());
 		user.setAuditUsername(username);
-		AuditLogDAOImpl.logEvent(completeName + " has logged-in.", user);
+		String message = completeName + " has logged-in";
+		AuditLogDAOImpl.logEvent(message, message, user);
 	}
 
 	/**
@@ -292,7 +293,8 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 			if (user.getOffice() != null)
 				user.setAuditOfficeName(user.getOffice().getValue());
 			user.setAuditUsername(username);
-			AuditLogDAOImpl.logEvent(completeName + " has logged-out.", user);
+			String message = completeName + " has logged-out.";
+			AuditLogDAOImpl.logEvent(message, message, user);
 		}
 	}
 

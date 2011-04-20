@@ -49,7 +49,7 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
 		return "order by createDate desc";
 	}
 
-	public static void logEvent(String message, Auditable entity) { 		
+	public static void logEvent(String friendlyMessage, String message, Auditable entity) { 		
 		Long userId = entity.getAuditUserId();
 		String officeName = entity.getAuditOfficeName();
 		String username = entity.getAuditUsername();
@@ -71,24 +71,24 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
             HibernateUtil.getSessionFactory().openSession(); 
 		try { 
 			AuditLog record = 
-	            new AuditLog(  message, 
-	                           entity.getId(), 
-	                           entity.getClass(), 
-	                           entity.getReference(),
-	                           userId,
-	                           username,
-	                           officeName); 
+	            new AuditLog(friendlyMessage,
+	            			message, 
+	            			entity.getId(), 
+	                        entity.getClass(), 
+	                        entity.getReference(),
+	                        userId,
+	                        username,
+	                        officeName); 
 		    tempSession.save(record); 
 		    tempSession.flush(); 
 		} finally { 
 		    tempSession.close(); 
 		}
     }
-
+	
 	@Override
 	protected String appendClauseToExample(AuditLog example, boolean exactMatch) {
 		StringBuilder append = new StringBuilder("");
-		
 		if (example.getStartDate() != null){
 			if (!StringUtil.isEmpty(append.toString())){
 				append.append(" and ");
@@ -107,6 +107,12 @@ public class AuditLogDAOImpl extends BaseEntityDAOJpaImpl<AuditLog, Long>
 			append.append(endDate + "'");
 		}
 
+		if(!StringUtil.isEmpty(example.getLogAction())){
+			if (!StringUtil.isEmpty(append.toString())){
+				append.append(" and ");
+			}
+			append.append(" obj.message like '%").append(example.getLogAction()).append("%' ");
+		}
 		return append.toString();
 	}
 }

@@ -80,6 +80,10 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     @Column(name = "MESSAGE", nullable = false, updatable = false)
     private String message;
     
+    @Lob
+    @Column(name = "FRIENDLY_MESSAGE", nullable = false, updatable = false)
+    private String friendlyMessage;
+    
     /**
      * User who performed the change.
      */
@@ -100,20 +104,25 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
      */
     @Transient
     private transient BaseUser user;
-	@Transient
+	
+    @Transient
 	private transient Date startDate;
-	@Transient
+	
+    @Transient
 	private transient Date endDate;
 	
 	@Transient
 	private transient String entityName = "";
 
-    /**
+	@Transient
+	private transient String logAction;
+    
+	/**
      * Default constructor.
      */
-    protected AuditLog() {
-    };
-
+    public AuditLog(){
+    }
+    
     /**
      * Standard constructor.
      * 
@@ -134,6 +143,37 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
             final String owner,
             final String ownerOffice) {
         this.message = message;
+        this.entityId = entityId;
+        this.entityClass = entityClass;
+        this.reference = reference;
+        this.userId = userId;
+        this.setCreateDate(new Date());
+        this.setOwner(owner);
+        this.setOwnerOffice(ownerOffice);
+    }
+    
+    /**
+     * 
+     * @param friendlyMessage
+     * @param message
+     * @param entityId
+     * @param entityClass
+     * @param reference
+     * @param userId
+     * @param owner
+     * @param ownerOffice
+     */
+    @SuppressWarnings("rawtypes")
+	public AuditLog(final String friendlyMessage,
+    		final String message, 
+            final Long entityId, 
+            final Class entityClass,
+            final String reference,
+            final Long userId,
+            final String owner,
+            final String ownerOffice){
+    	this.friendlyMessage = friendlyMessage;
+    	this.message = message;
         this.entityId = entityId;
         this.entityClass = entityClass;
         this.reference = reference;
@@ -329,4 +369,19 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
 		this.entityName = entityName;
 	}
 
+	public String getFriendlyMessage() {
+		return friendlyMessage;
+	}
+
+	public void setFriendlyMessage(String friendlyMessage) {
+		this.friendlyMessage = friendlyMessage;
+	}
+
+	public String getLogAction() {
+		return logAction;
+	}
+
+	public void setLogAction(String logAction) {
+		this.logAction = logAction;
+	}
 }
