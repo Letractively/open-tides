@@ -20,6 +20,7 @@ package org.opentides.bean;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -335,7 +336,8 @@ public abstract class BaseEntity implements Serializable {
             this.auditableFields = new ArrayList<AuditableField>();
             final List<Field> fields = CrudUtil.getAllFields(this.getClass());
             for (Field field : fields) {
-            	if (AnnotationUtil.isAnnotatedWith("auditable",field)) {
+            	if ( (!Modifier.isTransient(field.getModifiers())) &&
+            	     (AnnotationUtil.isAnnotatedWith("auditable",field)) ) {
                     this.auditableFields.add(new AuditableField(field.getName()));
                 }
             }
