@@ -360,6 +360,7 @@ public class BaseCrudController<T extends BaseEntity> extends
                 model = new HashMap<String, Object>();
             model.put(getCommandName(), obj);
             model.put("results", results);
+            model.putAll(errors.getModel());
             if (action.equals(CREATE))
                 model.put("newRow", true);
             return new ModelAndView(getShowView(), model);
@@ -426,10 +427,10 @@ public class BaseCrudController<T extends BaseEntity> extends
 					// change filename if already existing in the given path to avoid overriding of files
 					if(fileInfoService.getFileInfoByFullPath(filePath) != null){
 						Long fileCnt = 1L;
-						String newFilePath = subDirectory.getAbsoluteFile() + File.separator + multipartFile.getOriginalFilename() + "_" + fileCnt.toString();
+						String newFilePath = subDirectory.getAbsoluteFile() + File.separator + fileCnt.toString() + "_" + multipartFile.getOriginalFilename() ;
 						while (fileInfoService.getFileInfoByFullPath(newFilePath)!=null) {
 							fileCnt++;
-							newFilePath = subDirectory.getAbsoluteFile() + File.separator + multipartFile.getOriginalFilename() + "_" + fileCnt.toString();
+							newFilePath = subDirectory.getAbsoluteFile() + File.separator + fileCnt.toString() + "_" +  multipartFile.getOriginalFilename();
 						} 		
 
 						filePath = newFilePath;
