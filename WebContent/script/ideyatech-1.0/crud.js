@@ -464,7 +464,7 @@ IDEYATECH.sort = function() {
 IDEYATECH.paging = function() {
 	return {
 		searchByPage : function(searchFormId, baseURL, pageNum) {
-			$('#' + searchFormId).action = baseURL + '?page=' + pageNum;
+			$('#' + searchFormId).attr("action", baseURL + '?page=' + pageNum);
 			$('#' + searchFormId).submit();
 		}
 	};
