@@ -52,21 +52,21 @@ public class AuthenticationDAOJdbcImpl extends JdbcDaoImpl {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SessionUser sessUser = new SessionUser(user.getUsername(), user.getPassword(), user.isEnabled(), user.getAuthorities());
             Map<String,Object> result = getJdbcTemplate().queryForMap(loadUserByUsernameQuery.replace("?", "'"+username+"'"));
-            sessUser.setFirstName(result.get("FIRSTNAME").toString());
-            sessUser.setLastName(result.get("LASTNAME").toString());
-            sessUser.setEmailAddress(result.get("EMAIL").toString());
-			if (result.get("OFFICE") != null)
-				sessUser.setOffice(result.get("OFFICE").toString());
-            sessUser.setPosition(result.get("POSITION").toString());
-            sessUser.setCompany(result.get("COMPANY").toString());
-            sessUser.setPictureUrl(result.get("PICTUREURL").toString());
+            sessUser.setFirstName(""+result.get("FIRSTNAME"));
+            sessUser.setLastName(""+result.get("LASTNAME"));
+            sessUser.setEmailAddress(""+result.get("EMAIL"));
+			sessUser.setOffice(""+result.get("OFFICE"));
+            sessUser.setPosition(""+result.get("POSITION"));
+            sessUser.setCompany(""+result.get("COMPANY"));
+            sessUser.setPictureUrl(""+result.get("PICTUREURL"));
+            sessUser.setId((Long) result.get("ID"));
             if (result.get("LASTLOGIN") != null) {
 				try {
 					sessUser.setLastLogin(format.parse(result.get("LASTLOGIN").toString()));
 				} catch (ParseException e) {
 					sessUser.setLastLogin(Calendar.getInstance().getTime());
 				}
-			}            sessUser.setId((Long) result.get("ID"));
+			}
             return sessUser;
 		} catch (UsernameNotFoundException ex1) {
 			_log.error(ex1);
@@ -76,4 +76,14 @@ public class AuthenticationDAOJdbcImpl extends JdbcDaoImpl {
 		    throw ex2;
 		}
 	}
+
+	/**
+	 * Setter method for loadUserByUsernameQuery.
+	 *
+	 * @param loadUserByUsernameQuery the loadUserByUsernameQuery to set
+	 */
+	public void setLoadUserByUsernameQuery(String loadUserByUsernameQuery) {
+		AuthenticationDAOJdbcImpl.loadUserByUsernameQuery = loadUserByUsernameQuery;
+	}	
+	
 }
