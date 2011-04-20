@@ -131,15 +131,20 @@ public class UserCredential extends BaseEntity{
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     /**
-     * Never allow password to be returned.
-     * @return the password
+     * Matches if the given password matches with this password.
+     * @param password
+     * @return
      */
-    public String getPassword() {
-        return "";
+    public boolean matchPassword(String password) {
+    	String encryptedOldPassword = SecurityUtil.encryptPassword(password);
+		if (encryptedOldPassword.equals(this.password))
+			return true;
+		else
+			return false;
     }
-    
+		
     /**
      * Ensures that password is enrypted according to configured passwordEncoder.
      * @param password
