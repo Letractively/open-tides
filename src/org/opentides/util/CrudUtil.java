@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.hightides.annotations.util.NamingUtil;
 import org.opentides.InvalidImplementationException;
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
@@ -54,6 +55,7 @@ public class CrudUtil {
      * @return
      */
     public static String buildCreateMessage(Auditable obj) {
+    	NamingUtil.toLabel("");
     	StringBuffer message = new StringBuffer("Added ");
     	message.append(obj.getClass().getSimpleName())  // class name
     		.append(" ")
@@ -88,7 +90,11 @@ public class CrudUtil {
      */
     public static String buildFriendlyCreateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Added new ");
-    	message.append(obj.getFriendlyName());
+    	String friendlyName = obj.getFriendlyName();
+    	if (StringUtil.isEmpty(friendlyName)){
+    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
+    	}
+    	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
     		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
@@ -149,7 +155,11 @@ public class CrudUtil {
      */
     public static String buildFriendlyUpdateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Updated ");
-    	message.append(obj.getFriendlyName());
+    	String friendlyName = obj.getFriendlyName();
+    	if (StringUtil.isEmpty(friendlyName)){
+    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
+    	}
+    	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
     		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
@@ -176,9 +186,18 @@ public class CrudUtil {
     	return message.toString();    	
     }
     
+    /**
+     * 
+     * @param obj
+     * @return
+     */
     public static String buildFriendlyDeleteMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Deleted ");
-    	message.append(obj.getFriendlyName());
+    	String friendlyName = obj.getFriendlyName();
+    	if (StringUtil.isEmpty(friendlyName)){
+    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
+    	}
+    	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
     		Object value = retrieveNullableObjectValue(obj, obj.getPrimaryField().getFieldName());
@@ -194,7 +213,7 @@ public class CrudUtil {
      * @param exactMatch
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	public static String buildJpaQueryString(BaseCriteria example, boolean exactMatch) {
 		int count = 0;
 		StringBuffer clause = new StringBuffer(" where ");
@@ -417,7 +436,7 @@ public class CrudUtil {
 	 * @param entityClass
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String getReadableName(String entityClass) {
 		try {
 			Class clazz = Class.forName(entityClass);
@@ -440,7 +459,7 @@ public class CrudUtil {
 	 * @param clazz
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public static List<Field> getAllFields(Class clazz) {
 		List<Field> fields = new ArrayList<Field>();
 		if (BaseEntity.class.isAssignableFrom(clazz))
