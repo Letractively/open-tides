@@ -196,7 +196,7 @@ public class StringUtil {
 	 * @param csvLine
 	 * @return
 	 */
-    public static String[] parseCsvLine(String csvLine) {
+    public static List<String> parseCsvLine(String csvLine) {
     	return StringUtil.parseCsvLine(csvLine, ',', '"', '\\', false);
     }
     
@@ -213,7 +213,7 @@ public class StringUtil {
 	 * @return
 	 * @throws IOException
 	 */
-    public static String[] parseCsvLine(String csvLine, 
+    public static List<String> parseCsvLine(String csvLine, 
     									char separator, char quotechar, 
     									char escape, boolean strictQuotes) {
     	
@@ -266,7 +266,7 @@ public class StringUtil {
         if (sb != null) {
         	tokensOnThisLine.add(sb.toString());
         }
-        return tokensOnThisLine.toArray(new String[tokensOnThisLine.size()]);
+        return tokensOnThisLine;
     }
     
     /**
