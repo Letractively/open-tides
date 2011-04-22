@@ -440,8 +440,8 @@ IDEYATECH.checkbox = function() {
 IDEYATECH.sort = function() {
 	return {
 		sortByHeader : function(newSortFieldValue, searchFormId) {
-			var sortFieldValue = $('#' + searchFormId + '-order-by').value;
-			var sortFlowValue = $('#' + searchFormId + '-order-flow').value;
+			var sortFieldValue = $('#' + searchFormId + '-order-by').val();
+			var sortFlowValue = $('#' + searchFormId + '-order-flow').val();
 			var newSortFlowValue;
 
 			if (sortFieldValue != newSortFieldValue) {
@@ -454,8 +454,8 @@ IDEYATECH.sort = function() {
 				}
 			}
 
-			$('#' + searchFormId + '-order-by').value = newSortFieldValue;
-			$('#' + searchFormId + '-order-flow').value = newSortFlowValue;
+			$('#' + searchFormId + '-order-by').val(newSortFieldValue);
+			$('#' + searchFormId + '-order-flow').val(newSortFlowValue);
 			$('#' + searchFormId).submit();
 		}
 	};
