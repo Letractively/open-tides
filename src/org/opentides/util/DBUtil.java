@@ -20,6 +20,10 @@ package org.opentides.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SQLQuery;
@@ -32,9 +36,12 @@ import org.hibernate.Session;
  */
 public class DBUtil {
 	private static Logger _log = Logger.getLogger(DBUtil.class);
+	private static Map<List<String>, SQLQuery> queryCache = new HashMap<List<String>, SQLQuery>();
 
 	public static void importCSV(String filename, String tableName, Session session)
 			throws Exception {
+		int line = 1;
+
 		try {
 			BufferedReader reader = new BufferedReader(
 					new InputStreamReader(DBUtil.class.getClassLoader()
@@ -45,7 +52,54 @@ public class DBUtil {
 				_log.warn("Import file ["+filename+"] has no contents.");
 				return;
 			}
-			String[] headers = StringUtil.parseCsvLine(csvLine);
+			List<String> headers = StringUtil.parseCsvLine(csvLine);
+			
+			while ((csvLine = reader.readLine()) != null) {
+				List<String> values = StringUtil.parseCsvLine(csvLine);
+				List<String> tmpHeaders = new ArrayList<String>(headers);
+				if (headers.size() != values.size() )
+					_log.error("Column number mismatch. "
+							+ "Failed to import line #:" + line
+							+ " with data as follows: \n[" + csvLine + "].");
+				// get all columns with null values
+				List<Integer> nullColumns = new ArrayList<Integer>();
+				for (int i=0; i<values.size(); i++) {
+					String value = values.get(i);					
+					if (StringUtil.isEmpty(value)) {
+						nullColumns.add(i);
+					}
+				}
+				// remove headers and values with null values
+				for (int index:nullColumns) {
+					tmpHeaders.remove(index);
+					values.remove(index);
+				}
+				// execute this query
+				DBUtil.executeQuery(tableName, tmpHeaders, values, session);
+				line++;
+			}
+			reader.close();
+		} catch (Exception e) {
+			_log.error("Failed to import csv file [" + filename + "] at line #"+line, e);
+			throw e;
+		}
+		return;
+	}
+	
+	/**
+	 * Private helper that inserts record into the given tableName and values.
+	 * This method keeps a static reference to all SQLQueries issued.
+	 * 
+	 * @param tableName
+	 * @param headers
+	 * @param values
+	 * @param session
+	 */
+	private static void executeQuery(String tableName, List<String> headers, List<String> values, Session session) {
+		SQLQuery query;
+		if (queryCache.containsKey(headers)) {
+			query = queryCache.get(headers);
+		} else {
 			StringBuffer baseQuery = new StringBuffer(100);
 			baseQuery.append("INSERT INTO ").append(tableName).append("(");
 			StringBuffer valueQuery = new StringBuffer(30);
@@ -59,27 +113,13 @@ public class DBUtil {
 				valueQuery.append("?");
 			}
 			baseQuery.append(") VALUES (").append(valueQuery).append(")");
-			SQLQuery query = session.createSQLQuery(baseQuery.toString());
-			int line = 1;
-			while ((csvLine = reader.readLine()) != null) {
-				String[] values = StringUtil.parseCsvLine(csvLine);
-				count = 0;
-				if (headers.length != values.length)
-					_log.error("Column number mismatch. "
-							+ "Failed to import line #:" + line
-							+ " with data as follows: \n[" + csvLine + "].");
-				int index = 0;
-				for (String value : values) {
-					query.setParameter(index++, value);
-				}
-				query.executeUpdate();
-				line++;
-			}
-			reader.close();
-		} catch (Exception e) {
-			_log.error("Failed to import csv file [" + filename + "]. ", e);
-			throw e;
+			query = session.createSQLQuery(baseQuery.toString());
+			queryCache.put(headers, query);
 		}
-		return;
+		int index=0;
+		for (String value : values) {
+				query.setParameter(index++, value);
+		}
+		query.executeUpdate();
 	}
 }
