@@ -24,6 +24,11 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Base class for all evolve script to execute native SQL or JPQL queries.
+ * 
+ * @author allantan
+ */
 public class Evolver {
 	// the entity manager
 	@PersistenceContext
@@ -41,8 +46,18 @@ public class Evolver {
 		return q.executeUpdate();
 	}
 
+	/**
+	 * Sets the EntityManager
+	 * @param em
+	 */
 	public final void setEntityManager(EntityManager em) {
         this.em = em;
     }
 
+	/**
+	 * Returns the EntityManager for this evolve script.
+	 */
+	public final EntityManager getEntityManager() {
+		return em;
+	}
 }
