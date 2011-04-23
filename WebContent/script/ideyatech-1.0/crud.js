@@ -405,29 +405,18 @@ IDEYATECH.checkbox = function() {
 		 *            values
 		 */
 		mergeSubmit : function(formName, checkboxesName, targetName) {
-			var form = $('#' + formName);
-			if (!form[checkboxesName]) {
-				// no checkbox(es) found at the form, just process the
-				// submission
-				form.submit();
-				return true;
-			}
-
 			var checkBoxValues = "";
-			if (form[checkboxesName].length == undefined) {
-				if (form[checkboxesName].checked) {
-					checkBoxValues = form[checkboxesName].value;
-				}
-			} else {
-				for ( var i = 0; i < form[checkboxesName].length; i++) {
-					if (form[checkboxesName][i].checked) {
-						checkBoxValues = checkBoxValues
-								+ form[checkboxesName][i].value + ",";
+			$('#' + formName+ ' input:checkbox').each(function(index) {
+				if (this.checked) {
+					if (index==0) {
+						checkBoxValues = this.value;
+					} else {
+						checkBoxValues = checkBoxValues + "," + this.value;						
 					}
 				}
-			}
-			$('#' + targetName).value = checkBoxValues;
-			form.submit();
+			});
+			$('#' + targetName).val(checkBoxValues);
+			$('#'+formName).submit();
 			return true;
 		}
 	};
