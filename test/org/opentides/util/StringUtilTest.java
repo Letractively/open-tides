@@ -9,6 +9,8 @@
 package org.opentides.util;
 
 
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -90,19 +92,19 @@ public class StringUtilTest {
     	String line1 = "1,\"Lion's Lair\",September,";
     	String line2 = "2,Test Word,\"September 15, 1990\",End";
     	String line3 = "";
-    	String[] str1 = StringUtil.parseCsvLine(line1);
-    	String[] str2 = StringUtil.parseCsvLine(line2);
-    	String[] str3 = StringUtil.parseCsvLine(line3);
-    	Assert.assertEquals("1", str1[0]);
-    	Assert.assertEquals("Lion's Lair", str1[1]);
-    	Assert.assertEquals("September", str1[2]);
-    	Assert.assertEquals("", str1[3]);
+    	List<String> str1 = StringUtil.parseCsvLine(line1);
+    	List<String> str2 = StringUtil.parseCsvLine(line2);
+    	List<String> str3 = StringUtil.parseCsvLine(line3);
+    	Assert.assertEquals("1", str1.get(0));
+    	Assert.assertEquals("Lion's Lair", str1.get(1));
+    	Assert.assertEquals("September", str1.get(2));
+    	Assert.assertEquals("", str1.get(3));
         	
-    	Assert.assertEquals("2", str2[0]);
-    	Assert.assertEquals("Test Word", str2[1]);
-    	Assert.assertEquals("September 15, 1990", str2[2]);
-    	Assert.assertEquals("End", str2[3]);
+    	Assert.assertEquals("2", str2.get(0));
+    	Assert.assertEquals("Test Word", str2.get(1));
+    	Assert.assertEquals("September 15, 1990", str2.get(2));
+    	Assert.assertEquals("End", str2.get(3));
     	
-       	Assert.assertEquals("", str3[0]);
+       	Assert.assertEquals("", str3.get(0));
     }
 }
