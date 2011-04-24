@@ -80,7 +80,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     @Column(name = "MESSAGE", nullable = false, updatable = false)
     private String message;
     
-    @Lob
     @Column(name = "FRIENDLY_MESSAGE", nullable = false, updatable = false)
     private String friendlyMessage;
     
