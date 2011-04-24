@@ -150,8 +150,8 @@ public abstract class BaseCloningProcessor {
 				String newHash = StringUtil.hashSourceCode(code);
 				// get the original hash of the generated code
 				String oldHash = CodeUtil.getHashCode(params.get("package")+"."+outputFile.getName());
-				if (StringUtil.isEmpty(oldHash) || newHash.equals(oldHash)) {
-					// no record of hashcode or no changes since last code generation, then let's overwrite.
+				if (!StringUtil.isEmpty(oldHash) && newHash.equals(oldHash)) {
+					// no changes since last code generation, then let's overwrite.
 					writeTemplateFile(path, params, outputFile);
 				} else {
 					// changes have been made, do not overwrite the file.
