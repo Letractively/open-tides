@@ -18,6 +18,8 @@
 	<bean id="widgetService" class="org.opentides.service.impl.WidgetServiceImpl">
 		<property name="dao" ref="widgetDAO"/>
 		<property name="widgetColumn" value="${widget.column}" />
+		<property name="IPAddress" value="${server.ip-address}" />
+		
 	</bean>
 
 	<bean id="userWidgetsService" class="org.opentides.service.impl.UserWidgetsServiceImpl" autowire="byName">
