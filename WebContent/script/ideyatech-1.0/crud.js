@@ -228,7 +228,9 @@ IDEYATECH.util = function() {
 
 			$.ajax(url, {
 				success : successCallback,
-				error : __failure
+				error : __failure,
+				type: "GET",
+				dataType: "html"
 			});
 		},
 
@@ -371,7 +373,7 @@ IDEYATECH.crud = function() {
 		 * @param {String}
 		 * 			  optional - callback function upon successful transaction
 		 */
-		editRecord : function(prefix, url, callback) {
+		editRecord : function(prefix, url, editCallback) {
 			var args = {
 				divId : prefix,
 				evaluate: true
