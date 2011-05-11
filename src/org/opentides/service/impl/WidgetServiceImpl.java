@@ -18,22 +18,18 @@
  */
 package org.opentides.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
+import org.opentides.bean.UrlResponseObject;
 import org.opentides.bean.Widget;
 import org.opentides.service.WidgetService;
 import org.opentides.util.SecurityUtil;
@@ -56,13 +52,10 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 	
 	private String widgetColumn;
 	
+	private String IPAddress;
+	
 	private static Pattern pattern = Pattern.compile("<img\\s[^>]*src=\"?(.*?)[\" ]",
 			Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
-
-	class ResponseObject {
-		public String responseType;
-		public byte[] responseBody;
-	}
 	
 	@Transactional(readOnly = true)
 	public Widget findByName(String name) {
@@ -94,32 +87,29 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 	 * .String)
 	 */
 	public Widget requestWidget(String widgetUrl, String name, HttpServletRequest req) {
-		Widget settings = findByName(name);
-		if (settings != null) {
+		Widget widget = findByName(name);
+		if (widget != null) {
 			long now = System.currentTimeMillis();
-			Date lastCacheDate = settings.getLastCacheUpdate();
+			Date lastCacheDate = widget.getLastCacheUpdate();
 
 			boolean useCache = false;
 			// check if we should use cache or not
 			if (lastCacheDate != null) {
-				long expire = settings.getLastCacheUpdate().getTime()
-						+ settings.getCacheDuration() * 1000;
-				if (settings.getCacheType().startsWith(
+				long expire = widget.getLastCacheUpdate().getTime()
+						+ widget.getCacheDuration() * 1000;
+				if (widget.getCacheType().startsWith(
 						Widget.TYPE_IMAGE)
 						|| now < expire)
 					useCache = true;
 			}
-			if (settings.getCacheDuration() < 0) {
-				// means that we don't want to support caching...
-				return settings;
-			} else if (useCache) {
-				_log.debug("Reusing widget [" + settings.getName()
+			if (useCache) {
+				_log.debug("Reusing widget [" + widget.getName()
 						+ "] from cache...");
 				// retrieve from cache
-				return settings;
+				return widget;
 			} else {
 				// retrieve from url
-				String url = settings.getUrl();
+				String url = widget.getUrl();
 				if (!UrlUtil.hasProtocol(url)) {
 					String slash = "/";
 					if (!url.startsWith("/")) {
@@ -131,26 +121,32 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 					}
 					url = UrlUtil.ensureProtocol(req.getServerName() + url);
 				}
-				ResponseObject response = getHttpRequest(url);
+				
+				// set the IP Address as param
+				Map<String, Object> param = new HashMap<String, Object>();				
+				if (StringUtil.isEmpty(IPAddress))
+					param.put("IPAddress", IPAddress);
+				
+				UrlResponseObject response = UrlUtil.getPage(url, req, param);
 				if (response==null)
 					return null;
-				if (response.responseType
+				if (response.getResponseType()
 						.startsWith(Widget.TYPE_IMAGE)) {
-					_log.debug("Retrieving image [" + settings.getName()
-							+ "] from url [" + settings.getUrl() + "]...");
-					settings.setCacheType(response.responseType);
-					settings.setCache(response.responseBody);
-					settings.setLastCacheUpdate(new Date());
-					save(settings);
-					_log.debug("Saved image [" + settings.getName()
+					_log.debug("Retrieving image [" + widget.getName()
+							+ "] from url [" + widget.getUrl() + "]...");
+					widget.setCacheType(response.getResponseType());
+					widget.setCache(response.getResponseBody());
+					widget.setLastCacheUpdate(new Date());
+					save(widget);
+					_log.debug("Saved image [" + widget.getName()
 							+ "] to cache...");
-					return settings;
+					return widget;
 				} else {
-					_log.debug("Retrieving widget [" + settings.getName()
-							+ "] from url [" + settings.getUrl() + "]...");
-					settings.setCacheType(response.responseType);
+					_log.debug("Retrieving widget [" + widget.getName()
+							+ "] from url [" + widget.getUrl() + "]...");
+					widget.setCacheType(response.getResponseType());
 					// check for image inside the html
-					String html = new String(response.responseBody);
+					String html = new String(response.getResponseBody());
 					String hostname = UrlUtil.getHostname(url);
 					Matcher matcher = pattern.matcher(html);
 					while (matcher.find()) {
@@ -164,21 +160,21 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 								cacheUrl = "http://" + hostname  + imageUrl;
 							}
 						}
-						String imageName = this.addCache(cacheUrl, settings);
+						String imageName = this.addCache(cacheUrl, req, widget);
 						// replace html that reference to image with cached image
 						String newUrl = widgetUrl+"?name="+imageName;
 						html = html.replace(imageUrl, newUrl);
 					}
-					settings.setCache(html.getBytes());
-					settings.setLastCacheUpdate(new Date());
-					save(settings);
-					_log.debug("Saved widget [" + settings.getName()
+					widget.setCache(html.getBytes());
+					widget.setLastCacheUpdate(new Date());
+					save(widget);
+					_log.debug("Saved widget [" + widget.getName()
 							+ "] to cache...");
-					return settings;
+					return widget;
 				}
 			}
 		}
-		return null;
+		return null; 
 	}
 
 	/**
@@ -187,16 +183,16 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 	 * @param imageUrl
 	 * @return
 	 */
-	private String addCache(String url, Widget parentSettings) {
+	private String addCache(String url, HttpServletRequest req, Widget parentSettings) {
 		Widget settings = this.findByUrl(url);
 		if (settings == null)
 			settings = new Widget(url, parentSettings);
-		ResponseObject response = getHttpRequest(url);
-		if (response.responseType.startsWith(Widget.TYPE_IMAGE))
+		UrlResponseObject response = UrlUtil.getPage(url, req, null);
+		if (response.getResponseType().startsWith(Widget.TYPE_IMAGE))
 			settings.setCacheType(Widget.TYPE_IMAGE);
 		else
 			settings.setCacheType(Widget.TYPE_HTML);
-		settings.setCache(response.responseBody);
+		settings.setCache(response.getResponseBody());
 		this.save(settings);
 		settings.setName(""+settings.getId());
 		this.save(settings);
@@ -223,52 +219,14 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 	}
 
 	/**
-	 * Consider moving this method as public helper (if useful for others)
-	 * 
-	 * @param url
-	 * @return
+	 * Setter method for iPAddress.
+	 *
+	 * @param iPAddress the iPAddress to set
 	 */
-	@Transactional(readOnly=true)
-	private ResponseObject getHttpRequest(final String url) {
-		// Create an instance of HttpClient.
-		HttpClient client = new HttpClient();
-
-		// Create a method instance
-		String httpUrl = UrlUtil.ensureProtocol(url);
-		GetMethod method = new GetMethod(httpUrl);
-
-		// Provide custom retry handler is necessary
-		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-				new DefaultHttpMethodRetryHandler(3, false));
-
-		try {
-			// Execute the method.
-			int statusCode = client.executeMethod(method);
-
-			if (statusCode != HttpStatus.SC_OK) {
-				_log.error("Method failed: " + method.getStatusLine());
-				return null;
-			}
-
-			// Read the response body.
-			ResponseObject response = new ResponseObject();
-			response.responseBody = method.getResponseBody();
-			response.responseType = method.getResponseHeader("Content-Type").getValue();
-			return response;
-		} catch (HttpException e) {
-			_log.error("Fatal protocol violation: " + e.getMessage(), e);
-			return null;
-		} catch (IOException e) {
-			_log.error("Fatal transport error: " + e.getMessage(), e);
-			return null;
-		} finally {
-			// Release the connection. 
-			try { 
-				method.releaseConnection();
-			} catch(Exception ignore) {return null; };
-		}
+	public void setIPAddress(String iPAddress) {
+		IPAddress = iPAddress;
 	}
-	
+
 	public void setWidgetColumn(String widgetColumn) {
 		this.widgetColumn = widgetColumn;
 	}

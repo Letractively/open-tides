@@ -104,10 +104,6 @@ public final class AnnotationUtil {
 				}
 			} catch (Exception e) {
 				// do nothing
-				_log.debug("Unable to find annotation attribute [" + annotName
-						+ "] for field [" + field.getName()
-						+ "] in annotation [" + annotation.toString() + "]", e);
-
 			}
 		}
 		return false;
