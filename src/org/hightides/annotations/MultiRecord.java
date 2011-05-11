@@ -16,25 +16,26 @@
    specific language governing permissions and limitations
    under the License.    
  */
-package org.hightides.annotations.param;
 
-import java.util.Map;
+package org.hightides.annotations;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import org.hightides.annotations.bean.SyncMode;
 
 /**
- * Appends parameters for Page annotation.
- * 
- * @author allantan
+ * Generates the multirecord table based on open-tides framework
  *
+ * @author allanctan
  */
-public class PageParamReader extends BaseParamReader implements
-		ClassParamReader {
-
-	/**
-	 * Returns map of every field parameters.
-	 */
-	@SuppressWarnings("rawtypes")
-	public Map<String, Object> getParameters(Class clazz) {
-		return populatePageParams(clazz, "");
-	}
-
+@Target(FIELD)
+@Retention(RUNTIME)
+@Documented
+public @interface MultiRecord {	
+	SyncMode synchronizeMode() default SyncMode.UPDATE;
 }

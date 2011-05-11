@@ -52,7 +52,6 @@ import org.scannotation.ClasspathUrlFinder;
  * @author allantan
  * 
  */
-@SuppressWarnings("unchecked")
 public class HighTides {
 
     /**
@@ -63,7 +62,8 @@ public class HighTides {
     /**
      * List of annotations for processing.
      */
-    private List<Class> annotationList;
+    @SuppressWarnings("rawtypes")
+	private List<Class> annotationList;
     /**
      * Internal instance of AnnotationDB.
      */
@@ -76,7 +76,8 @@ public class HighTides {
     /**
      * 
      */
-    private void initializeList() {
+    @SuppressWarnings("rawtypes")
+	private void initializeList() {
         annotationList = new ArrayList<Class>();
         annotationList.add(Service.class);
         annotationList.add(Dao.class);
@@ -100,8 +101,10 @@ public class HighTides {
     private void locateFilesForAnnotationScanning() throws IOException {
         URL[] urls = ClasspathUrlFinder.findClassPaths();
         String location = "";
-        for (URL url : urls)
-            location += url.toString() + ", ";
+        for (URL url : urls) {
+        	if (!url.toString().endsWith(".jar"))
+        		location += url.toString() + ", ";
+        }
         _log.info("Scanning files at " + location);
         db = new AnnotationDB();
         db.scanArchives(urls);
@@ -114,6 +117,7 @@ public class HighTides {
         PackageUtil.setBaseTemplatePath(props
                 .getProperty("file.resource.loader.path"));
         PackageUtil.setBaseOutputPath(props.getProperty("file.output.path"));
+        PackageUtil.setProperties(props);
     }
 
     public HighTides() {
@@ -133,7 +137,8 @@ public class HighTides {
      * classes. Templates are then applied to the classes.
      * 
      */
-    public void generate(Language language) {
+    @SuppressWarnings("rawtypes")
+	public void generate(Language language) {
         CodeFactory cf = CodeFactory.getFactory(language);
         for (Class annotation : annotationList) {
             _log.info("============================");
@@ -162,7 +167,8 @@ public class HighTides {
         }
     }
 
-    private Map<String, Object> populateParams(String annotation,
+    @SuppressWarnings("rawtypes")
+	private Map<String, Object> populateParams(String annotation,
             String className) throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
         Class clazz = Class.forName(className);
@@ -177,6 +183,14 @@ public class HighTides {
         params.put("fieldTemplatePath", CodeFactory.getFieldTemplatePath());
         params.put("pageName", "/"
                 + NamingUtil.toElementName(clazz.getSimpleName()) + ".jspx");
+        String jspFullPath = PackageUtil.getProperties().getProperty("jsp.output.path");
+        int idx = jspFullPath.indexOf("/jsp/");
+        String jspFolder = "";
+        if (idx > 0) {
+        	jspFolder = jspFullPath.substring(idx+5).replace("modelName", "");
+        }
+        jspFolder += params.get("modelName");
+        params.put("jspFolder", jspFolder);
 
         // call helper to add additional parameters per annotation
         ClassParamReader paramReader = ParamReaderFactory.getReader(annotation);

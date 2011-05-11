@@ -31,9 +31,12 @@ import org.apache.log4j.Logger;
 import org.hightides.annotations.CheckBox;
 import org.hightides.annotations.DropDown;
 import org.hightides.annotations.HiddenField;
+import org.hightides.annotations.MultiRecord;
+import org.hightides.annotations.Page;
 import org.hightides.annotations.RadioButton;
 import org.hightides.annotations.TextArea;
 import org.hightides.annotations.TextField;
+import org.hightides.annotations.bean.SyncMode;
 import org.hightides.annotations.util.AnnotationUtil;
 import org.hightides.annotations.util.NamingUtil;
 import org.opentides.bean.BaseEntity;
@@ -50,17 +53,18 @@ public class BaseParamReader {
 
 	private static boolean validation = false;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected static Class fieldAnnotations[] = {
 		TextField.class,
 		DropDown.class,
 		TextArea.class,
 		CheckBox.class,
 		RadioButton.class,
-		HiddenField.class
+		HiddenField.class,
+		MultiRecord.class
 	};
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected List<Field> getAllAnnotatedFields(Class clazz) {
 		List<Field> fields = new ArrayList<Field>();
 		if (BaseEntity.class.isAssignableFrom(clazz))
@@ -96,7 +100,38 @@ public class BaseParamReader {
 		return params;
 	}
 	
-
+	/**
+	 * Populates the page parameters for the given class.
+	 * Shared by PageParamReader and MultiRecordParamReader
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected Map<String, Object> populatePageParams(Class clazz, String fieldsPrefix) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Field>fields = getAllAnnotatedFields(clazz);
+		List<Map<String,Object>> fieldParams = new ArrayList<Map<String,Object>>();
+		for (Field field:fields) {
+			FieldParamReader paramReader = ParamReaderFactory.getReader(field);
+			if (paramReader != null) {
+				fieldParams.add(paramReader.getParameters(field));				
+			}
+		}		
+		params.put(fieldsPrefix +  "fields", fieldParams);
+		params.put("titleField", AnnotationUtil.getTitleField(clazz));
+		Annotation annotation = clazz.getAnnotation(Page.class);
+		if (annotation instanceof Page) {
+			Page page = (Page) annotation;
+			params.put("syncMode", page.synchronizeMode());
+			params.put("pageType", page.pageType());
+		} else {
+			// unexpected case... but handle it nevertheless
+			params.put("syncMode", SyncMode.UPDATE);
+			_log.error("Unable to retrieve syncMode for ["+clazz.getName()+"]");
+		}
+		return params;
+	}
 	/**
 	 * Populate parameters for list types (dropdown, checkbox, radiobutton)
 	 * @param field
@@ -104,7 +139,7 @@ public class BaseParamReader {
 	 * @param options
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected Map<String, Object> populateListTypeParams(Field field, String categoryName, String[] options) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		if (!categoryName.equals("")) {

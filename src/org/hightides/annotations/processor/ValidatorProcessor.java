@@ -22,22 +22,25 @@ package org.hightides.annotations.processor;
 import java.io.File;
 import java.util.Map;
 
+import org.hightides.annotations.util.PackageUtil;
+
 /**
- * This class is responsible in updating the spring configuration file.
+ * This class is responsible in adding validator class and its corresponding 
+ * spring configuration file.
  * 
  * @author allantan
  */
 public class ValidatorProcessor extends SpringConfigProcessor implements Processor {
-	
-	public static final String templateFolder 		 = "/opentides/validator/";
-	public static final String outputFolder			 = "../validator/";
-	public static final String validatorTemplateFile = "resources/templates/opentides/validator/classNameValidator.java.vm";
-	
+
 	/* (non-Javadoc)
 	 * @see org.hightides.annotations.processor.Processor#execute(java.util.Map)
 	 */
 	public void execute(Map<String, Object> params) {
-		JarCloningProcessor jcp = new JarCloningProcessor(templateFolder, outputFolder);
+		String templateFolder = PackageUtil.getProperties().getProperty("validator.template.path");
+		JarCloningProcessor jcp = new JarCloningProcessor(
+				templateFolder,
+				PackageUtil.getProperties().getProperty("validator.output.path"));
+		String validatorTemplateFile = "resources/templates"+templateFolder+"classNameValidator.java.vm";
 		File path = new File(validatorTemplateFile);
 		jcp.clone(path, params);
 		// Insert validator bean to applicationContext-controller.xml

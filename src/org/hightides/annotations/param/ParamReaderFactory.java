@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import org.hightides.annotations.CheckBox;
 import org.hightides.annotations.DropDown;
 import org.hightides.annotations.HiddenField;
+import org.hightides.annotations.MultiRecord;
 import org.hightides.annotations.RadioButton;
 import org.hightides.annotations.TextArea;
 import org.hightides.annotations.TextField;
@@ -52,7 +53,9 @@ public class ParamReaderFactory {
 			return new RadioButtonParamReader();
 		} else if (field.isAnnotationPresent(HiddenField.class)) {
 			return new HiddenFieldParamReader();
-		}else
+		} else if (field.isAnnotationPresent(MultiRecord.class)) {
+			return new MultiRecordParamReader();
+		} else
 			return null;
 	}
 	

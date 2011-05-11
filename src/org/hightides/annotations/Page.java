@@ -35,5 +35,17 @@ import org.hightides.annotations.bean.SyncMode;
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Page {
+	
+	enum PageType {
+		SINGLE,
+		PARENT,
+		CHILD
+	}
+	
 	SyncMode synchronizeMode() default SyncMode.UPDATE;
+	
+	/**
+	 * Refers to type of page that will be generated. Can be single or parent.
+	 */
+	PageType pageType() default PageType.SINGLE;
 }

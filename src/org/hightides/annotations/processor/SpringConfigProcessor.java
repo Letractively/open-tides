@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.hightides.annotations.Page.PageType;
 import org.hightides.annotations.param.BaseParamReader;
 import org.hightides.annotations.util.SpringXMLUtil;
 import org.opentides.util.StringUtil;
@@ -84,14 +85,19 @@ public class SpringConfigProcessor implements Processor {
 		}
 		addPropertyByValue(bean,"commandName", params.get("modelName")   +"");
 		addPropertyByValue(bean,"commandClass",params.get("modelPackage")+"."+params.get("className"));
-		addPropertyByValue(bean,"formView",    params.get("modelName")   +"/"+params.get("modelName")+"-form");
-		addPropertyByValue(bean,"searchView",  params.get("modelName")   +"/"+params.get("modelName")+"-list");
-		addPropertyByValue(bean,"refreshView", params.get("modelName")   +"/"+params.get("modelName")+"-refresh");
+		addPropertyByValue(bean,"formView",    params.get("jspFolder")   +"/"+params.get("modelName")+"-form");
+		addPropertyByValue(bean,"searchView",  params.get("jspFolder")   +"/"+params.get("modelName")+"-list");
+		if (params.get("pageType") == PageType.PARENT) {
+			addPropertyByValue(bean,"refreshView", "redirect:"+params.get("modelName")+".jspx");			
+		} else {
+			addPropertyByValue(bean,"refreshView", params.get("jspFolder")   +"/"+params.get("modelName")+"-refresh");
+		}
 		addPropertyByValue(bean,"pageSize","${search.page.size}");
 		addPropertyByValue(bean,"numLinks","${search.links.displayed}");
 		Element ret = SpringXMLUtil.addBean(xmlFilename, bean, params.get("syncMode").toString());
-		if (ret != null) {	
-			// Add URL mapping
+		if (ret != null && params.get("pageType") != PageType.CHILD) {	
+			// if URL mapping is not yet present and page is not a CHILD
+			// Then add URL mapping
 			// <prop key="/template.jspx">templateController</prop>
 			Element urlMap = DocumentHelper.createElement("prop");
 			urlMap.addAttribute("key", params.get("pageName")+"");

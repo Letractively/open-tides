@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hightides.annotations.Controller;
+import org.hightides.annotations.Page;
 import org.hightides.annotations.bean.SyncMode;
 import org.hightides.annotations.util.AnnotationUtil;
 
@@ -117,6 +118,12 @@ public class ControllerParamReader extends BaseParamReader implements
 			// unexpected case... but handle it nevertheless
 			params.put("syncMode", SyncMode.UPDATE);
 			_log.error("Unable to retrieve syncMode for ["+clazz.getName()+"]");
+		}
+		// add pageType parameter if available
+		Annotation pageAnnotation = clazz.getAnnotation(Page.class);
+		if ( (pageAnnotation != null) && (pageAnnotation instanceof Page) ){
+			Page page = (Page) pageAnnotation;
+			params.put("pageType", page.pageType());
 		}
 		return params;
 	}

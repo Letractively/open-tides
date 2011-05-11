@@ -49,7 +49,7 @@ public class OpentidesFactory extends CodeFactory {
 		processorMap.put(Dao.class, daoProcessor);
 		
 		// initialize the controller processor
-		FileCloningProcessor controllerProcessor = new FileCloningProcessor("/opentides/controller/","../controller/");
+		FileCloningProcessor controllerProcessor = new FileCloningProcessor("/opentides/web/controller/","../web/controller/");
 		controllerProcessor.setFilter(new OpentidesFilter());
 		processorMap.put(Controller.class, controllerProcessor);
 		
