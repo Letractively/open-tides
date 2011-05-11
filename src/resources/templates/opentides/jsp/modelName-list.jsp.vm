@@ -4,8 +4,10 @@ Expected parameters:
   modelName - name of the bean
   fields    - array of fields to be displayed in the model
 *#
+
 #set ($perc = "%")
 #set ($d = "$")
+
 <%@ page contentType="text/html;utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
@@ -15,7 +17,6 @@ Expected parameters:
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
 <idy:header title_webpage="label.${formName}">
-  <script src="${url_yui}/yahoo-dom-event/yahoo-dom-event.js"></script>
   <script src="${url_jquery}"></script>
   <script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
 </idy:header>
@@ -63,106 +64,9 @@ Expected parameters:
 				</div>
 #end
 ## End of outer if statement
-				<hr class="broad"/>
-            	<table class="admin-table">
-            		<thead>
-            		<tr>
-## Generate table header.
-#foreach( $field in $fields )
-#if ( ${field.isListed} )
-						<th><ot:header_sort headerField="${field.fieldName}" headerLabel="label.${formName}.${field.fieldName}" prefix="${ ${modelName} }" searchFormId="${modelName}Search"/></th>
-#end
-#end
-## End of foreach loop.
-            			<th>&nbsp;</th>
-            		</tr>
-            		</thead>
-            		<tbody id="${prefix}-table-results">
-            		<c:forEach items="${results.results}" var="record" varStatus="status">
-            		<tr id="${prefix}-row-$d{ record.id }" class="row-style-$d{ status.count $perc 2 }">
-## Generate table data
-#foreach( $field in $fields )
-## Check if field data is viewable in the table.
-#if ( ${field.isListed} )
-## Check if SystemCodes/category is used as a parameter in field annotation. 
-#if ( ${field.isByCategory} )
-## Check if field annotation used is CheckBox.
-#if ( ${field.fieldType} == "checkBox" )
-						<td><c:forEach items="${ record.${field.fieldName} }" var="${field.fieldName}" varStatus="status">
-							<c:choose>
-								<c:when test="${ status.last == true }">
-									<c:out value="${ ${field.fieldName}.value }" />
-								</c:when>
-								<c:otherwise>
-									<c:out value="${ ${field.fieldName}.value }, " />
-								</c:otherwise>
-							</c:choose>
-							</c:forEach></td>
-#else
-						<td><c:out value="${ record.${field.fieldName}.value }" /></td>
-#end
-## End of inner if statement.
-##Check if List/options is used as a parameter in field annotation.
-#elseif ( $field.isByOptions )
-## Check if field annotation used is CheckBox.
-#if ( ${field.fieldType} == "checkBox" )
-						<td><c:forEach items="${ record.${field.fieldName} }" var="${field.fieldName}" varStatus="status">
-							<c:choose>
-								<c:when test="${ status.last == true }">
-									<c:out value="${ ${field.fieldName} }" />
-								</c:when>
-								<c:otherwise>
-									<c:out value="${ ${field.fieldName} }, " />
-								</c:otherwise>
-							</c:choose>
-							</c:forEach></td>
-#else
-						<td><c:out value="${ record.${field.fieldName} }" /></td>
-#end
-## End of inner if statement.
-#elseif ( $field.isByObject )
-## Check if field annotation used is CheckBox.
-#if ( ${field.fieldType} == "checkBox" )
-						<td><c:forEach items="${ record.${field.fieldName} }" var="${field.fieldName}" varStatus="status">
-							<c:choose>
-								<c:when test="${ status.last == true }">
-									<c:out value="${ ${field.fieldName}.${field.objectTitleField} }" />
-								</c:when>
-								<c:otherwise>
-									<c:out value="${ ${field.fieldName}.${field.objectTitleField} }, " />
-								</c:otherwise>
-							</c:choose>
-							</c:forEach></td>
-#else
-						<td><c:out value="${ record.${field.fieldName}.${field.objectTitleField} }" /></td>
-#end
-## End of inner if statement.
-#elseif ( $field.isDate )
-						<td><fmt:formatDate value="${ record.${field.fieldName} }" dateStyle="short" type="DATE" pattern="${field.dateFormat}" /></td>
-#else
-						<td><c:out value="${ record.$field.fieldName }" /></td>
-#end
-## End of outer if statement.
-#end
-## End of isListed if statement.
-#end
-## End of foreach loop.
-                  		<td>
-							<ot:update_button id="${record.id}" page="${formName}.jspx" prefix="${prefix}"/>
-                    		<ot:delete_button id="${record.id}" page="${formName}.jspx" title="#if ( ${titleField} != "" )${ record.${titleField} }#end" prefix="${prefix}"/>                  		
-                  		</td>	
-            		</tr>
 
-            		</c:forEach>
-            		</tbody>
-            		<tr id="${prefix}-row-new">
-## Set the colspan of the new row. 
-#set( $numCols = ${fields.size()} + 1 )
-						<td colspan="${numCols}">
-            			</td>
-            		</tr>
-            	</table>
-	            <ot:add_button page="${formName}.jspx" prefix="${prefix}"/>
+#parse("${fieldTemplatePath}multiRecord-form.inc_.vm")
+
 	            <ot:paging results="${ results }" baseURL="${formName}.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" #if ( $countSearchable != 0 )searchFormId="${modelName}Search"#end/>	            	
         	</div>
         </div>

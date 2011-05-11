@@ -68,7 +68,7 @@ public class ${className}Controller extends BaseCrudController<${className}> {
 		Map<String, Object> model = new HashMap<String, Object>();
 #foreach( $field in $fields )
 #if ( ${field.isByCategory} )
-		model.put("${field.fieldName}List", getSystemCodesByCategory(systemCategory.getCategoryByName("${field.categoryName}")));
+		model.put("${field.fieldName}List", getSystemCodesByCategory("${field.categoryName}"));
 #elseif ( ${field.isByOptions} )
 		List<String> ${field.fieldName} = new ArrayList<String>();
 #foreach( $item in ${field.options} )
