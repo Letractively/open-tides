@@ -22,6 +22,7 @@ package org.hightides.annotations.util;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 
 import org.apache.log4j.Logger;
@@ -49,6 +50,8 @@ public class PackageUtil {
 	private String templateFolder;
 	// Folder where output will be written
 	private String outputFolder; 
+	// Complete set of properties found in hightides.properties
+	private static Properties properties;
 	
 	public PackageUtil(String templateFolder, String outputFolder) {
 		super();
@@ -175,5 +178,23 @@ public class PackageUtil {
 	 */
 	public static final String getBaseOutputPath() {
 		return baseOutputPath;
+	}
+
+	/**
+	 * Getter method for properties.
+	 *
+	 * @return the properties
+	 */
+	public final static Properties getProperties() {
+		return properties;
+	}
+
+	/**
+	 * Setter method for properties.
+	 *
+	 * @param properties the properties to set
+	 */
+	public final static void setProperties(Properties properties) {
+		PackageUtil.properties = properties;
 	}
 }
