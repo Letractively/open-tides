@@ -57,7 +57,7 @@ public interface Auditable {
      * 
      * @return boolean
      */
-    Boolean skipAudit();
+    Boolean isSkipAudit();
 
     /**
      * Returns customized audit log message. When empty, audit logging uses
@@ -103,13 +103,6 @@ public interface Auditable {
      */
     String getAuditUsername();
     
-    /**
-     * Returns the basic readable name of the auditable object
-     * 
-     * @return friendlyName
-     */
-    String getFriendlyName();
-
     /**
      * Returns customized friendly log message. When empty, audit logging uses
      * standard audit message.

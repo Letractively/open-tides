@@ -26,14 +26,18 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.opentides.bean.user.BaseUser;
 import org.opentides.persistence.listener.AuditLogListener;
 import org.opentides.util.CrudUtil;
-import org.opentides.util.StringUtil;
 
 /**
  * This class is responsible for handling all audit functions needed to be
@@ -44,14 +48,36 @@ import org.opentides.util.StringUtil;
 @Entity
 @EntityListeners({ AuditLogListener.class })
 @Table(name = "HISTORY_LOG")
-public class AuditLog extends BaseProtectedEntity implements Serializable,
-		BaseCriteria, Cloneable {
+public class AuditLog implements Serializable, Searchable {
 
     /**
      * Auto-generated class UID.
      */
     private static final long serialVersionUID = 269168041517643087L;
 
+    /**
+     * Primary key. Annotation is transfered to getter method to allow
+     * overridding from subclass.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID")
+    private Long id;
+    
+    /**
+     * Create date.
+     */
+    @Column(name = "CREATEDATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate;
+    
+    /**
+     * Last update date.
+     */
+    @Column(name = "UPDATEDATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
+    
     /**
      * Primary key of object being tracked.
      */
@@ -90,6 +116,19 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     private Long userId;
 
     /**
+     * Owner of this object.
+     */
+    @Column(name = "OWNER")
+    private String owner;
+    
+    /**
+     * Office that owns this object.
+     * In most cases, this is office of the owner.
+     */
+    @Column(name = "OWNER_OFFICE")
+    private String ownerOffice;
+
+    /**
      * Temporary reference to object being tracked.
      * Used by AuditLogListener when loading audit log object.
      */
@@ -99,7 +138,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     /**
      * Temporary reference to used who made the change.
      * Used by AuditLogListener when loading audit log object.
-     * 
      */
     @Transient
     private transient BaseUser user;
@@ -110,9 +148,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
     @Transient
 	private transient Date endDate;
 	
-	@Transient
-	private transient String entityName = "";
-
 	@Transient
 	private transient String logAction;
     
@@ -182,125 +217,6 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
         this.setOwnerOffice(ownerOffice);
     }
 
-    /**
-     * Getter of entity id.
-     * 
-     * @return entityId
-     */
-    public final Long getEntityId() {
-        return this.entityId;
-    }
-
-    /**
-     * Setter of entity id.
-     * 
-     * @param entityId
-     *            the entityId to set
-     */
-    protected final void setEntityId(final Long entityId) {
-        this.entityId = entityId;
-    }
-
-    /**
-     * Getter of entity class.
-     * 
-     * @return the entityClass
-     */
-    @SuppressWarnings("rawtypes")
-    public final Class getEntityClass() {
-        return this.entityClass;
-    }
-
-    /**
-     * Setter of entity class.
-     * 
-     * @param entityClass
-     *            the entityClass to set
-     */
-    @SuppressWarnings("rawtypes")
-    protected final void setEntityClass(final Class entityClass) {
-        this.entityClass = entityClass;
-    }
-
-    /**
-     * Returns a human readable name of the logged entity.
-     * 
-     * @return entity name
-     */
-    public final String getEntityName() {
-        if (!StringUtil.isEmpty(entityName)){
-            return entityName;
-        }
-		return CrudUtil.getReadableName(entityClass.getName());
-    }
-
-    /**
-     * Getter of message.
-     * 
-     * @return the message
-     */
-    public final String getMessage() {
-        return this.message;
-    }
-
-    /**
-     * Getter of user id.
-     * 
-     * @return the userId
-     */
-    public final Long getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Setter of user id.
-     * 
-     * @param userId
-     *            the userId to set
-     */
-    protected final void setUserId(final Long userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Getter of object.
-     * 
-     * @return the object
-     */
-    public final Object getObject() {
-        return this.object;
-    }
-
-    /**
-     * Setter of object.
-     * 
-     * @param object
-     *            the object to set
-     */
-    public final void setObject(final Object object) {
-        this.object = object;
-    }
-
-    /**
-     * Getter of user object.
-     * 
-     * @return the user
-     */
-    public final BaseUser getUser() {
-        return this.user;
-    }
-
-    /**
-     * Setter of user object.
-     * 
-     * @param user
-     *            the user to set
-     */
-    public final void setUser(final BaseUser user) {
-        this.user = user;
-    }
-
-
 	public List<String> getSearchProperties() {
 		List<String> fields = new ArrayList<String>();
 		fields.add("userId");
@@ -312,75 +228,301 @@ public class AuditLog extends BaseProtectedEntity implements Serializable,
 		return fields;
 	}
 
-    /**
-     * Getter of reference id.
-     * 
-     * @return the referenceId
-     */
-    public final String getReference() {
-        return this.reference;
-    }
-
-    /**
-     * Setter of reference id.
-     * 
-     * @param reference
-     *            the referenceId to set
-     */
-    protected final void setReference(final String reference) {
-        this.reference = reference;
-    }
-
-	public Date getStartDate() {
-		return startDate;
+	/**
+	 * Getter method for id.
+	 *
+	 * @return the id
+	 */
+	public final Long getId() {
+		return id;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	/**
+	 * Setter method for id.
+	 *
+	 * @param id the id to set
+	 */
+	public final void setId(Long id) {
+		this.id = id;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	/**
+	 * Getter method for createDate.
+	 *
+	 * @return the createDate
+	 */
+	public final Date getCreateDate() {
+		return createDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	/**
+	 * Setter method for createDate.
+	 *
+	 * @param createDate the createDate to set
+	 */
+	public final void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
-	public void setMessage(String message) {
+	/**
+	 * Getter method for updateDate.
+	 *
+	 * @return the updateDate
+	 */
+	public final Date getUpdateDate() {
+		return updateDate;
+	}
+
+	/**
+	 * Setter method for updateDate.
+	 *
+	 * @param updateDate the updateDate to set
+	 */
+	public final void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	/**
+	 * Getter method for entityId.
+	 *
+	 * @return the entityId
+	 */
+	public final Long getEntityId() {
+		return entityId;
+	}
+
+	/**
+	 * Setter method for entityId.
+	 *
+	 * @param entityId the entityId to set
+	 */
+	public final void setEntityId(Long entityId) {
+		this.entityId = entityId;
+	}
+
+	/**
+	 * Getter to retrieve name of entity class. 
+	 * @return
+	 */
+	public final String getEntityName() {
+		return CrudUtil.getReadableName(entityClass.getName());
+	}
+	/**
+	 * Getter method for entityClass.
+	 *
+	 * @return the entityClass
+	 */
+	@SuppressWarnings("rawtypes")
+	public final Class getEntityClass() {
+		return entityClass;
+	}
+
+	/**
+	 * Setter method for entityClass.
+	 *
+	 * @param entityClass the entityClass to set
+	 */
+	@SuppressWarnings("rawtypes")
+	public final void setEntityClass(Class entityClass) {
+		this.entityClass = entityClass;
+	}
+
+	/**
+	 * Getter method for reference.
+	 *
+	 * @return the reference
+	 */
+	public final String getReference() {
+		return reference;
+	}
+
+	/**
+	 * Setter method for reference.
+	 *
+	 * @param reference the reference to set
+	 */
+	public final void setReference(String reference) {
+		this.reference = reference;
+	}
+
+	/**
+	 * Getter method for message.
+	 *
+	 * @return the message
+	 */
+	public final String getMessage() {
+		return message;
+	}
+
+	/**
+	 * Setter method for message.
+	 *
+	 * @param message the message to set
+	 */
+	public final void setMessage(String message) {
 		this.message = message;
 	}
-	
-	public AuditLog getCopy(){
-		if (this == null){
-			return null;
-		}
-		
-		try {
-			return (AuditLog) clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
-	}
-
-	public String getFriendlyMessage() {
+	/**
+	 * Getter method for friendlyMessage.
+	 *
+	 * @return the friendlyMessage
+	 */
+	public final String getFriendlyMessage() {
 		return friendlyMessage;
 	}
 
-	public void setFriendlyMessage(String friendlyMessage) {
+	/**
+	 * Setter method for friendlyMessage.
+	 *
+	 * @param friendlyMessage the friendlyMessage to set
+	 */
+	public final void setFriendlyMessage(String friendlyMessage) {
 		this.friendlyMessage = friendlyMessage;
 	}
 
-	public String getLogAction() {
+	/**
+	 * Getter method for userId.
+	 *
+	 * @return the userId
+	 */
+	public final Long getUserId() {
+		return userId;
+	}
+
+	/**
+	 * Setter method for userId.
+	 *
+	 * @param userId the userId to set
+	 */
+	public final void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * Getter method for owner.
+	 *
+	 * @return the owner
+	 */
+	public final String getOwner() {
+		return owner;
+	}
+
+	/**
+	 * Setter method for owner.
+	 *
+	 * @param owner the owner to set
+	 */
+	public final void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	/**
+	 * Getter method for ownerOffice.
+	 *
+	 * @return the ownerOffice
+	 */
+	public final String getOwnerOffice() {
+		return ownerOffice;
+	}
+
+	/**
+	 * Setter method for ownerOffice.
+	 *
+	 * @param ownerOffice the ownerOffice to set
+	 */
+	public final void setOwnerOffice(String ownerOffice) {
+		this.ownerOffice = ownerOffice;
+	}
+
+	/**
+	 * Getter method for object.
+	 *
+	 * @return the object
+	 */
+	public final Object getObject() {
+		return object;
+	}
+
+	/**
+	 * Setter method for object.
+	 *
+	 * @param object the object to set
+	 */
+	public final void setObject(Object object) {
+		this.object = object;
+	}
+
+	/**
+	 * Getter method for user.
+	 *
+	 * @return the user
+	 */
+	public final BaseUser getUser() {
+		return user;
+	}
+
+	/**
+	 * Setter method for user.
+	 *
+	 * @param user the user to set
+	 */
+	public final void setUser(BaseUser user) {
+		this.user = user;
+	}
+
+	/**
+	 * Getter method for startDate.
+	 *
+	 * @return the startDate
+	 */
+	public final Date getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * Setter method for startDate.
+	 *
+	 * @param startDate the startDate to set
+	 */
+	public final void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * Getter method for endDate.
+	 *
+	 * @return the endDate
+	 */
+	public final Date getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * Setter method for endDate.
+	 *
+	 * @param endDate the endDate to set
+	 */
+	public final void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	/**
+	 * Getter method for logAction.
+	 *
+	 * @return the logAction
+	 */
+	public final String getLogAction() {
 		return logAction;
 	}
 
-	public void setLogAction(String logAction) {
+	/**
+	 * Setter method for logAction.
+	 *
+	 * @param logAction the logAction to set
+	 */
+	public final void setLogAction(String logAction) {
 		this.logAction = logAction;
 	}
+    
 }
