@@ -11,7 +11,9 @@ package org.opentides.util;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -33,7 +35,7 @@ public class CrudUtilTest {
 	@Test
 	public void testBuildCreateMessage() {
 		SystemCodes sc = new SystemCodes("category","key","value");
-		String expected = "Added SystemCodes Key:key - Key=key and Value=value and Category=category";
+		String expected = "Added System Codes Value:value - Key=key and Value=value and Category=category";
 		Assert.assertEquals(expected,
 				CrudUtil.buildCreateMessage(sc));
 	}
@@ -44,7 +46,7 @@ public class CrudUtilTest {
 		SystemCodes newsc = new SystemCodes("categorynew","keynew","value");
 		SystemCodes samesc = new SystemCodes("categoryold","keyold","value");
 		
-		String expected = "Changed SystemCodes Key:keyold - Key from 'keyold' to 'keynew' and Category from 'categoryold' to 'categorynew'";
+		String expected = "Changed System Codes Value:value - Key from 'keyold' to 'keynew' and Category from 'categoryold' to 'categorynew'";
 		Assert.assertEquals(expected,
 				CrudUtil.buildUpdateMessage(oldsc, newsc));
 		Assert.assertEquals("",
@@ -62,7 +64,7 @@ public class CrudUtilTest {
 		TestCodes sametc = new TestCodes();
 		sametc.setStatus(oldsc);
 		
-		String expected = "Changed TestCodes Key:Status from 'keyold:old' to 'keynew:new'";
+		String expected = "Changed Test Codes Key:Status from 'keyold:old' to 'keynew:new'";
 		Assert.assertEquals(expected,
 				CrudUtil.buildUpdateMessage(oldtc, newtc));
 		Assert.assertEquals("",
@@ -168,6 +170,7 @@ public class CrudUtilTest {
 					CrudUtil.buildJpaQueryString(user, true));
 
     }
+    
     @Test 
     public void testRetrieveObjectValue() {
     	UserCriteria user = new UserCriteria();
@@ -198,6 +201,28 @@ public class CrudUtilTest {
     	}
     }
 
+    @Test 
+    public void testRetrieveObjectMap() {
+    	UserCriteria user = new UserCriteria();
+    	UserCredential cred = new UserCredential();
+    	user.setFirstName("Test");
+       	user.setEmailAddress("admin@ideyatech.com");
+      	cred.setUsername("testname");
+    	cred.setPassword("password");
+    	cred.setId(123l);
+    	cred.setEnabled(true);
+    	user.setCredential(cred);
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("user", user);
+    	map.put("cred", cred);
+    	Assert.assertEquals("Test", CrudUtil.retrieveObjectValue(map, "user.firstName"));
+    	Assert.assertEquals("admin@ideyatech.com", CrudUtil.retrieveObjectValue(map, "user.emailAddress"));
+    	Assert.assertEquals("testname", CrudUtil.retrieveObjectValue(map, "cred.username"));
+    	Assert.assertEquals("testname", CrudUtil.retrieveObjectValue(map, "user.credential.username"));
+		Assert.assertEquals(null,CrudUtil.retrieveObjectValue(map, "credential.garbage"));
+		Assert.assertEquals(null,CrudUtil.retrieveObjectValue(map, "garbage"));
+    }
+    
     @Test 
     public void testRetrieveObjectType() {
     	UserCriteria user = new UserCriteria();
@@ -267,14 +292,14 @@ public class CrudUtilTest {
 
     @Test
     public void testGetReadableName() {
-		Assert.assertEquals(" System Codes", CrudUtil
+		Assert.assertEquals("System Codes", CrudUtil
 				.getReadableName("org.opentides.bean.SystemCodes"));
     }
     
 	@Test
 	public void testGetAllFields() throws SecurityException, NoSuchFieldException {
 		List<Field> fields = CrudUtil.getAllFields(TestCodes.class);
-		Assert.assertEquals(21, fields.size());
+		Assert.assertEquals(25, fields.size());
 		Field keyField = TestCodes.class.getDeclaredField("key");
 		Field statusField = TestCodes.class.getDeclaredField("status");
 		Field createDateField = BaseEntity.class.getDeclaredField("createDate");

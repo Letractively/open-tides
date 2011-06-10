@@ -38,9 +38,8 @@ public class AuditLogDAOTest extends BaseTidesTest {
 		
 		jdbcTemplate.execute("INSERT INTO SYSTEM_CODES(CATEGORY_,KEY_,VALUE_) VALUES('OFFICE','HR','Human Resources')");
 		SystemCodes sc = (SystemCodes) jdbcTemplate.query("SELECT * FROM SYSTEM_CODES WHERE VALUE_='Human Resources'", new SystemCodesExtractor());
-		_log.debug("SC ID: "+sc.getId());
 		
-		AuditLogDAOImpl.logEvent("Sample log for testing.", sc);
+		AuditLogDAOImpl.logEvent("Short","Sample log for testing.", sc);
 		
 		int currCount = jdbcTemplate.queryForInt("SELECT count(*) FROM HISTORY_LOG");
 		assertEquals(prevCount+1, currCount);

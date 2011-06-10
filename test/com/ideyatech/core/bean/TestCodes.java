@@ -19,7 +19,7 @@ import org.hightides.annotations.Service;
 import org.hightides.annotations.TextField;
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
-import org.opentides.bean.BaseCriteria;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.SystemCodes;
 
@@ -33,7 +33,7 @@ import org.opentides.bean.SystemCodes;
  * The system codes class is a lookup table used for drop-downs.
  * Developer must ensure category is consistently used in the application.
  */
-public class TestCodes extends BaseEntity implements Serializable, BaseCriteria, Auditable {
+public class TestCodes extends BaseEntity implements Serializable, Searchable, Auditable {
 	
 	private static final long serialVersionUID = -4142599915292096152L;
 	private static final int CATEGORY_LIST_LENGTH = 52;
@@ -225,7 +225,7 @@ public class TestCodes extends BaseEntity implements Serializable, BaseCriteria,
 		this.skipAudit = skipAudit;
 	}
 
-	public Boolean skipAudit() {
+	public Boolean isSkipAudit() {
 		return skipAudit;
 	}
 	
