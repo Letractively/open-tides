@@ -52,4 +52,12 @@
 		<name>sort_input</name>
 		<path>/META-INF/tags/sort_input.tag</path>
 	</tag-file>					
+	<tag-file>
+		<name>open_list</name>
+		<path>/META-INF/tags/open_list.tag</path>
+	</tag-file>					
+	<tag-file>
+		<name>close_list</name>
+		<path>/META-INF/tags/close_list.tag</path>
+	</tag-file>					
 </taglib>
