@@ -4,18 +4,24 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
- 	
-	<!-- Message source for this context, loaded from localized "messages_xx" files -->
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+ 	<!-- Message source for this context, loaded from localized "messages_xx" files -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
+			<ref local="applicationMessages" />
+		</property>
+	</bean>
+
+	<bean id="applicationMessages" class="org.opentides.bean.MergeListFactoryBean">
+		<property name="sourceList">
 			<list>
 				<value>classpath:resources/languages/messages</value>
-				<value>classpath:resources/languages/core-messages</value>
+				<value>classpath:resources/languages/core-messages</value>			
 			</list>
 		</property>
-		<property name="cacheSeconds" value="5"/>
+		<property name="secondList" ref="additionalMessages"/>
 	</bean>
-	
+
 	<!-- Hibernate Utility -->
 	<bean id="hibernateUtil" class="org.opentides.util.HibernateUtil" init-method="initialize">
 		<property name="jndiPath" value="${database.jndi}" />

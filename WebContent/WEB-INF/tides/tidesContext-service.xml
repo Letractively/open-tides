@@ -7,9 +7,7 @@
 	   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!--Services -->
-	<bean id="logService" class="org.opentides.service.impl.LogServiceImpl">
-		<property name="dao" ref="auditLogDAO"/>
-	</bean>
+	<bean id="auditLogService" class="org.opentides.service.impl.AuditLogServiceImpl" autowire="byName"/>
 	
 	<bean id="systemCodesService" class="org.opentides.service.impl.SystemCodesServiceImpl" autowire="byName">
 		<property name="dao" ref="systemCodesDAO" />
