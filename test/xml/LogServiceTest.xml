@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 	<HISTORY_LOG ENTITY_ID="90001" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80001"
-		MESSAGE="Sample Log 1" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 1" MESSAGE="Sample Log 1" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90002" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80001"
-		MESSAGE="Sample Log 2" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 2" MESSAGE="Sample Log 2" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90003" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80001"
-		MESSAGE="Sample Log 3" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 3" MESSAGE="Sample Log 3" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90004" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80001"
-		MESSAGE="Sample Log 4" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 4" MESSAGE="Sample Log 4" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90001" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80002"
-		MESSAGE="Sample Log 5" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 5" MESSAGE="Sample Log 5" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90002" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80002"
-		MESSAGE="Sample Log 6" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 6" MESSAGE="Sample Log 6" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90003" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80002"
-		MESSAGE="Sample Log 7" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 7" MESSAGE="Sample Log 7" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90001" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80003"
-		MESSAGE="Sample Log 8" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 8" MESSAGE="Sample Log 8" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90002" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80003"
-		MESSAGE="Sample Log 9" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 9" MESSAGE="Sample Log 9" USER_ID="1" />
 	<HISTORY_LOG ENTITY_ID="90001" ENTITY_CLASS="org.opentides.bean.SystemCodes" REFERENCE="80004"
-		MESSAGE="Sample Log 10" USER_ID="1" />
+		FRIENDLY_MESSAGE="Friend 10" MESSAGE="Sample Log 10" USER_ID="1" />
 </dataset>
