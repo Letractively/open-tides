@@ -49,7 +49,7 @@ import org.hightides.annotations.TextField;
 
 @Entity
 @Table(name = "WIDGET")
-public class Widget extends BaseSortableEntity implements BaseCriteria, Auditable, Uploadable {
+public class Widget extends BaseEntity implements Searchable, Auditable, Uploadable {
 
 	private static final long serialVersionUID = -1621927178131406825L;
 	
@@ -107,9 +107,6 @@ public class Widget extends BaseSortableEntity implements BaseCriteria, Auditabl
 	@SuppressWarnings("unused")
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="widget", fetch = FetchType.LAZY)
     private List<UserWidgets> userWidget;
-
-	@Transient
-	private transient boolean skipAudit = false;
 	
 	@Transient
 	private transient boolean isInstalled = false;
@@ -326,14 +323,6 @@ public class Widget extends BaseSortableEntity implements BaseCriteria, Auditabl
 		return new AuditableField("name","Name");
 	}
 	
-	public void setSkipAudit(boolean skipAudit) {
-		this.skipAudit = skipAudit;
-	}
-
-	public Boolean skipAudit() {
-		return skipAudit;
-	}
-	
 	public String getReference() { 
 		return null;
 	}
@@ -414,15 +403,5 @@ public class Widget extends BaseSortableEntity implements BaseCriteria, Auditabl
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	@Override
-	public String getFriendlyName() {
-		return "Widget";
-	}
-
-	@Override
-	public String getFriendlyMessage() {
-		return null;
 	}
 }

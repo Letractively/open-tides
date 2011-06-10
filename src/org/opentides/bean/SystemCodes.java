@@ -25,7 +25,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 
 /**
@@ -35,7 +34,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name="SYSTEM_CODES")
 public class SystemCodes extends BaseProtectedEntity 
-	implements Serializable, BaseCriteria, Auditable, Sortable {
+	implements Serializable, Searchable, Auditable, Sortable {
 	
 	private static final long serialVersionUID = -4142599915292096152L;
 	private static final int CATEGORY_LIST_LENGTH = 52;
@@ -48,25 +47,7 @@ public class SystemCodes extends BaseProtectedEntity
 	private Long numberValue; 
 	@Column (name="CATEGORY_")
 	private String category;
-	
-	@Transient
-	private transient String orderOption;
-	
-	@Transient
-	private transient String orderFlow;
-	
-	@Transient
-	private transient String auditMessage;
-	
-	@Transient
-	private transient String friendlyMessage;
-	
-	@Transient
-	private transient String friendlyName = "System Codes";
-	
-	@Transient
-	private transient Boolean skipAudit = false;
-	
+		
 	public SystemCodes() {
 	}
 	
@@ -88,7 +69,7 @@ public class SystemCodes extends BaseProtectedEntity
 		setCategory(category);
 		this.key = key;
 		this.value = value;
-		this.skipAudit=skipAudit;
+		this.setSkipAudit(skipAudit);
 	}
 
 	/* (non-Javadoc)
@@ -213,65 +194,10 @@ public class SystemCodes extends BaseProtectedEntity
 	public AuditableField getPrimaryField() {
 		return new AuditableField("value","Value");
 	}
-
-	/**
-	 * @param auditMessage the auditMessage to set
-	 */
-	public final void setAuditMessage(String auditMessage) {
-		this.auditMessage = auditMessage;
-	}
-
-	public String getAuditMessage() {
-		return this.auditMessage;
-	}
-
-	/**
-	 * @param skipAudit the skipAudit to set
-	 */
-	public final void setSkipAudit(Boolean skipAudit) {
-		this.skipAudit = skipAudit;
-	}
-
-	public Boolean skipAudit() {
-		return skipAudit;
-	}
 	
 	public String getReference() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String getOrderOption() {
-		return orderOption;
-	}
-
-	public void setOrderOption(String orderOption) {
-		this.orderOption = orderOption;
-	}
-
-	public String getOrderFlow() {
-		return orderFlow;
-	}
-
-	public void setOrderFlow(String orderFlow) {
-		this.orderFlow = orderFlow;
-	}
-
-	@Override
-	public String getFriendlyName() {
-		return friendlyName;
-	}
-
-	@Override
-	public String getFriendlyMessage() {
-		return friendlyMessage;
-	}
-
-	public void setFriendlyMessage(String friendlyMessage) {
-		this.friendlyMessage = friendlyMessage;
-	}
-
-	public void setFriendlyName(String friendlyName) {
-		this.friendlyName = friendlyName;
-	}
 }

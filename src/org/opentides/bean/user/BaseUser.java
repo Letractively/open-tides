@@ -42,13 +42,13 @@ import javax.persistence.Transient;
 
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
-import org.opentides.bean.BaseCriteria;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.BaseProtectedEntity;
 import org.opentides.bean.SystemCodes;
 
 @Entity
 @Table(name = "USER_PROFILE")
-public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Auditable {
+public class BaseUser extends BaseProtectedEntity implements Searchable, Auditable {
 
 	private static final long serialVersionUID = 7634675501487373408L;
 	
@@ -145,6 +145,14 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 			groups.remove(group);
 	}
 
+	public List<String> getSearchProperties() {
+		List<String> props = new ArrayList<String>();
+		props.add("firstName");
+		props.add("lastName");
+		props.add("emailAddress");
+		props.add("office");
+		return props;
+	}
 
 	public String getEmailAddress() {
 		return emailAddress;
@@ -189,15 +197,6 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 	public void setCredential(UserCredential userAccount) {
 		this.credential = userAccount;
 		userAccount.setUser(this);
-	}
-
-	public List<String> getSearchProperties() {
-		List<String> props = new ArrayList<String>();
-		props.add("firstName");
-		props.add("lastName");
-		props.add("emailAddress");
-		props.add("office");
-		return props;
 	}
 	
 	public boolean hasPermission(String permission) {
@@ -284,20 +283,8 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 		return new AuditableField("username","Username");
 	}
 
-	public final void setAuditMessage(String auditMessage) {
-		this.auditMessage = auditMessage;
-	}
-
-	public String getAuditMessage() {
-		return this.auditMessage;
-	}
-
 	public final void setSkipAudit(Boolean skipAudit) {
 		this.skipAudit = skipAudit;
-	}
-
-	public Boolean skipAudit() {
-		return skipAudit;
 	}
 	
 	public String getReference() {
@@ -328,15 +315,5 @@ public class BaseUser extends BaseProtectedEntity implements BaseCriteria, Audit
 		} else if (!emailAddress.equals(other.emailAddress))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String getFriendlyName() {
-		return friendlyName;
-	}
-
-	@Override
-	public String getFriendlyMessage() {
-		return friendlyMessage;
 	}
 }

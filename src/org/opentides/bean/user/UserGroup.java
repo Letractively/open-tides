@@ -34,14 +34,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.opentides.bean.BaseCriteria;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.BaseEntity;
 import org.opentides.util.StringUtil;
 
 
 @Entity
 @Table(name = "USERGROUP")
-public class UserGroup extends BaseEntity implements BaseCriteria {
+public class UserGroup extends BaseEntity implements Searchable {
 	private static final long serialVersionUID = 1959110420702540834L;
 
 	@Column(name = "NAME", unique = true, nullable = false)

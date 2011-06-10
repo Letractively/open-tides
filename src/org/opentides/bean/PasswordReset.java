@@ -33,7 +33,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name="PASSWORD_RESET")
-public class PasswordReset extends BaseEntity implements BaseCriteria {
+public class PasswordReset extends BaseEntity implements Searchable {
 
 	private static final long serialVersionUID = 6437073263044026761L;
 	

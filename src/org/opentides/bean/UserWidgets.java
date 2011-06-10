@@ -42,7 +42,7 @@ import org.opentides.bean.user.BaseUser;
  */
 @Entity
 @Table(name = "USER_WIDGETS")
-public class UserWidgets extends BaseEntity implements BaseCriteria {
+public class UserWidgets extends BaseEntity implements Searchable {
 
 	private static final long serialVersionUID = -7342919449849672140L;
 
