@@ -35,6 +35,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.log4j.Logger;
 import org.hightides.annotations.util.AnnotationUtil;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.persistence.listener.EntityDateListener;
@@ -55,6 +56,11 @@ public abstract class BaseEntity implements Serializable {
      * Auto-generated class UID.
      */
     private static final long serialVersionUID = -2166505182954839082L;
+    
+    /**
+     * Class logger.
+     */
+    private static Logger _log = Logger.getLogger(BaseEntity.class);
     
     /**
      * Primary key. Annotation is transfered to getter method to allow
@@ -101,18 +107,34 @@ public abstract class BaseEntity implements Serializable {
     private transient String auditOfficeName;
     
     /**
-     * List of searchable properties. 
-     * Used when default search properties is used.
+     * Indicator whether to skip audit log or not.
+     */
+	@Transient
+	private transient boolean skipAudit;
+
+	/**
+	 * Storage for keeping audit log message.
+	 */
+	@Transient
+	private transient String auditMessage;
+	
+	/**
+	 * Storage for keeping short audit log message.
+	 */
+	@Transient
+	private transient String friendlyMessage;
+
+	/**
+     * Temporary variable for order direction (e.g. ASC or DESC).
      */
     @Transient
-    private transient List<String> searchProperties;
+    private transient String orderFlow;
 
     /**
-     * List of auditable fields. 
-     * Used when default auditable is used.
+     * Temporary variable for order field
      */
     @Transient
-    private transient List<AuditableField> auditableFields;
+    private transient String orderOption;
 
     /**
      * Setter method of Id.
@@ -306,20 +328,16 @@ public abstract class BaseEntity implements Serializable {
      * reflection and annotation to generate the list of variables declared with
      * isSearchable attribute in high-tides field annotation.
      * 
-     * For efficiency searchProperties is kept as a class variable so as not to
-     * recurse all fields for every access.
      */
     public List<String> getSearchProperties() {
-        if (this.searchProperties == null) {
-            this.searchProperties = new ArrayList<String>();
-            final List<Field> fields = CrudUtil.getAllFields(this.getClass());
-            for (Field field : fields) {
-                if (AnnotationUtil.isAnnotatedWith("searchable",field)) {
-                    this.searchProperties.add(field.getName());
-                }
+    	List<String> searchProperties = new ArrayList<String>();
+    	final List<Field> fields = CrudUtil.getAllFields(this.getClass());
+        for (Field field : fields) {
+            if (AnnotationUtil.isAnnotatedWith("searchable",field)) {
+                searchProperties.add(field.getName());
             }
         }
-        return this.searchProperties;
+        return searchProperties;
     }
     
     /**
@@ -328,21 +346,115 @@ public abstract class BaseEntity implements Serializable {
      * reflection and annotation to generate the list of variables declared with
      * isAuditable attribute in high-tides field annotation.
      * 
-     * For efficiency auditableFields is kept as a class variable so as not to
-     * recurse all fields for every access.
      */
 	public List<AuditableField> getAuditableFields() {
-		if (this.auditableFields == null) {
-            this.auditableFields = new ArrayList<AuditableField>();
-            final List<Field> fields = CrudUtil.getAllFields(this.getClass());
-            for (Field field : fields) {
-            	if ( (!Modifier.isTransient(field.getModifiers())) &&
-            	     (AnnotationUtil.isAnnotatedWith("auditable",field)) ) {
-                    this.auditableFields.add(new AuditableField(field.getName()));
-                }
+		List<AuditableField> auditableFields = new ArrayList<AuditableField>();
+        final List<Field> fields = CrudUtil.getAllFields(this.getClass());
+        for (Field field : fields) {
+        	if ( (!Modifier.isTransient(field.getModifiers())) &&
+        	     (AnnotationUtil.isAnnotatedWith("auditable",field)) ) {
+                auditableFields.add(new AuditableField(field.getName()));
             }
         }
-        return this.auditableFields;
+        return auditableFields;
 	}
 
+	/**
+	 * Getter method for skipAudit.
+	 *
+	 * @return the skipAudit
+	 */
+	public Boolean isSkipAudit() {
+		return skipAudit;
+	}
+
+	/**
+	 * Setter method for skipAudit.
+	 *
+	 * @param skipAudit the skipAudit to set
+	 */
+	public void setSkipAudit(Boolean skipAudit) {
+		this.skipAudit = skipAudit;
+	}
+
+	/**
+	 * Getter method for auditMessage.
+	 *
+	 * @return the auditMessage
+	 */
+	public String getAuditMessage() {
+		return auditMessage;
+	}
+
+	/**
+	 * Setter method for auditMessage.
+	 *
+	 * @param auditMessage the auditMessage to set
+	 */
+	public void setAuditMessage(String auditMessage) {
+		this.auditMessage = auditMessage;
+	}
+
+	/**
+	 * Getter method for friendlyMessage.
+	 *
+	 * @return the friendlyMessage
+	 */
+	public String getFriendlyMessage() {
+		return friendlyMessage;
+	}
+
+	/**
+	 * Setter method for friendlyMessage.
+	 *
+	 * @param friendlyMessage the friendlyMessage to set
+	 */
+	public void setFriendlyMessage(String friendlyMessage) {
+		this.friendlyMessage = friendlyMessage;
+	}
+
+    /**
+     * Getter method of order flow.
+     * 
+     * @return the orderFlow
+     */
+    public final String getOrderFlow() {
+        return this.orderFlow;
+    }
+
+    /**
+     * Setter method of order flow.
+     * 
+     * @param orderFlow
+     *            the orderFlow to set
+     */
+    public final void setOrderFlow(final String orderFlow) {
+        if ("ASC".equalsIgnoreCase(orderFlow)
+                || "DESC".equalsIgnoreCase(orderFlow)) {
+            this.orderFlow = orderFlow;
+        } else {
+            _log.warn("Attempt to set orderOption with value [" + orderFlow
+                    + "] for class [" + this.getClass().getSimpleName() + "].");
+        }
+    }
+
+    /**
+     * Getter method for order option.
+     * 
+     * @return the orderOption
+     */
+    public final String getOrderOption() {
+        return this.orderOption;
+    }
+
+    /**
+     * Setter method for order option.
+     * 
+     * @param orderOption
+     *            the orderOption to set
+     */
+    public final void setOrderOption(final String orderOption) {
+        // TODO: Add validation to ensure orderOption refers to valid fields.
+        this.orderOption = orderOption;
+    }
 }

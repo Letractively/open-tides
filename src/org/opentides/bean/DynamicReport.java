@@ -25,7 +25,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 @Entity
 @Table(name = "DYNAMIC_REPORT")
-public class DynamicReport extends BaseSortableEntity implements BaseCriteria, Auditable, Uploadable {
+public class DynamicReport extends BaseEntity implements Searchable, Auditable, Uploadable, Sortable {
 
 	private static final long serialVersionUID = -8372709433123880931L;
 
@@ -130,10 +130,6 @@ public class DynamicReport extends BaseSortableEntity implements BaseCriteria, A
 		this.jrxmlFile = jrxmlFile;
 	}
 
-	public String getAuditMessage() {
-		return null;
-	}
-
 	public List<AuditableField> getAuditableFields() {
 		List<AuditableField> props = new ArrayList<AuditableField>();
 		props.add(new AuditableField("name","Name"));
@@ -160,7 +156,7 @@ public class DynamicReport extends BaseSortableEntity implements BaseCriteria, A
 		return null;
 	}
 
-	public Boolean skipAudit() {
+	public Boolean isSkipAudit() {
 		return false;
 	}
 
@@ -177,15 +173,5 @@ public class DynamicReport extends BaseSortableEntity implements BaseCriteria, A
 				this.screenshot = files;
 			}
 		}
-	}
-
-	@Override
-	public String getFriendlyName() {
-		return null;
-	}
-
-	@Override
-	public String getFriendlyMessage() {
-		return null;
 	}
 }
