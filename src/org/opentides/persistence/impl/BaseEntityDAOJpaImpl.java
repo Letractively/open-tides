@@ -34,16 +34,16 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.opentides.InvalidImplementationException;
 import org.opentides.bean.Auditable;
-import org.opentides.bean.BaseCriteria;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.BaseProtectedEntity;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.Sortable;
 import org.opentides.bean.user.BaseUser;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.listener.ApplicationStartupListener;
 import org.opentides.persistence.BaseEntityDAO;
-import org.opentides.util.SecurityUtil;
 import org.opentides.util.CrudUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
 
 
@@ -141,8 +141,8 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 	}
 	
 	public final long countByExample(T example, boolean exactMatch) {
-		if (example instanceof BaseCriteria) {
-			BaseCriteria criteria = (BaseCriteria) example;
+		if (example instanceof Searchable) {
+			Searchable criteria = (Searchable) example;
 			String whereClause = CrudUtil.buildJpaQueryString(criteria, exactMatch);
 			String filterClause = this.buildSecurityFilterClause(example);
 			String append = appendClauseToExample(example, exactMatch);
@@ -152,7 +152,7 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 			return (Long) getEntityManager().createQuery("select count(*) from " + 
 					getEntityBeanType().getName() + " obj " + whereClause).getSingleResult();
 		} else {
-			throw new InvalidImplementationException("Parameter example ["+example.getClass().getName()+"] is not an instance of BaseCriteria");
+			throw new InvalidImplementationException("Parameter example ["+example.getClass().getName()+"] is not an instance of Searchable");
 		}
 	}
 	
@@ -170,8 +170,8 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 	
 	@SuppressWarnings("unchecked")
 	public final List<T> findByExample(T example, boolean exactMatch, int start, int total) {
-		if (example instanceof BaseCriteria) {
-			BaseCriteria criteria = (BaseCriteria) example;
+		if (example instanceof Searchable) {
+			Searchable criteria = (Searchable) example;
 			String whereClause = CrudUtil.buildJpaQueryString(criteria, exactMatch);
 			String orderClause = " " + appendOrderToExample(example);
 			String filterClause = this.buildSecurityFilterClause(example);
@@ -187,7 +187,7 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 				query.setMaxResults(total);	
 			return query.getResultList();
 		} else {
-			throw new InvalidImplementationException("Parameter example ["+example.getClass().getName()+"] is not an instance of BaseCriteria");
+			throw new InvalidImplementationException("Parameter example ["+example.getClass().getName()+"] is not an instance of Searchable");
 		}
 	}
 
@@ -251,6 +251,9 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 		return properties;
 	}
 
+	/**
+	 * Helper method to retrieve jpql query for the given key
+	 */
 	public final String getJpqlQuery(String key) {
 		String query = (String) properties.get(key);
 		if (StringUtil.isEmpty(query)) {
@@ -259,10 +262,17 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 			return query;
 	}
 	
+	/**
+	 * Returns the HibernateSession used by this DAO.
+	 */
 	public final Session getHibernateSession() {
 		return (Session) em.getDelegate();
 	}
 	
+	/**
+	 * Setter method for entity manager.
+	 * @param em
+	 */
 	public final void setEntityManager(EntityManager em) {
         this.em = em;
     }

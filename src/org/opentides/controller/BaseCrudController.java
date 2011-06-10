@@ -210,8 +210,8 @@ public class BaseCrudController<T extends BaseEntity> extends
      *             in case of invalid state or arguments
      * @see #setFormView
      */
-    @SuppressWarnings("unchecked")
-    protected ModelAndView showForm(HttpServletRequest request,
+    @SuppressWarnings("rawtypes")
+	protected ModelAndView showForm(HttpServletRequest request,
             HttpServletResponse response, BindException errors, Map controlModel)
             throws Exception {
         return showForm(request, errors, getShowView(), controlModel);
@@ -236,8 +236,8 @@ public class BaseCrudController<T extends BaseEntity> extends
      *             in case of invalid state or arguments
      * @see ModelAndView
      */
-    @SuppressWarnings("unchecked")
-    protected Map referenceData(HttpServletRequest request, Object command,
+    @SuppressWarnings("rawtypes")
+	protected Map referenceData(HttpServletRequest request, Object command,
             Errors errors) throws Exception {
         return referenceData(request);
     }
@@ -258,8 +258,8 @@ public class BaseCrudController<T extends BaseEntity> extends
      * @see #referenceData(HttpServletRequest, Object, Errors)
      * @see ModelAndView
      */
-    @SuppressWarnings("unchecked")
-    protected Map referenceData(HttpServletRequest request) throws Exception {
+    @SuppressWarnings("rawtypes")
+	protected Map referenceData(HttpServletRequest request) throws Exception {
         return null;
     }
 
@@ -271,7 +271,7 @@ public class BaseCrudController<T extends BaseEntity> extends
      * @see #processFormSubmission(HttpServletRequest, HttpServletResponse,
      *      Object, BindException)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected ModelAndView processFormSubmission(HttpServletRequest request,
             HttpServletResponse response, Object command, BindException errors)
