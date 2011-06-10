@@ -97,7 +97,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         if (entity instanceof Auditable) {
         	try {
             	Auditable auditable = (Auditable) entity;
-            	if (!auditable.skipAudit()) {
+            	if (!auditable.isSkipAudit()) {
 		        	// Use the id and class to get the pre-update state from the database
 		        	Session tempSession = 
 		                HibernateUtil.getSessionFactory().openSession(); 
@@ -122,7 +122,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         try { 
         	synchronized(inserts) {
 	        	for (Auditable entity:inserts) {
-	        		if (!entity.skipAudit()) {
+	        		if (!entity.isSkipAudit()) {
 	        			String friendlyMessage = null;
 	        			String auditMessage = null;
 	        			
@@ -144,7 +144,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         	}
         	synchronized(deletes) {
 	        	for (Auditable entity:deletes) {
-	        		if (!entity.skipAudit()) {
+	        		if (!entity.isSkipAudit()) {
 	        			String friendlyMessage = null;
 	        			String auditMessage = null;
 	        			
@@ -166,7 +166,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         	}
         	synchronized (updates) {
                	for (Auditable entity:updates) {
-	        		if (!entity.skipAudit()) {
+	        		if (!entity.isSkipAudit()) {
 	        			String friendlyMessage = null;
 	        			String auditMessage = null;
 	        			

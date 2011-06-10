@@ -279,6 +279,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 */
 	@Override
 	public void updateLogout(Authentication auth) {
+		if (auth==null) return;
 		Object userObj = auth.getPrincipal();
 		if (userObj instanceof SessionUser) {
 			SessionUser sessionUser = (SessionUser) userObj;

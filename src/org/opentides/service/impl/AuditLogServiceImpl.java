@@ -24,17 +24,53 @@ import java.util.List;
 import java.util.Map;
 
 import org.opentides.bean.AuditLog;
-import org.opentides.service.LogService;
+import org.opentides.persistence.AuditLogDAO;
+import org.opentides.service.AuditLogService;
 import org.springframework.transaction.annotation.Transactional;
 
 
 /**
+ * Service for audit log.
+ * 
  * @author allantan
- *
  */
-public class LogServiceImpl extends BaseCrudServiceImpl<AuditLog> implements LogService {
+public class AuditLogServiceImpl implements AuditLogService {
 
-	@SuppressWarnings("unchecked")
+	private AuditLogDAO auditLogDAO;
+	
+	/**
+	 * Counts all the record of this object
+	 */
+	@Transactional(readOnly=true)
+	public final long countAll() {
+		return auditLogDAO.countAll();
+	}
+
+	/**
+	 * Counts the matching record of this object
+	 */
+	@Transactional(readOnly=true)
+	public final long countByExample(AuditLog example) {
+		return auditLogDAO.countByExample(example);
+	}
+	
+	/**
+	 * For retrieving audit log based on the given example.
+	 */
+	@Override
+	public List<AuditLog> findByExample(AuditLog example, int start, int total) {
+		return auditLogDAO.findByExample(example, start, total);
+	}
+
+	/**
+	 * For retrieving all audit log.
+	 */
+	@Override
+	public List<AuditLog> findAll(int start, int total) {
+		return auditLogDAO.findAll(start, total);
+	}
+	
+	@SuppressWarnings("rawtypes")
 	@Transactional(readOnly=true)
 	public List<AuditLog> findLogByReferenceAndClass(String reference,
 			List<Class> types) {
@@ -43,6 +79,16 @@ public class LogServiceImpl extends BaseCrudServiceImpl<AuditLog> implements Log
 		if (types==null || types.isEmpty())
 			return new ArrayList<AuditLog>();
 		params.put("entityClass", types);
-		return getDao().findByNamedQuery("jpql.audit.findByReferenceAndClass",params);
+		return auditLogDAO.findByNamedQuery("jpql.audit.findByReferenceAndClass",params);
 	}
+
+	/**
+	 * Setter method for auditLogDAO.
+	 *
+	 * @param auditLogDAO the auditLogDAO to set
+	 */
+	public final void setAuditLogDAO(AuditLogDAO auditLogDAO) {
+		this.auditLogDAO = auditLogDAO;
+	}
+
 }

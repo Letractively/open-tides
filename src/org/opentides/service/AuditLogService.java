@@ -27,8 +27,16 @@ import org.opentides.bean.AuditLog;
  * @author allantan
  *
  */
-public interface LogService extends BaseCrudService<AuditLog> {
+public interface AuditLogService {
 
-	@SuppressWarnings("unchecked")
+	public long countAll();
+	
+	public long countByExample(AuditLog example);
+
+	public List<AuditLog> findByExample(AuditLog example, int start, int total);
+	
+	public List<AuditLog> findAll(int start, int total);
+	
+	@SuppressWarnings("rawtypes")
 	public List<AuditLog> findLogByReferenceAndClass(String reference, List<Class> types);
 }

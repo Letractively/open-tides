@@ -19,9 +19,29 @@
 
 package org.opentides.persistence;
 
-import org.opentides.bean.AuditLog;
-import org.opentides.persistence.BaseEntityDAO;
+import java.util.List;
+import java.util.Map;
 
-public interface AuditLogDAO extends BaseEntityDAO<AuditLog, Long> {
+import org.opentides.bean.AuditLog;
+
+
+/**
+ * DAO for Audit Log.
+ * 
+ * @author allantan 
+ */
+public interface AuditLogDAO {
+
+	public List<AuditLog> findAll(int start, int total);
+	
+	public long countAll();
+	
+	public long countByExample(AuditLog example);
+		
+	public List<AuditLog> findByExample(AuditLog example, int start, int total);
+	
+	public List<AuditLog> findByNamedQuery(final String name, final Map<String,Object> params);
+
+	public List<AuditLog> findByNamedQuery(final String name, final Map<String,Object> params, int start, int total);
 
 }
