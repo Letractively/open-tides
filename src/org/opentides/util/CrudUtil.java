@@ -25,16 +25,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.hightides.annotations.util.NamingUtil;
 import org.opentides.InvalidImplementationException;
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
-import org.opentides.bean.BaseCriteria;
 import org.opentides.bean.BaseEntity;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.SystemCodes;
 
 /**
@@ -48,16 +48,16 @@ public class CrudUtil {
 	private static final String SQL_PARAM = ":([^\\s]+)"; 
 	private static final Pattern SQL_PARAM_PATTERN = Pattern.compile(
 			SQL_PARAM, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-    
+	
     /**
      * Creates the logging message for new audit logs 
      * @param obj
      * @return
      */
     public static String buildCreateMessage(Auditable obj) {
-    	NamingUtil.toLabel("");
     	StringBuffer message = new StringBuffer("Added ");
-    	message.append(obj.getClass().getSimpleName())  // class name
+    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName()); 
+    	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(obj.getPrimaryField().getTitle())
     		.append(":");
@@ -66,7 +66,7 @@ public class CrudUtil {
     		message.append(value.toString())
     		.append(" - ");
     	// loop through the fields list
-		List<AuditableField> auditFields = obj.getAuditableFields();
+		List<AuditableField> auditFields = CacheUtil.getAuditable(obj);
 		int count = 0;
 		for (AuditableField property:auditFields) {
 			Object ret = retrieveNullableObjectValue(obj, property.getFieldName());
@@ -90,10 +90,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyCreateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Added new ");
-    	String friendlyName = obj.getFriendlyName();
-    	if (StringUtil.isEmpty(friendlyName)){
-    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
-    	}
+    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -112,7 +109,8 @@ public class CrudUtil {
     public static String buildUpdateMessage(Auditable oldObject, Auditable newObject) {
     	
     	StringBuffer message = new StringBuffer("Changed ");
-    	message.append(oldObject.getClass().getSimpleName())  // class name
+    	String friendlyName = CrudUtil.getReadableName(oldObject.getClass().getName()); 
+    	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(oldObject.getPrimaryField().getTitle())
     		.append(":");
@@ -121,7 +119,7 @@ public class CrudUtil {
     		message.append(value.toString())
     		.append(" - ");
     	// loop through the fields list
-		List<AuditableField> auditFields = oldObject.getAuditableFields();
+		List<AuditableField> auditFields = CacheUtil.getAuditable(oldObject);
 		int count = 0;
 		for (AuditableField property:auditFields) {
 			Object oldValue = retrieveNullableObjectValue(oldObject, property.getFieldName());
@@ -155,10 +153,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyUpdateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Updated ");
-    	String friendlyName = obj.getFriendlyName();
-    	if (StringUtil.isEmpty(friendlyName)){
-    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
-    	}
+    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -176,7 +171,8 @@ public class CrudUtil {
      */
     public static String buildDeleteMessage(Auditable obj) {
     	StringBuffer message = new StringBuffer("Deleted ");
-    	message.append(obj.getClass().getSimpleName())  // class name
+    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName()); 
+    	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(obj.getPrimaryField().getTitle())
     		.append(":");
@@ -193,10 +189,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyDeleteMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Deleted ");
-    	String friendlyName = obj.getFriendlyName();
-    	if (StringUtil.isEmpty(friendlyName)){
-    		friendlyName = NamingUtil.toLabel(obj.getClass().getSimpleName());
-    	}
+    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -214,10 +207,10 @@ public class CrudUtil {
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public static String buildJpaQueryString(BaseCriteria example, boolean exactMatch) {
+	public static String buildJpaQueryString(Searchable example, boolean exactMatch) {
 		int count = 0;
 		StringBuffer clause = new StringBuffer(" where ");
-		List<String> exampleFields = example.getSearchProperties();
+		List<String> exampleFields = CacheUtil.getSearchable(example);
 		for (String property:exampleFields) {
 			// get the value
 			Object ret = retrieveObjectValue(example, property);
@@ -315,13 +308,20 @@ public class CrudUtil {
 	 * @param property
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Object retrieveObjectValue(Object obj, String property) {
 		if (property.contains(".")) {
 			// we need to recurse down to final object
 			String props[] = property.split("\\.");
 			try {
-				Method method = obj.getClass().getMethod(getGetterMethodName(props[0]));
-				Object ivalue = method.invoke(obj);
+				Object ivalue = null;
+				if (Map.class.isAssignableFrom(obj.getClass())) {
+					Map map = (Map) obj;
+					ivalue = map.get(props[0]);					
+				} else {
+					Method method = obj.getClass().getMethod(getGetterMethodName(props[0]));
+					ivalue = method.invoke(obj);
+				}
 				if (ivalue==null)
 					return null;
 				return retrieveObjectValue(ivalue,property.substring(props[0].length()+1));
@@ -331,8 +331,13 @@ public class CrudUtil {
 		} else {
 			// let's get the object value directly
 			try {
-				Method method = obj.getClass().getMethod(getGetterMethodName(property));
-				return method.invoke(obj);
+				if (Map.class.isAssignableFrom(obj.getClass())) {
+					Map map = (Map) obj;
+					return map.get(property);					
+				} else {
+					Method method = obj.getClass().getMethod(getGetterMethodName(property));
+					return method.invoke(obj);					
+				}
 			} catch (Exception e) {
 				throw new InvalidImplementationException("Failed to retrieve value for "+property, e);
 			} 
@@ -427,31 +432,6 @@ public class CrudUtil {
 		}
 		return sql;
 	}
-	
-	/**
-	 * Helper method to retrieve a readable name for a given class.
-	 * This method tries to access static method named readableName and returns its value if exist.
-	 * Otherwise, the method tries to convert the class to a more readable form.
-	 * (e.g. InboundDocument becomes Inbound Document);
-	 * @param entityClass
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static String getReadableName(String entityClass) {
-		try {
-			Class clazz = Class.forName(entityClass);
-			try {
-				Method method = clazz.getMethod("readableName");
-				return method.invoke(null).toString();
-			} catch (Exception e) {
-				String name = clazz.getSimpleName();
-				return name.replaceAll("([A-Z])", " $1");
-			}
-		} catch (ClassNotFoundException e) {
-			_log.warn("Attempt to get readableName for unknown class ["+entityClass+"]");
-			return "";
-		}
-	}
 
 	/**
 	 * Helper method to retrieve all fields of a class including
@@ -467,5 +447,30 @@ public class CrudUtil {
 		for (Field field:clazz.getDeclaredFields())
 			fields.add(field);
 		return fields;
+	}
+	
+	/**
+	 * Helper method to retrieve a readable name for a given class.
+	 * This method tries to access static method named readableName and returns its value if exist.
+	 * Otherwise, the method tries to convert the class to a more readable form.
+	 * (e.g. InboundDocument becomes Inbound Document);
+	 * @param entityClass
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static String getReadableName(String entityClass) {
+		try {
+			Class clazz = Class.forName(entityClass);
+			try {
+				Method method = clazz.getMethod("readableName");
+				return method.invoke(null).toString().trim();
+			} catch (Exception e) {
+				String name = clazz.getSimpleName();
+				return name.replaceAll("([A-Z])", " $1").trim();
+			}
+		} catch (ClassNotFoundException e) {
+			_log.warn("Attempt to get readableName for unknown class ["+entityClass+"]");
+			return "";
+		}
 	}
 }
