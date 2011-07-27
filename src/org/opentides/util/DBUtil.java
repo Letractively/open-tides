@@ -63,7 +63,7 @@ public class DBUtil {
 							+ " with data as follows: \n[" + csvLine + "].");
 				// get all columns with null values
 				List<Integer> nullColumns = new ArrayList<Integer>();
-				for (int i=0; i<values.size(); i++) {
+				for (int i=values.size()-1; i>=0; i--) {
 					String value = values.get(i);					
 					if (StringUtil.isEmpty(value)) {
 						nullColumns.add(i);
