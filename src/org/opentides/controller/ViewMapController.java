@@ -49,6 +49,16 @@ public class ViewMapController extends AbstractController {
 			key = uri.substring(idx+1);
 		else
 			key = uri;
+		
+		// 07/31/2011: allanctan 
+		// added filtering of URL postfix for ; and ?
+		// (e.g. login.jspx;sessionid=... or login.jspx?username=...)
+		int semi = key.indexOf(";");
+		int question = key.indexOf("?");
+		if (semi > 0 || question > 0) {
+			int post = (semi > question)?semi:question;
+			key = key.substring(0, post);
+		}
 		if (viewMap.containsKey(key))
 			viewName = viewMap.get(key);
 		else
