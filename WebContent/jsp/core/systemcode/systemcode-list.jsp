@@ -37,21 +37,21 @@
             <div class="contents">
 	            <div id="search-criteria">
 					<form:form commandName="systemCode" id="systemCodeSearch" action="${url_context}/admin/system-codes.jspx">
-						<p>
+						<div class="form-row"> 
 						<label for="category"><spring:message code="label.category" /></label>
 						<form:select path="category">
 							<form:option value="">Select a Category</form:option>
 							<form:options items="${categories}" itemValue="category" itemLabel="category" />
 						</form:select>
-						</p>
-						<p>
+						</div>
+						<div class="form-row"> 
 						<label for="key"><spring:message code="label.key" /></label>
 						<form:input path="key" maxlength="20" />
-						</p>
-						<p>
+						</div>
+						<div class="form-row"> 
 						<label for="value"><spring:message code="label.value" /></label>
 						<form:input path="value" maxlength="50" />		
-						</p>
+						</div>
 						<ot:sort_input searchFormId="systemCodeSearch"/>
 						<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
 					</form:form>

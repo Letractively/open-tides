@@ -5,7 +5,7 @@
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 
 <td colspan="4">
-<form:form commandName="systemCode" id="systemCode-form-${systemCode.id}"action="">
+<form:form commandName="systemCode" id="systemCode-form-${systemCode.id}" action="">
 	<ot:form_title isNew="${systemCode.isNew}" formName="system-codes"/>
 	
 	<div class="content">	
@@ -21,7 +21,7 @@
 		</c:if>
 		</spring:bind>
 		<div class="fieldsBox">
-    	<p id="categorySelector"> <label for="category"><spring:message code="label.category" /></label>
+    	<div id="categorySelector" class="form-row"> <label for="category"><spring:message code="label.category" /></label>
     		<select id="categorySelect" name="category" onchange="javascript:checkNewCategory(true);">
     			<option value="0">Select a Category</option>
             	<option value="0">-- New Category --</option>
@@ -34,16 +34,22 @@
 				</c:otherwise>
 				</c:choose>
             </c:forEach>
-            </select></p>
-		<p> <label for="key"><spring:message code="label.key" /></label>
-			<form:input path="key" maxlength="20" /> </p>
-		<p> <label for="value"><spring:message code="label.value" /></label>
-			<form:input path="value" maxlength="50" /> </p>
-		<p> <label for="office"><spring:message code="label.override-office" /> </label>
+            </select></div>
+		<div class="form-row">  
+            <label for="key"><spring:message code="label.key" /></label>
+			<form:input path="key" maxlength="20" />
+        </div>
+        <div class="form-row"> 
+		    <label for="value"><spring:message code="label.value" /></label>
+			<form:input path="value" maxlength="50" />
+        </div>
+		<div class="form-row"> 
+            <label for="office"><spring:message code="label.override-office" /> </label>
             <form:select path="ownerOffice">
                 <form:option value=""></form:option>
 	        	<form:options items="${officeList}" itemValue="key" itemLabel="value" />
 			</form:select>
+        </div>
 		</div>
 		<div class="button">
 		  	<ot:submit_button id="${systemCode.id}" page="admin/system-codes.jspx" formName="systemCode-form-${systemCode.id}" prefix="system"/>
