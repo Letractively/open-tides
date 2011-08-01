@@ -402,25 +402,22 @@ IDEYATECH.checkbox = function() {
 		 * @method merge
 		 * @param -
 		 *            formName = name of form containing the checkboxes -
-		 *            checkboxesName = name of checkbox to be processed -
 		 *            targetName = name of the hidden element to put the merged
 		 *            values
 		 */
-		mergeSubmit : function(formName, checkboxesName, targetName) {
-			var checkBoxValues = "";
-			$('#' + formName+ ' input:checkbox').each(function(index) {
-				if (this.checked) {
-					if (index==0) {
-						checkBoxValues = this.value;
-					} else {
-						checkBoxValues = checkBoxValues + "," + this.value;						
-					}
-				}
-			});
-			$('#' + targetName).val(checkBoxValues);
-			$('#'+formName).submit();
-			return true;
-		}
+        mergeSubmit : function(formName, targetName) {
+            var checkBoxValues = "";
+            $('#' + formName+ ' input[name=checkboxes]').each(function(index) {
+                if (this.checked) {
+                    checkBoxValues = checkBoxValues + this.value + ",";    
+                }
+            });
+            if(checkBoxValues.length > 0)
+                checkBoxValues = checkBoxValues.substring(0, checkBoxValues.length - 1);
+            $('#' + targetName).val(checkBoxValues);
+            $('#'+formName).submit();
+            return true;
+        }
 	};
 }();
 
