@@ -228,8 +228,8 @@ public class CrudUtil {
 					SystemCodes sc = (SystemCodes) ret;
 					clause.append(property)
 					.append(".key")
-					.append(" = ")
-					.append(sc.getKey());
+					.append(" = '")
+					.append(sc.getKey()+"'");
 				} else if(BaseEntity.class.isAssignableFrom(ret.getClass())) {
 					BaseEntity be = (BaseEntity) ret;
 					clause.append(property)
