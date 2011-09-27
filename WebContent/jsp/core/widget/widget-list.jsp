@@ -22,17 +22,25 @@
             <div class="contents">
           	            <div id="search-criteria">
 					<form:form commandName="widget" id="widgetSearch" action="${url_context}/admin/widget.jspx">
-						<p><label for="name"><spring:message code="label.widget.name" />: </label>
-	<form:input path="name" /> </p>
+						<div class="form-row"> 
+                            <label for="name"><spring:message code="label.widget.name" />: </label>
+	                        <form:input path="name" /> 
+                        </div>
 
-						<p><label for="title"><spring:message code="label.widget.title" />: </label>
-	<form:input path="title" /> </p>
+						<div class="form-row"> 
+                            <label for="title"><spring:message code="label.widget.title" />: </label>
+	                        <form:input path="title" /> 
+                        </div>
 	
-						<p><label for="url"><spring:message code="label.widget.url" />: </label>
-	<form:input path="url" /> </p>
+						<div class="form-row"> 
+                            <label for="url"><spring:message code="label.widget.url" />: </label>
+	                        <form:input path="url" /> 
+                        </div>
 
-						<p><label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
-	<form:input path="accessCode" /> </p>
+						<div class="form-row">
+                            <label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
+	                        <form:input path="accessCode" /> 
+                        </div>
 
 					<ot:sort_input searchFormId="widgetSearch"/>
 					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />					

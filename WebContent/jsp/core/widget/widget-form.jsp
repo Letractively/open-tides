@@ -21,39 +21,54 @@
 		</c:if>
 		</spring:bind>
 		<div class='fieldsBox'>
-			<p><label for="name"><spring:message code="label.widget.name" />: </label>
-	<form:input onblur="this.value=IDEYATECH.util.removeSpaces(this.value);" path="name" /> <sup class="required">*</sup></p>
+			<div class="form-row"> 
+                <label for="name"><spring:message code="label.widget.name" />: </label>
+	            <form:input onblur="this.value=IDEYATECH.util.removeSpaces(this.value);" path="name" /> <sup class="required">*</sup>
+            </div>
 			
-			<p><label for="title"><spring:message code="label.widget.title" />: </label>
-	<form:input path="title" /> </p>
-			<p>
-			<p>
-				<form:checkbox path="isShown" /><label for="isShown"><spring:message code="label.widget.isShown" /></label>
-			</p>
+			<div class="form-row"> 
+                <label for="title"><spring:message code="label.widget.title" />: </label>
+	            <form:input path="title" /> 
+            </div>
+            
+            <div class="form-row"> 				
+                <form:checkbox path="isShown" /><label for="isShown"><spring:message code="label.widget.isShown" /></label>
+			</div>
 			
-			<p><label for="description"><spring:message code="label.widget.description" />: </label>
-	<form:textarea path="description" rows="3" cols="20"  /> </p>
+			<div class="form-row"> 
+                <label for="description"><spring:message code="label.widget.description" />: </label>
+	            <form:textarea path="description" rows="3" cols="20"  /> 
+            </div>
 
-			<p><label for="url"><spring:message code="label.widget.url" />: </label>
-	<form:input path="url" /> <sup class="required">*</sup></p>
+			<div class="form-row"> 
+                <label for="url"><spring:message code="label.widget.url" />: </label>
+	            <form:input path="url" /> <sup class="required">*</sup>
+            </div>
 
-			<p><label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
-	<form:input path="accessCode" /></p>
+			<div class="form-row"> 
+                <label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
+	            <form:input path="accessCode" />
+            </div>
 
-			<p><label for="cacheDuration"><spring:message code="label.widget.cacheDuration" />: </label>
-	<form:input path="cacheDuration" /> </p>
+			<div class="form-row"> 
+                <label for="cacheDuration"><spring:message code="label.widget.cacheDuration" />: </label>
+	            <form:input path="cacheDuration" /> 
+            </div>
 	
-			<p><label for="screenshot"><spring:message code="label.widget.screenshot" />: </label>
-	<spring:bind path="screenshot">
-		<input type="file" name="attachment"/>
-	</spring:bind> (150 x 100)<br/>
-	<c:forEach items = "${widget.files}" var="fileInfo">
-		<img src="view-image.jspx?FileInfoId=${fileInfo.id}" width="150"/>
-	</c:forEach>
-			</p>
+			<div class="form-row"> 
+                <label for="screenshot"><spring:message code="label.widget.screenshot" />: </label>
+	            <spring:bind path="screenshot">
+		            <input type="file" name="attachment"/>
+	            </spring:bind> (150 x 100)<br/>
+            	<c:forEach items = "${widget.files}" var="fileInfo">
+            		<img src="view-image.jspx?FileInfoId=${fileInfo.id}" width="150"/>
+            	</c:forEach>
+			</div>
 
-			<p><label for="lastCacheUpdate"><spring:message code="label.widget.lastCacheUpdate" />: </label>
-	<form:input path="lastCacheUpdate" /> </p>
+			<div class="form-row"> 
+                <label for="lastCacheUpdate"><spring:message code="label.widget.lastCacheUpdate" />: </label>
+	            <form:input path="lastCacheUpdate" /> 
+            </div>
 
 			<form:hidden path="isUserDefined"  />
 		</div>

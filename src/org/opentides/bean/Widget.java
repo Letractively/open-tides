@@ -49,7 +49,7 @@ import org.hightides.annotations.TextField;
 
 @Entity
 @Table(name = "WIDGET")
-public class Widget extends BaseEntity implements Searchable, Auditable, Uploadable {
+public class Widget extends BaseEntity implements Searchable, Auditable, Uploadable, Sortable {
 
 	private static final long serialVersionUID = -1621927178131406825L;
 	
