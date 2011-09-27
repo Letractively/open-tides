@@ -30,6 +30,34 @@ jQuery.fn.log = function() {
 };
 
 /**
+ * For adding inline labels on text boxes
+ */
+jQuery.fn.watermark = function(label) {
+    if (IDEYATECH.util.isEmpty(this.val())) {
+        this.val(label);
+    } 
+    this.blur(function() {
+        if (IDEYATECH.util.isEmpty($(this).val())) {
+            $(this).val(label);
+        } 
+    });
+    this.focus(function() {
+       if ($(this).val() == label) {
+           $(this).val('');
+       } 
+    });    
+};
+
+/**
+ * For removing watermark, called before submission of form.
+ */
+jQuery.fn.cleanmark = function(label) {
+    if (this.val() == label) {
+        this.val('');
+    }
+};
+
+/**
  * Provides common utility functions.
  * 
  * @class util
@@ -96,6 +124,12 @@ IDEYATECH.util = function() {
 		var str = __hackResponse(response);
 
 		var rootId = __getFirstElementId(str, "tr");
+        
+		if (IDEYATECH.util.isEmpty(rootId)) {
+            //   if no tr with that id, try div
+            rootId = __getFirstElementId(str, "div");
+        }
+        
 		if (!IDEYATECH.util.isEmpty(rootId) && $('#' + rootId).length == 0) {
 			var parent = document.getElementById(args[0]);
 			var userCallback = args[1];
@@ -221,7 +255,7 @@ IDEYATECH.util = function() {
 				__replace(data, args);
 			};
 
-			if (argument['append'])
+			if (argument['append'] == 'true')
 				successCallback = function(data) {
 					__append(data, args);
 				};
@@ -255,7 +289,7 @@ IDEYATECH.util = function() {
 			var successCallback = function(data) {
 				__replace(data, args);
 			};
-			if (argument['append'])
+			if (argument['append'] == 'true')
 				successCallback = function(data) {
 					__append(data, args);
 				};
