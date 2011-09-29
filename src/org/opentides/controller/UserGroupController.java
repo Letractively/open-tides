@@ -24,9 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.opentides.bean.user.UserGroup;
-
-import org.opentides.controller.BaseCrudController;
-
+import org.opentides.bean.user.UserRole;
 import org.opentides.service.UserGroupService;
 
 
@@ -36,11 +34,24 @@ import org.opentides.service.UserGroupService;
  * 
  */
 public class UserGroupController extends BaseCrudController<UserGroup> {
-	@SuppressWarnings("unchecked")
+	
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.controller.BaseCrudController#preUpdateAction(org.opentides.bean.BaseEntity)
+	 */
+	@Override
+	protected void preUpdateAction(UserGroup command) {
+		for (UserRole deleteRole:command.getRemoveList()) {
+			((UserGroupService) getService()).removeUserRole(deleteRole);			
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected Map referenceData(HttpServletRequest request) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("roles", ((UserGroupService) getService()).getRoles());
 		return model;
 	}
+	
 }

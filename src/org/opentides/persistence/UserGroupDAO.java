@@ -23,8 +23,6 @@ import java.util.Set;
 import org.opentides.bean.user.UserGroup;
 import org.opentides.bean.user.UserRole;
 
-import org.opentides.persistence.BaseEntityDAO;
-
 
 /**
  * UserGroup DAO, methods for accessing data related to user group such as
@@ -58,4 +56,11 @@ public interface UserGroupDAO extends BaseEntityDAO<UserGroup, Long> {
 	 * @param name
 	 */
 	public UserGroup loadUserGroupByName(String name);
+	
+	/**
+	 * Removes the user role from the usergroup.
+	 * @param role
+	 * @return
+	 */
+	public boolean removeUserRole(UserRole role);
 }

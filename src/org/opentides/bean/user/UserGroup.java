@@ -34,8 +34,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.opentides.bean.Searchable;
 import org.opentides.bean.BaseEntity;
+import org.opentides.bean.Searchable;
 import org.opentides.util.StringUtil;
 
 
@@ -56,6 +56,9 @@ public class UserGroup extends BaseEntity implements Searchable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userGroup", fetch = FetchType.EAGER)
 	private Set<UserRole> roles;
 
+	@Transient
+	private transient List<UserRole> removeList = new ArrayList<UserRole>(); // list of user roles for deletion
+	
 	@Transient
 	private transient List<String> roleNames; // used for checkboxes in UI
 	
@@ -81,7 +84,7 @@ public class UserGroup extends BaseEntity implements Searchable {
 	 *            the roleNames to set
 	 */
 	public void setRoleNames(List<String> roleNames) {
-		List<UserRole> removeList = new ArrayList<UserRole>();
+		removeList = new ArrayList<UserRole>();
 		this.roleNames = new ArrayList<String>();
 		if (roleNames == null) {
 			for (UserRole role : roles) {
@@ -222,6 +225,31 @@ public class UserGroup extends BaseEntity implements Searchable {
 		return props;
 	}
 
+	/**
+	 * Getter method for removeList.
+	 *
+	 * @return the removeList
+	 */
+	public final List<UserRole> getRemoveList() {
+		return removeList;
+	}
+
+	/**
+	 * @return the users
+	 */
+	public Set<BaseUser> getUsers() {
+		return users;
+	}
+
+	/**
+	 * @param users
+	 *            the users to set
+	 */
+	public void setUsers(Set<BaseUser> users) {
+		this.users = users;
+	}
+	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -257,18 +285,4 @@ public class UserGroup extends BaseEntity implements Searchable {
 		return true;
 	}
 
-	/**
-	 * @return the users
-	 */
-	public Set<BaseUser> getUsers() {
-		return users;
-	}
-
-	/**
-	 * @param users
-	 *            the users to set
-	 */
-	public void setUsers(Set<BaseUser> users) {
-		this.users = users;
-	}
 }

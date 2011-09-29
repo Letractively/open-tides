@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.opentides.bean.user.UserGroup;
 import org.opentides.bean.user.UserRole;
-
 import org.opentides.persistence.UserGroupDAO;
 
 /**
@@ -80,6 +79,17 @@ public class UserGroupDAOJpaImpl extends BaseEntityDAOJpaImpl<UserGroup, Long>
 		return list.get(0);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.UserGroupDAO#removeUserRole(org.opentides.bean.user.UserRole)
+	 */
+	@Override
+	public boolean removeUserRole(UserRole role) {
+		role.setUserId();
+		getEntityManager().remove(role);
+		getEntityManager().flush();
+		return true;
+	}
+
 	@Override
 	protected String appendOrderToExample(UserGroup example) {
 		return " ORDER by obj.name";

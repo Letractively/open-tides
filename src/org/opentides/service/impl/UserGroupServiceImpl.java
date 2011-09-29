@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.opentides.bean.user.UserGroup;
-
 import org.apache.log4j.Logger;
+import org.opentides.bean.user.UserGroup;
+import org.opentides.bean.user.UserRole;
 import org.opentides.persistence.UserGroupDAO;
 import org.opentides.service.UserGroupService;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,27 +33,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class UserGroupServiceImpl extends BaseCrudServiceImpl<UserGroup>
 		implements UserGroupService {
+
 	private static Map<String, String> roles;
+	
 	private UserGroupDAO userGroupDAO;
 
 	@SuppressWarnings("unused")
 	private static final Logger log = Logger
 			.getLogger(UserGroupServiceImpl.class);
-
-	/**
-	 * @return the roles
-	 */
-	public Map<String, String> getRoles() {
-		
-		// added process of sorting the rolesMap by the values in ascending order
-		SortedMap<String, String> sortedData = 
-			new TreeMap<String, String>(new UserGroupServiceImpl.ValueComparer(roles));
-		
-		sortedData.putAll(roles);
-		
-		return sortedData;
-	}
-
 	
 	/** inner class to do soring of the map **/
 	private static class ValueComparer implements Comparator<String> {
@@ -75,12 +62,32 @@ public class UserGroupServiceImpl extends BaseCrudServiceImpl<UserGroup>
 	 *            the roles to set
 	 */
 	public void setRoles(Map<String, String> roles) {
-		UserGroupServiceImpl.roles = roles;
+		// added process of sorting the rolesMap by the values in ascending order
+		SortedMap<String, String> sortedData = 
+			new TreeMap<String, String>(new UserGroupServiceImpl.ValueComparer(roles));
+		
+		sortedData.putAll(roles);
+
+		UserGroupServiceImpl.roles = sortedData;
 	}
 	
+	/**
+	 * @return the roles
+	 */
+	public Map<String, String> getRoles() {
+		return UserGroupServiceImpl.roles;
+	}
+
 	@Transactional(readOnly = true)
 	public UserGroup loadUserGroupByName(String name){
 		return userGroupDAO.loadUserGroupByName(name);
+	}
+	
+	/**
+	 * Removes the UserRole from the database.
+	 */
+	public boolean removeUserRole(UserRole role) {
+		return userGroupDAO.removeUserRole(role);
 	}
 
 	/**
