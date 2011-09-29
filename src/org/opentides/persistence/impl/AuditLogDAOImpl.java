@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.opentides.InvalidImplementationException;
@@ -224,8 +225,9 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 		if (example.getEndDate() != null){
 			if (!StringUtil.isEmpty(append.toString())){
 				append.append(" and ");
-			}
-			String endDate = DateUtil.dateToString(example.getEndDate(), "yyyy-MM-dd");
+			}			
+			String endDate = DateUtil.dateToString(
+								DateUtils.addDays(example.getEndDate(), 1), "yyyy-MM-dd");
 			append.append(" obj.createDate <= '");
 			append.append(endDate + "'");
 		}
