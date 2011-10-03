@@ -3,6 +3,7 @@ package com.ideyatech.core.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opentides.bean.AuditableField;
 import org.opentides.bean.SystemCodes;
 import org.opentides.bean.user.BaseUser;
 
@@ -27,12 +28,24 @@ public class UserCriteria extends BaseUser {
 		props.add("firstName");
 		props.add("lastName");
 		props.add("emailAddress");
-		props.add("favorites");
+		props.add("favorites.value");
 		props.add("credential.username");
 		props.add("credential.enabled");
 		props.add("credential.id");
 		return props;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getAuditableFields()
+	 */
+	@Override
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> fields = new ArrayList<AuditableField>();
+		fields.add(new AuditableField("favorites.value","Favorites"));
+		return fields;
+	}
+
 	/**
 	 * Getter method for favorites.
 	 *

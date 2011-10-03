@@ -54,6 +54,28 @@ public class CrudUtilTest {
 	}
 
 	@Test
+	public void testBuildUpdateArrayMessage() {
+		SystemCodes oldsc = new SystemCodes("categoryold","keyold","valueold");
+		SystemCodes newsc = new SystemCodes("categorynew","keynew","valuenew");
+		SystemCodes samesc = new SystemCodes("categoryold","keysame","valuesame");
+		List<SystemCodes> oldFaves = new ArrayList<SystemCodes>();
+		oldFaves.add(samesc);
+		oldFaves.add(oldsc);
+		List<SystemCodes> newFaves = new ArrayList<SystemCodes>();
+		newFaves.add(newsc);
+		newFaves.add(samesc);
+
+		UserCriteria oldUser = new UserCriteria();
+		UserCriteria newUser = new UserCriteria();
+		oldUser.setFavorites(oldFaves);
+		newUser.setFavorites(newFaves);
+		
+		String expected = "Changed User Criteria Username: added Favorites [valuenew] and removed Favorites [valueold]";
+		Assert.assertEquals(expected,
+				CrudUtil.buildUpdateMessage(oldUser, newUser));
+	}
+
+	@Test
 	public void testBuildUpdateSystemCodesMessage() {
 		SystemCodes oldsc = new SystemCodes("categoryold","keyold","old");
 		SystemCodes newsc = new SystemCodes("categorynew","keynew","new");
@@ -200,6 +222,31 @@ public class CrudUtilTest {
     		
     	}
     }
+
+    @SuppressWarnings("rawtypes")
+	@Test 
+    public void testRetrieveObjectValueArray1() {
+    	UserCriteria user = new UserCriteria();
+    	user.setFirstName("Test");
+       	user.setEmailAddress("admin@ideyatech.com");
+       	List<SystemCodes> codes = new ArrayList<SystemCodes>();
+       	codes.add(new SystemCodes("CATEGORY", "STRING_1", "VALUE_1"));
+       	codes.add(new SystemCodes("CATEGORY", "STRING_2", "VALUE_2"));
+       	codes.add(new SystemCodes("CATEGORY", "STRING_3", "VALUE_3"));
+       	user.setFavorites(codes);
+
+       	List keysResult = (List) CrudUtil.retrieveObjectValue(user, "favorites.key");
+       	Assert.assertEquals(3, keysResult.size());
+       	Assert.assertEquals("STRING_1", keysResult.get(0));
+       	Assert.assertEquals("STRING_2", keysResult.get(1));
+       	Assert.assertEquals("STRING_3", keysResult.get(2));
+       	
+       	List valuesResult = (List) CrudUtil.retrieveObjectValue(user, "favorites.value");
+       	Assert.assertEquals(3, keysResult.size());
+       	Assert.assertEquals("VALUE_1", valuesResult.get(0));
+       	Assert.assertEquals("VALUE_2", valuesResult.get(1));
+       	Assert.assertEquals("VALUE_3", valuesResult.get(2));
+}
 
     @Test 
     public void testRetrieveObjectMap() {

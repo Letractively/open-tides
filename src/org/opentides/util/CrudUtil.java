@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -106,7 +107,8 @@ public class CrudUtil {
      * @param obj
      * @return
      */ 
-    public static String buildUpdateMessage(Auditable oldObject, Auditable newObject) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public static String buildUpdateMessage(Auditable oldObject, Auditable newObject) {
     	
     	StringBuffer message = new StringBuffer("Changed ");
     	String friendlyName = CrudUtil.getReadableName(oldObject.getClass().getName()); 
@@ -126,17 +128,43 @@ public class CrudUtil {
 			Object newValue = retrieveNullableObjectValue(newObject, property.getFieldName());
 			if (oldValue == null) oldValue = "";
 			if (newValue == null) newValue = "";
+			
 			if (!oldValue.equals(newValue)) {
 				if (count > 0) 
 					message.append(" and ");
-				message.append(property.getTitle());
-				if (!StringUtil.isEmpty(oldValue.toString()))
-				message.append(" from '")
-						.append(oldValue.toString())
+
+				if (Collection.class.isAssignableFrom(oldValue.getClass()) &&
+						Collection.class.isAssignableFrom(newValue.getClass()) ) {
+					List addedList = new ArrayList();
+					addedList.addAll((List) newValue);
+					addedList.removeAll((List) oldValue);
+					List removedList = new ArrayList();
+					removedList.addAll((List) oldValue);
+					removedList.removeAll((List) newValue);	
+					if (!addedList.isEmpty()) {
+						message.append(" added ")
+								.append(property.getTitle())
+								.append(" ")
+								.append(addedList);
+					} 					
+					if (!removedList.isEmpty()) {
+						if (!addedList.isEmpty()) 
+							message.append(" and");
+						message.append(" removed ")
+								.append(property.getTitle())
+								.append(" ")
+								.append(removedList);						
+					} 
+				} else {
+					message.append(property.getTitle());
+					if (!StringUtil.isEmpty(oldValue.toString()))
+					message.append(" from '")
+							.append(oldValue.toString())
+							.append("'");
+					message.append(" to '")
+						.append(newValue.toString())
 						.append("'");
-				message.append(" to '")
-					.append(newValue.toString())
-					.append("'");
+				}				
 				count++;
 			}
 		}
@@ -324,6 +352,19 @@ public class CrudUtil {
 				}
 				if (ivalue==null)
 					return null;
+				// traverse collection objects
+				if (Collection.class.isAssignableFrom(ivalue.getClass())) {
+					Iterator iter = ((Collection)ivalue).iterator();
+					List<Object> ret = new ArrayList<Object>();
+					String prop = property.substring(props[0].length()+1);
+					while (iter.hasNext()) {
+						Object lvalue = iter.next();
+						if (lvalue!=null) {
+							ret.add(retrieveObjectValue(lvalue,prop));
+						}
+					}
+					return ret;
+				}
 				return retrieveObjectValue(ivalue,property.substring(props[0].length()+1));
 			} catch (Exception e) {
 				throw new InvalidImplementationException("Failed to retrieve value for "+property, e);
