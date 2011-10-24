@@ -37,6 +37,14 @@
 		<path>/META-INF/tags/update_button.tag</path>
 	</tag-file>	
 	<tag-file>
+		<name>edit_udf</name>
+		<path>/META-INF/tags/edit_udf.tag</path>
+	</tag-file>	
+	<tag-file>
+		<name>view_udf</name>
+		<path>/META-INF/tags/view_udf.tag</path>
+	</tag-file>	
+	<tag-file>
 		<name>login_form</name>
 		<path>/META-INF/tags/login_form.tag</path>
 	</tag-file>	

@@ -395,6 +395,14 @@ public abstract class BaseEntity implements Serializable {
 		this.auditMessage = auditMessage;
 	}
 
+    /**
+     * Default getReference. Override for specific reference.
+     * @return
+     */
+	public String getReference() {
+		return null;
+	} 
+	
 	/**
 	 * Getter method for friendlyMessage.
 	 *
@@ -457,4 +465,5 @@ public abstract class BaseEntity implements Serializable {
         // TODO: Add validation to ensure orderOption refers to valid fields.
         this.orderOption = orderOption;
     }
+    
 }

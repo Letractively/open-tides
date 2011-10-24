@@ -38,8 +38,10 @@ import org.opentides.bean.FileInfo;
 import org.opentides.bean.SearchResults;
 import org.opentides.bean.SystemCodes;
 import org.opentides.bean.Uploadable;
+import org.opentides.bean.UserDefinable;
 import org.opentides.service.BaseCrudService;
 import org.opentides.service.FileInfoService;
+import org.opentides.service.UserDefinedFieldService;
 import org.opentides.util.DateUtil;
 import org.opentides.util.FileUtil;
 import org.opentides.util.StringUtil;
@@ -74,6 +76,7 @@ public class BaseCrudController<T extends BaseEntity> extends
     private BaseCrudService<T> service;
     private BaseCrudService<SystemCodes> systemCodesService;
 	private BaseCrudService<FileInfo> fileInfoService;
+	private UserDefinedFieldService userDefinedFieldService;
     private String uploadPath = File.separator + "uploads";
     private boolean requireUpload = false;
     private boolean multipleUpload = true;
@@ -358,6 +361,8 @@ public class BaseCrudController<T extends BaseEntity> extends
             Map<String, Object> model = referenceData(request, command, errors);
             if (model == null)
                 model = new HashMap<String, Object>();
+            if (UserDefinable.class.isAssignableFrom(command.getClass()))
+            	model.put("dropList",userDefinedFieldService.getDropDownReferenceData(command.getClass().getSimpleName()));
             model.put(getCommandName(), obj);
             model.put("results", results);
             model.putAll(errors.getModel());
@@ -754,6 +759,14 @@ public class BaseCrudController<T extends BaseEntity> extends
     }
 
     /**
+	 * @param userDefinedFieldService the userDefinedFieldService to set
+	 */
+	public final void setUserDefinedFieldService(
+			UserDefinedFieldService userDefinedFieldService) {
+		this.userDefinedFieldService = userDefinedFieldService;
+	}
+
+	/**
      * @return the supportsPaging
      */
     public final boolean isSupportsPaging() {
