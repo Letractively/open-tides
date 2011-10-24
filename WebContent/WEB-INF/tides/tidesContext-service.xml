@@ -24,6 +24,14 @@
 		<property name="dao" ref="userWidgetsDAO"/>
 	</bean>
 
+	<bean id="userDefinedFieldService" class="org.opentides.service.impl.UserDefinedFieldServiceImpl" autowire="byName">
+		<property name="dao" ref="userDefinedFieldDAO"/>
+	</bean>
+
+	<bean id="userDefinedRecordService" class="org.opentides.service.impl.UserDefinedRecordServiceImpl" autowire="byName">
+		<property name="dao" ref="userDefinedRecordDAO"/>
+	</bean>
+
 	<bean id="fileInfoService" class="org.opentides.service.impl.FileInfoServiceImpl">
 		<property name="dao" ref="fileInfoDAO"/>
 	</bean>

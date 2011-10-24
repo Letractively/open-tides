@@ -22,6 +22,7 @@
 				<prop key="/widget-persist.jspx">persistWidgetController</prop>
 				<prop key="/widget-external.jspx">externalWidgetController</prop>
 				<prop key="/generate-report.jspx">generateReportController</prop>
+				<prop key="/admin/user-defined-field.jspx">userDefinedFieldController</prop>
 				<prop key="/admin/report.jspx">reportController</prop>
 				<prop key="/admin/system-codes.jspx">systemCodesController</prop>
 				<prop key="/admin/users.jspx">userController</prop>
@@ -69,6 +70,20 @@
 		<property name="refreshView" value="core/systemcode/systemcode-refresh" />
 		<property name="validator">
 			<ref bean="systemCodesValidator" />
+		</property>
+		<property name="pageSize" value="${search.page.size}" />
+		<property name="numLinks" value="${search.links.displayed}" />
+	</bean>
+
+	<bean id="userDefinedFieldController" class="org.opentides.controller.UserDefinedFieldController">
+		<property name="service" ref="userDefinedFieldService" />
+		<property name="commandName" value="userDefinedField" />
+		<property name="commandClass" value="org.opentides.bean.UserDefinedField" />
+		<property name="formView" value="core/userDefinedField/userDefinedField-form" />
+		<property name="searchView" value="core/userDefinedField/userDefinedField-list" />
+		<property name="refreshView" value="core/userDefinedField/userDefinedField-refresh" />
+		<property name="validator">
+			<ref bean="userDefinedFieldValidator" />
 		</property>
 		<property name="pageSize" value="${search.page.size}" />
 		<property name="numLinks" value="${search.links.displayed}" />
@@ -178,6 +193,7 @@
 		<property name="refreshView" value="core/usergroup/usergroup-refresh" />
 		<property name="pageSize" value="${search.page.size}" />
 		<property name="numLinks" value="${search.links.displayed}" />
+		<property name="validator" ref="userGroupValidator" />
 	</bean>
 
 	<bean id="generateReportController" class="org.opentides.controller.GenerateReportController">
@@ -195,10 +211,12 @@
 	<!-- Validators -->
 	<bean id="systemCodesValidator" class="org.opentides.validator.SystemCodesValidator">
 		<property name="systemCodesService" ref="systemCodesService" />
-	</bean>
+	</bean>		
 	<bean id="userValidator" class="org.opentides.validator.UserValidator">
 		<property name="userDAO" ref="coreUserDAO" />
 	</bean>
+	<bean id="userDefinedFieldValidator" autowire="byName"
+		class="org.opentides.validator.UserDefinedFieldValidator" />	
 	<bean id="widgetValidator" autowire="byName"
 		class="org.opentides.validator.WidgetValidator" />
 	<bean id="reportValidator" autowire="byName"
@@ -209,6 +227,8 @@
 		class="org.opentides.validator.ConfirmPasswordResetValidator" />
 	<bean id="changePasswordValidator" autowire="byName"
 		class="org.opentides.validator.ChangePasswordValidator" />
+	<bean id="userGroupValidator" autowire="byName"
+		class="org.opentides.validator.UserGroupValidator" />
 
 	<!-- multipart resolver -->
 	<bean id="multipartResolver"

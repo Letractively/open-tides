@@ -10,6 +10,8 @@
 			<property name="properties" ref="jpqlProperties" />
 	</bean>
 	<bean id="systemCodesDAO" class="org.opentides.persistence.impl.SystemCodesDAOJpaImpl" parent="baseDAO" autowire="byName" />	
+	<bean id="userDefinedFieldDAO" class="org.opentides.persistence.impl.UserDefinedFieldDAOJpaImpl" parent="baseDAO" autowire="byName" />	
+	<bean id="userDefinedRecordDAO" class="org.opentides.persistence.impl.UserDefinedRecordDAOJpaImpl" parent="baseDAO" autowire="byName" />	
 	<bean id="fileInfoDAO" class="org.opentides.persistence.impl.FileInfoDAOJpaImpl" parent="baseDAO"/>	
 	<bean id="passwordResetDAO" class="org.opentides.persistence.impl.PasswordResetDAOJpaImpl" parent="baseDAO"/>
 	<bean id="coreUserDAO" class="org.opentides.persistence.impl.UserDAOImpl" parent="baseDAO">
