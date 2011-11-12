@@ -28,7 +28,7 @@
         <c:when test="${fn:startsWith(field.userField, 'date')==true}">
         <div class="L">
             <a id="show${field.userField}" title="${field.label}" class="date-picker">
-            <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="${field.reference}" var="${field.userField}"/>
+            <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="${field.userField}"/>
             <input type="text" name="${fieldRef}" id="${field.userField}" value="${crud.retrieveObjectValue(object, fieldRef)}" class="num-date" readonly="true"/>
             </a>
             <img src="${url_context}/themes/attache/images/icons/trash.gif" 
