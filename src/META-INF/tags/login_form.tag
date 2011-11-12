@@ -34,10 +34,8 @@
 	<p id="loginSubmitSection">
 		<label for="sign-in">&nbsp;</label><input type="submit" value="Login" />
 	</p>
-	<c:if test="${forgot_password_check eq 'true'}">
-		<p id="loginForgotPasswordSection" class="forgot-password">
-			<a href="<c:url value='request-password-reset.jspx'/>"><spring:message
-					code="msg.forgot-your-password" /> </a>
-		</p>
-	</c:if>
+	<p id="loginForgotPasswordSection" class="forgot-password">
+		<a href="<c:url value='request-password-reset.jspx'/>"><spring:message
+				code="msg.forgot-your-password" /> </a>
+	</p>
 </form>
