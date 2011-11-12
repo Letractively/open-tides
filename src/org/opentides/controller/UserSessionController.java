@@ -19,6 +19,7 @@
 package org.opentides.controller;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,14 +33,18 @@ import org.springframework.security.core.session.SessionInformation;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-public class ViewSessionController extends AbstractController {
+public class UserSessionController extends AbstractController {
 	@SuppressWarnings("unused")
-	private static Logger _log = Logger.getLogger(ViewSessionController.class);
+	private static Logger _log = Logger.getLogger(UserSessionController.class);
 	private UserService userService;
 	private String viewName;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.mvc.AbstractFormController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.web.servlet.mvc.AbstractFormController#
+	 * handleRequestInternal(javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -53,26 +58,38 @@ public class ViewSessionController extends AbstractController {
 		return new ModelAndView(viewName, model);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(javax.servlet.http.HttpServletRequest)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.SimpleFormController#referenceData
+	 * (javax.servlet.http.HttpServletRequest)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected Map referenceData(HttpServletRequest request) throws Exception {
 		List<SessionInformation> sessions = userService.getAllLoggedUsers();
+		Iterator<SessionInformation> it = sessions.iterator();
+		while (it.hasNext()) {
+			if (it.next().getSessionId().equals(request.getSession().getId())) {
+				it.remove();
+			}
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("sessionList", sessions);
 		return model;
 	}
 
 	/**
-	 * @param userService the userService to set
+	 * @param userService
+	 *            the userService to set
 	 */
 	public final void setUserService(UserService userService) {
 		this.userService = userService;
 	}
 
 	/**
-	 * @param viewName the viewName to set
+	 * @param viewName
+	 *            the viewName to set
 	 */
 	public final void setViewName(String viewName) {
 		this.viewName = viewName;
