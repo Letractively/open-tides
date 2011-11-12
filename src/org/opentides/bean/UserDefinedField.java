@@ -30,6 +30,7 @@ import org.hightides.annotations.DropDown;
 import org.hightides.annotations.Page;
 import org.hightides.annotations.Service;
 import org.hightides.annotations.TextField;
+import org.opentides.util.CrudUtil;
 import org.opentides.util.StringUtil;
 
 /**
@@ -195,6 +196,17 @@ public class UserDefinedField extends BaseEntity
 			return fraction;
 	}
 	
+	/**
+	 * Passthrough method for retrieving object value dynamically as needed in
+	 * the jsp page (taglib).
+	 * 
+	 * @param object
+	 * @param property
+	 * @return
+	 */
+	public final String retrieveValue(UserDefinable object, String property) {
+		return CrudUtil.retrieveObjectValue(object, property).toString();
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
