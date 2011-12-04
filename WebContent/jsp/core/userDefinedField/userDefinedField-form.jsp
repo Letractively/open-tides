@@ -52,9 +52,6 @@
             </div>
 		</div>
 	</form:form>
-		<div class="requiredInfo">
-			<sup class="required">*</sup> Indicates required field.
-		</div>
 		<div class="button">
 	  		<ot:submit_button id="${userDefinedField.id}" page="admin/user-defined-field.jspx" formName="user-defined-field-form-${userDefinedField.id}" prefix="user-defined-field" />
   			<ot:cancel_button id="${userDefinedField.id}" page="admin/user-defined-field.jspx" prefix="user-defined-field" />
