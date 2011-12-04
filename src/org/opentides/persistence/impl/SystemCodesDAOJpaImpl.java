@@ -27,7 +27,6 @@ import java.util.Map;
 import org.opentides.bean.SystemCodes;
 import org.opentides.persistence.SystemCodesDAO;
 
-@SuppressWarnings("deprecation")
 public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Long> implements
 		SystemCodesDAO {
 
@@ -89,4 +88,5 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 			return new ArrayList<SystemCodes>();
 		return list;
 	}
+	
 }
