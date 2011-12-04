@@ -4,7 +4,7 @@
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="sec"
     uri="http://www.springframework.org/security/tags"%>
-<idy:header title_webpage="label.welcome">
+<idy:header title_webpage="label.user-session">
 	<script src="${url_jquery}"></script>
 	<script src="${url_jquery_ui}"></script>
 	<script type="text/javascript" src="script/attache.js"></script>
@@ -55,8 +55,8 @@
     function confirmLogout(completeName, username) {
         var answer = confirm("Are you sure to logout " + completeName + " ?");
         if (answer)
-            window.location = "${url_context}/view-session.jspx?logout="
+            window.location = "${url_context}/user-session.jspx?logout="
                     + username;
-    }
+    } 
 </script>
 </idy:footer>
