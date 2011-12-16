@@ -5,10 +5,18 @@
     -
     - @param meta - the meta listing of udf 
     - @param object - the object containing udf
+    - @param searchMode - if true, only isListed udf are displayed
+    - @param prefix - insert prefix before each result is displayed
+    - @param postfix - append postfix after each  result is displayed
+    -
     --%>
 <%@ tag isELIgnored="false" body-content="empty"%>
 <%@ attribute name="meta" required="true" type="java.util.List"%>
 <%@ attribute name="object" required="true" type="org.opentides.bean.UserDefinable"%>
+<%@ attribute name="searchMode" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="prefix" required="false" type="java.lang.String" %>
+<%@ attribute name="postfix" required="false" type="java.lang.String" %>
+
 <jsp:useBean id="crud" class="org.opentides.util.CrudUtil" />
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -17,10 +25,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
 
 <c:forEach items="${meta}" var="field"> 
-    <div class="form-row">
+<c:if test="${(empty field.condition) || crud.evaluateExpression(object, field.condition)}">
+<c:if test="${(not searchMode) || (searchMode && field.listed)}">
+    ${prefix}
     <c:set var="fieldRef" value="udf.${field.userField}"/>
-    <c:set var="value" value="${crud.retrieveObjectValue(object, fieldRef)}"/>
+    <c:set var="value" value="${crud.retrieveNullableObjectValue(object, fieldRef)}"/>   
+    <c:if test="${ not (searchMode && field.listed)}"> 
     <label>${field.label}</label>
+    </c:if>
     <c:choose>
         <c:when test="${fn:startsWith(field.userField, 'string')==true}">
             <span>${value}</span>
@@ -35,8 +47,10 @@
             <span><c:if test="${value==true}">Yes</c:if><c:if test="${value!=true}">No</c:if></span>
         </c:when>        
         <c:when test="${fn:startsWith(field.userField, 'dropdown')==true}">
-            <span>${crud.retrieveObjectValue(object, fieldRef).value}</span>
+            <span>${crud.retrieveNullableObjectValue(object, fieldRef).value}</span>
         </c:when>
     </c:choose>
-    </div>
+    ${postfix}
+</c:if>
+</c:if>
 </c:forEach>

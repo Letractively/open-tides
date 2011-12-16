@@ -5,10 +5,20 @@
     -
     - @param meta - the meta listing of udf 
     - @param object - the object containing udf
+    - @param searchMode - if true, only searchable udf are displayed
+    - @param prefix - insert prefix before each result is displayed
+    - @param postfix - append postfix after each  result is displayed
+    
     --%>
 <%@ tag isELIgnored="false" body-content="empty"%>
 <%@ attribute name="meta" required="true" type="java.util.List"%>
 <%@ attribute name="object" required="true" type="org.opentides.bean.UserDefinable"%>
+
+<%@ attribute name="searchMode" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="prefix" required="false" type="java.lang.String" %>
+<%@ attribute name="postfix" required="false" type="java.lang.String" %>
+
+
 <jsp:useBean id="crud" class="org.opentides.util.CrudUtil" />
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -17,7 +27,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <c:forEach items="${meta}" var="field"> 
-    <div class="form-row">
+<c:if test="${(empty field.condition) || crud.evaluateExpression(object, field.condition)}">
+<c:if test="${(not searchMode) || (searchMode && field.searchable)}">
+    ${prefix} 
     <c:set var="fieldRef" value="udf.${field.userField}"/>
     <label>${field.label}</label>
     <c:choose>
@@ -28,12 +40,12 @@
         <c:when test="${fn:startsWith(field.userField, 'date')==true}">
         <div class="L">
             <a id="show${field.userField}" title="${field.label}" class="date-picker">
-            <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="${field.userField}"/>
-            <input type="text" name="${fieldRef}" id="${field.userField}" value="${crud.retrieveObjectValue(object, fieldRef)}" class="num-date" readonly="true"/>
+            <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            <input type="text" name="${fieldRef}" id="${field.userField}" value="${udfDate}" class="num-date" readonly="true"/>
             </a>
-            <img src="${url_context}/themes/attache/images/icons/trash.gif" 
-                onClick="javascript: document.getElementById('${crud.retrieveObjectValue(object, fieldRef)}').value=''; document.getElementById('${crud.retrieveObjectValue(object, fieldRef)}').focus();" 
-                title="Cancel" class="iconz"/>
+            <img src="${url_context}<spring:theme code="trash"/>" 
+                onClick="javascript: document.getElementById('${field.userField}').value=''; document.getElementById('${field.userField}').focus();" 
+                title="Clear" class="iconz"/>
         </div>
         <script type="text/javascript">
         $(document).ready(function() {
@@ -58,12 +70,16 @@
             </div>
         </c:when>
         <c:when test="${fn:startsWith(field.userField, 'dropdown')==true}">
-            <select id="${fieldRef}" name="${fieldRef}">            
+        	<c:set var="fieldId" value="udf.${field.userField}.id"/>
+            <select id="${fieldRef}" name="${fieldRef}">    
+             	<option value=""></option>
             <c:forEach items="${crud.retrieveObjectValue(dropList, field.userField)}" var="item">
-                <option value="${item.id}">${item.value}</option>
+                <option value="${item.id}" <c:if test="${crud.retrieveObjectValue(object, fieldId) eq item.id}">selected</c:if>> ${item.value}</option>
             </c:forEach>
             </select>
         </c:when>
     </c:choose>    
-    </div>
+    ${postfix}
+</c:if>
+</c:if>
 </c:forEach>

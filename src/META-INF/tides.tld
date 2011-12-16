@@ -43,7 +43,11 @@
 	<tag-file>
 		<name>view_udf</name>
 		<path>/META-INF/tags/view_udf.tag</path>
-	</tag-file>	
+	</tag-file>
+	<tag-file>
+		<name>label_udf</name>
+		<path>/META-INF/tags/label_udf.tag</path>
+	</tag-file>		
 	<tag-file>
 		<name>login_form</name>
 		<path>/META-INF/tags/login_form.tag</path>
