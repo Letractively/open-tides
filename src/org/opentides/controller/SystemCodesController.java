@@ -19,20 +19,16 @@
 
 package org.opentides.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.opentides.bean.SearchResults;
 import org.opentides.bean.SystemCodes;
 import org.opentides.bean.user.BaseUser;
+import org.opentides.editor.SystemCodeEditor;
 import org.opentides.service.SystemCodesService;
-import org.opentides.util.StringUtil;
-import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 
 
 /**
@@ -44,10 +40,22 @@ import org.springframework.validation.BindException;
  */
 public class SystemCodesController extends BaseCrudController<SystemCodes> {
 	
+	private SystemCodesService systemCodesService;
+
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.mvc.BaseCommandController#initBinder(javax.servlet.http.HttpServletRequest, org.springframework.web.bind.ServletRequestDataBinder)
+	 */
+	@Override
+	protected void initBinder(HttpServletRequest request,
+			ServletRequestDataBinder binder) throws Exception {
+		// TODO Auto-generated method stub
+		binder.registerCustomEditor(SystemCodes.class, new SystemCodeEditor(systemCodesService));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.springframework.web.servlet.mvc.AbstractFormController#referenceData(javax.servlet.http.HttpServletRequest, java.lang.Object, org.springframework.validation.Errors)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected Map referenceData(HttpServletRequest request) throws Exception {
 		Map<String,Object> model = new HashMap<String,Object>();
@@ -58,25 +66,12 @@ public class SystemCodesController extends BaseCrudController<SystemCodes> {
 		return model;
 	}
 
-	
-	@Override
-	protected SearchResults<SystemCodes> postSearchAction(
-			HttpServletRequest request, HttpServletResponse response,
-			SystemCodes command, BindException errors,
-			SearchResults<SystemCodes> result) {
-		SearchResults<SystemCodes> finalResult = new SearchResults<SystemCodes>(getPageSize(), getNumLinks());
-		List<SystemCodes> systemCodesList = new ArrayList<SystemCodes>();
-		int count = 0;
-		for (SystemCodes s : result.getResults()){
-			if (!StringUtil.isEmpty(s.getCategory()) && !s.getCategory().equals("KEYGEN")){
-				systemCodesList.add(s);
-			}
-			count++;
-		}
-		finalResult.addResults(systemCodesList);
-		finalResult.setCurrPage(result.getCurrPage());
-		finalResult.setTotalResults(result.getTotalResults() - count);
-		
-		return finalResult;
-	}
+	/**
+	 * Setter method for systemCodesService.
+	 *
+	 * @param systemCodesService the systemCodesService to set
+	 */
+	public final void setSystemCodesService(SystemCodesService systemCodesService) {
+		this.systemCodesService = systemCodesService;
+	}	
 }

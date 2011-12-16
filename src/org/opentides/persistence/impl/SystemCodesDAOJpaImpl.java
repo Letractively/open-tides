@@ -33,13 +33,10 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 	/**
 	 * Retrieves SystemCodes for the given category
 	 */
-	public List<SystemCodes> findSystemCodesByCategory(String category) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("category", category);
-		List<SystemCodes> list = findByNamedQuery("jpql.systemcodes.findByCategory", map);
-		if (list == null || list.size() == 0)
-			return null;
-		return list;
+	public List<SystemCodes> findSystemCodesByCategory(String category) {		
+        SystemCodes example = new SystemCodes();
+        example.setCategory(category);
+        return findByExample(example, true);        
 	}
 
 	/**
@@ -57,11 +54,8 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 	 */
 	public Long incrementValue(String key) {
 	    synchronized(SystemCodes.class) {
-    		SystemCodes code = new SystemCodes(key);
-    		code.setDisableProtection(true);
-    		List<SystemCodes> results = findByExample(code, true);
-    		if (results != null && results.size() > 0)
-    			code = results.get(0);
+    		SystemCodes code = loadBySystemCodesByKey(key);
+    		if (code==null) code = new SystemCodes(key);
             code.setSkipAudit(true);    // no need to audit auto-generated keys
     		code.incrementNumberValue();
     		code.setCategory("KEYGEN");
@@ -87,6 +81,16 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 		if (list == null || list.size() == 0)
 			return new ArrayList<SystemCodes>();
 		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.impl.BaseEntityDAOJpaImpl#appendClauseToExample(org.opentides.bean.BaseEntity, boolean)
+	 */
+	@Override
+	protected String appendClauseToExample(SystemCodes example,
+			boolean exactMatch) {
+		// exclude all system code with category KEYGEN
+		return "category != 'KEYGEN'";
 	}
 	
 }
