@@ -362,7 +362,7 @@ public class BaseCrudController<T extends BaseEntity> extends
             if (model == null)
                 model = new HashMap<String, Object>();
             if (UserDefinable.class.isAssignableFrom(command.getClass()))
-            	model.put("dropList",userDefinedFieldService.getDropDownReferenceData(command.getClass().getSimpleName()));
+            	model.put("dropList",userDefinedFieldService.getDropDownReferenceData(command.getClass().getName()));
             model.put(getCommandName(), obj);
             model.put("results", results);
             model.putAll(errors.getModel());
