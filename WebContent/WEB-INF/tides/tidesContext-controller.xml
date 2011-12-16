@@ -15,7 +15,7 @@
 				<prop key="/change-password.jspx">changePassword</prop>
 				<prop key="/download-file.jspx">downloadFileInfo</prop>
 				<prop key="/view-image.jspx">viewFileInfoImageController</prop>
-				<prop key="/view-session.jspx">viewSessionController</prop>
+				<prop key="/user-session.jspx">userSessionController</prop>
 				<prop key="/widget-add.jspx">addWidgetController</prop>
 				<prop key="/widget-load.jspx">loadWidgetController</prop>
 				<prop key="/widget-displayer.jspx">displayWidgetController</prop>
@@ -200,7 +200,7 @@
 		<property name="service" ref="reportService" />
 	</bean>
 
-	<bean id="viewSessionController" class="org.opentides.controller.ViewSessionController"
+	<bean id="userSessionController" class="org.opentides.controller.UserSessionController"
 		autowire="byName">
 		<property name="viewName" value="core/user/user-session" />
 	</bean>
