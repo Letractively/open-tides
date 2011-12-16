@@ -38,13 +38,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
-import org.opentides.bean.Searchable;
 import org.opentides.bean.BaseProtectedEntity;
+import org.opentides.bean.Searchable;
 import org.opentides.bean.SystemCodes;
+import org.opentides.util.StringUtil;
 
 @Entity
 @Table(name = "USER_PROFILE")
@@ -90,20 +90,26 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 	
 	@Column(name = "LASTLOGIN")
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastLogin;
+	private Date lastLogin;	
 	
-	@Transient
-	private transient boolean skipAudit;
+	@Column(name="LANGUAGE")
+	private String language;
 	
-	@Transient
-	private transient String auditMessage;
+	@Column(name="LAST_LOGIN_IP")
+	private String lastLoginIP;
 	
-	@Transient
-	private transient String friendlyMessage;
+	@Column(name="PREV_LOGIN_IP")
+	private String prevLoginIP;
+
+	@Column(name="LAST_FAILED_IP")
+	private String lastFailedIP;
+
+	@Column(name="TOTAL_LOGIN_COUNT")
+	private Long totalLoginCount;
 	
-	@Transient
-	private transient String friendlyName = "Base User";
-	
+	@Column(name="FAILED_LOGIN_COUNT")
+	private Long failedLoginCount;
+		
 	public BaseUser() {
 		super();
 		this.setCredential(new UserCredential());
@@ -126,7 +132,15 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 		clone.middleName   = this.middleName;
 		clone.emailAddress = this.emailAddress;
 		clone.image        = this.image;
+		clone.office	   = this.office;
+		clone.language	   = this.language;
 		clone.lastLogin    = this.lastLogin;
+		clone.credential   = this.credential;
+		clone.lastFailedIP = this.lastFailedIP;
+		clone.lastLoginIP  = this.lastLoginIP;
+		clone.prevLoginIP  = this.prevLoginIP;
+		clone.totalLoginCount  = this.totalLoginCount;
+		clone.failedLoginCount = this.failedLoginCount;
 		return clone;
 	}
 
@@ -153,50 +167,12 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 		props.add("office");
 		return props;
 	}
-
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 	
 	public String getCompleteName() {
-		return this.firstName + " " + this.lastName;
-	}
-
-	public UserCredential getCredential() {
-		return credential;
-	}
-
-	public void setCredential(UserCredential userAccount) {
-		this.credential = userAccount;
-		userAccount.setUser(this);
+		if (StringUtil.isEmpty(this.lastName))
+			return this.lastName + "," + this.firstName + " " + this.middleName;
+		else
+			return this.firstName + " " + this.middleName + " " + this.lastName; 
 	}
 	
 	public boolean hasPermission(String permission) {
@@ -210,69 +186,9 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 		return false;
 	}
 
-	/**
-	 * @return the groups
-	 */
-	public Set<UserGroup> getGroups() {
-		return groups;
-	}
-
-	/**
-	 * @param groups
-	 *            the groups to set
-	 */
-	public void setGroups(Set<UserGroup> groups) {
-		this.groups = groups;
-	}
-
-	/**
-	 * @return the image
-	 */
-	public byte[] getImage() {
-		return image;
-	}
-
-	/**
-	 * @param image
-	 *            the image to set
-	 */
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-	
-
-	/**
-	 * @return the lastLogin
-	 */
-	public Date getLastLogin() {
-		return lastLogin;
-	}
-
-	/**
-	 * @param lastLogin
-	 *            the lastLogin to set
-	 */
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
-	}
-
-	/**
-	 * @return the office
-	 */
-	public SystemCodes getOffice() {
-		return office;
-	}
-
-	/**
-	 * @param office the office to set
-	 */
-	public void setOffice(SystemCodes office) {
-		this.office = office;
-	}
-
 	@Override
 	public String toString() {
-		return this.lastName + ", " + this.firstName;
+		return getCompleteName();
 	}
 
 	/* (non-Javadoc)
@@ -282,15 +198,7 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 	public AuditableField getPrimaryField() {
 		return new AuditableField("username","Username");
 	}
-
-	public final void setSkipAudit(Boolean skipAudit) {
-		this.skipAudit = skipAudit;
-	}
 	
-	public String getReference() {
-		return null;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -316,4 +224,276 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 			return false;
 		return true;
 	}
+
+	/**
+	 * Getter method for firstName.
+	 *
+	 * @return the firstName
+	 */
+	public final String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * Setter method for firstName.
+	 *
+	 * @param firstName the firstName to set
+	 */
+	public final void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * Getter method for lastName.
+	 *
+	 * @return the lastName
+	 */
+	public final String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * Setter method for lastName.
+	 *
+	 * @param lastName the lastName to set
+	 */
+	public final void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * Getter method for middleName.
+	 *
+	 * @return the middleName
+	 */
+	public final String getMiddleName() {
+		return middleName;
+	}
+
+	/**
+	 * Setter method for middleName.
+	 *
+	 * @param middleName the middleName to set
+	 */
+	public final void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	/**
+	 * Getter method for emailAddress.
+	 *
+	 * @return the emailAddress
+	 */
+	public final String getEmailAddress() {
+		return emailAddress;
+	}
+
+	/**
+	 * Setter method for emailAddress.
+	 *
+	 * @param emailAddress the emailAddress to set
+	 */
+	public final void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	/**
+	 * Getter method for office.
+	 *
+	 * @return the office
+	 */
+	public final SystemCodes getOffice() {
+		return office;
+	}
+
+	/**
+	 * Setter method for office.
+	 *
+	 * @param office the office to set
+	 */
+	public final void setOffice(SystemCodes office) {
+		this.office = office;
+	}
+
+	/**
+	 * Getter method for image.
+	 *
+	 * @return the image
+	 */
+	public final byte[] getImage() {
+		return image;
+	}
+
+	/**
+	 * Setter method for image.
+	 *
+	 * @param image the image to set
+	 */
+	public final void setImage(byte[] image) {
+		this.image = image;
+	}
+
+	/**
+	 * Getter method for credential.
+	 *
+	 * @return the credential
+	 */
+	public final UserCredential getCredential() {
+		return credential;
+	}
+
+	/**
+	 * Setter method for credential.
+	 *
+	 * @param credential the credential to set
+	 */
+	public final void setCredential(UserCredential credential) {
+		this.credential = credential;
+		credential.setUser(this);		
+	}
+
+	/**
+	 * Getter method for groups.
+	 *
+	 * @return the groups
+	 */
+	public final Set<UserGroup> getGroups() {
+		return groups;
+	}
+
+	/**
+	 * Setter method for groups.
+	 *
+	 * @param groups the groups to set
+	 */
+	public final void setGroups(Set<UserGroup> groups) {
+		this.groups = groups;
+	}
+
+	/**
+	 * Getter method for lastLogin.
+	 *
+	 * @return the lastLogin
+	 */
+	public final Date getLastLogin() {
+		return lastLogin;
+	}
+
+	/**
+	 * Setter method for lastLogin.
+	 *
+	 * @param lastLogin the lastLogin to set
+	 */
+	public final void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+
+	/**
+	 * Getter method for language.
+	 *
+	 * @return the language
+	 */
+	public final String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * Setter method for language.
+	 *
+	 * @param language the language to set
+	 */
+	public final void setLanguage(String language) {
+		this.language = language;
+	}
+
+	/**
+	 * Getter method for lastLoginIP.
+	 *
+	 * @return the lastLoginIP
+	 */
+	public final String getLastLoginIP() {
+		return lastLoginIP;
+	}
+
+	/**
+	 * Setter method for lastLoginIP.
+	 *
+	 * @param lastLoginIP the lastLoginIP to set
+	 */
+	public final void setLastLoginIP(String lastLoginIP) {
+		this.lastLoginIP = lastLoginIP;
+	}
+
+	/**
+	 * Getter method for prevLoginIP.
+	 *
+	 * @return the prevLoginIP
+	 */
+	public final String getPrevLoginIP() {
+		return prevLoginIP;
+	}
+
+	/**
+	 * Setter method for prevLoginIP.
+	 *
+	 * @param prevLoginIP the prevLoginIP to set
+	 */
+	public final void setPrevLoginIP(String prevLoginIP) {
+		this.prevLoginIP = prevLoginIP;
+	}
+
+	/**
+	 * Getter method for lastFailedIP.
+	 *
+	 * @return the lastFailedIP
+	 */
+	public final String getLastFailedIP() {
+		return lastFailedIP;
+	}
+
+	/**
+	 * Setter method for lastFailedIP.
+	 *
+	 * @param lastFailedIP the lastFailedIP to set
+	 */
+	public final void setLastFailedIP(String lastFailedIP) {
+		this.lastFailedIP = lastFailedIP;
+	}
+
+	/**
+	 * Getter method for totalLoginCount.
+	 *
+	 * @return the totalLoginCount
+	 */
+	public final Long getTotalLoginCount() {
+		return totalLoginCount;
+	}
+
+	/**
+	 * Setter method for totalLoginCount.
+	 *
+	 * @param totalLoginCount the totalLoginCount to set
+	 */
+	public final void setTotalLoginCount(Long totalLoginCount) {
+		this.totalLoginCount = totalLoginCount;
+	}
+
+	/**
+	 * Getter method for failedLoginCount.
+	 *
+	 * @return the failedLoginCount
+	 */
+	public final Long getFailedLoginCount() {
+		return failedLoginCount;
+	}
+
+	/**
+	 * Setter method for failedLoginCount.
+	 *
+	 * @param failedLoginCount the failedLoginCount to set
+	 */
+	public final void setFailedLoginCount(Long failedLoginCount) {
+		this.failedLoginCount = failedLoginCount;
+	}
+	
 }

@@ -55,7 +55,8 @@ public class SessionUser extends User {
 
 	/**
 	 * Returns the complete name by concatenating
-	 * lastName and firstName.
+	 * lastName and firstName
+	 * 
 	 * @return
 	 */
 	public String getCompleteName() {
@@ -66,6 +67,21 @@ public class SessionUser extends User {
 		return name;		
 	}
 
+	/**
+	 * Checks if user has permission to the specified 
+	 * permission string
+	 * 
+	 * @param permission
+	 * @return
+	 */
+	public boolean hasPermission(String permission) {
+	    for (GrantedAuthority auth: this.getAuthorities()) {
+	        if (permission.equals(auth.getAuthority()))
+	            return true;
+	    }
+		return false;
+	}
+	
 	/**
 	 * @return the firstName
 	 */
