@@ -49,7 +49,20 @@
             <div class="form-row">
                 <label for="label"><spring:message code="label.user-defined-field.reference" />: </label>
                 <form:input path="reference" /> For date, specify date pattern. For number, specify fraction. For dropdown, specify SystemCodes Category.
+            </div>            
+            <div class="form-row">
+                <label for="label"><spring:message code="label.user-defined-field.condition" />: </label>
+                <form:input path="condition" /> (e.g. obj.caseCategory.value="Adjudication")
             </div>
+            <div class="form-row" >
+                <label for="label" class="special">&nbsp;</label>
+                <form:checkbox path="searchable" /> <spring:message code="label.user-defined-field.is-searchable" />
+            </div>
+            <div class="form-row" >
+                <label for="label" class="special">&nbsp;</label>
+                <form:checkbox path="listed" /> <spring:message code="label.user-defined-field.is-listed-in-search-results" />
+            </div>
+
 		</div>
 	</form:form>
 		<div class="button">
