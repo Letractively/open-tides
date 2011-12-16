@@ -38,7 +38,6 @@ import org.opentides.bean.BaseEntity;
 import org.opentides.bean.BaseProtectedEntity;
 import org.opentides.bean.Searchable;
 import org.opentides.bean.Sortable;
-import org.opentides.bean.user.BaseUser;
 import org.opentides.bean.user.SessionUser;
 import org.opentides.listener.ApplicationStartupListener;
 import org.opentides.persistence.BaseEntityDAO;
@@ -346,8 +345,9 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 					if (SecurityUtil.currentUserHasPermission(key)) {
 						String filterClause = securityFilter.get(key);
 						SessionUser sessionUser = SecurityUtil.getSessionUser();
-						BaseUser user = getEntityManager().find(BaseUser.class, sessionUser.getId());
-						return CrudUtil.replaceSQLParameters(filterClause, user);
+						// allanctan: 12/12/2011 - Removed query from db, instead use sessionUser
+						// BaseUser user = getEntityManager().find(BaseUser.class, sessionUser.getId());
+						return CrudUtil.replaceSQLParameters(filterClause, sessionUser);
 					}
 				}
 				return "1!=1";
