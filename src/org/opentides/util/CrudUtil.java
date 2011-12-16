@@ -37,6 +37,9 @@ import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.Searchable;
 import org.opentides.bean.SystemCodes;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 /**
  * @author allanctan
@@ -437,6 +440,34 @@ public class CrudUtil {
 		}
 	}
 	
+	/**
+	 * This method evaluates the given expression from the object.
+	 * This method now uses Spring Expression Language (SpEL).
+	 * 
+	 * @param obj
+	 * @param expression
+	 * @return
+	 */
+	public static Boolean evaluateExpression(Object obj, String expression) {
+		if (StringUtil.isEmpty(expression)) 
+			return false;
+		try {
+			ExpressionParser parser = new SpelExpressionParser();
+			Expression exp = parser.parseExpression(expression);
+			return exp.getValue(obj, Boolean.class); 		
+		} catch (Exception e) {
+			_log.error("Failed to evaluate expression ["+expression+"]", e);
+			return false;
+		}
+	}
+	
+	/**
+	 * This method will replace SQL parameters with
+	 * respective values from the object.
+	 * @param sql
+	 * @param obj
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static String replaceSQLParameters(String sql, Object obj) {
 		// let's get all sql parameter by expression
