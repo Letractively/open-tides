@@ -30,7 +30,7 @@ import org.springframework.validation.Validator;
 public class UserValidator implements Validator {
 	private UserDAO userDAO;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean supports(Class clazz) {
 		return BaseUser.class.isAssignableFrom(clazz);
 	}
@@ -39,19 +39,19 @@ public class UserValidator implements Validator {
 		BaseUser user = (BaseUser) object;
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "firstName", 
-				"error.required-short", new Object[]{"First Name"},"First name is required.");
+				"error.required", new Object[]{"First Name"},"First name is required.");
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "lastName", 
-				"error.required-short", new Object[]{"Last Name"},"Last name is required.");
+				"error.required", new Object[]{"Last Name"},"Last name is required.");
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "credential.username", 
-				"error.required-short", new Object[]{"Username"},"Username is required.");
+				"error.required", new Object[]{"Username"},"Username is required.");
 		if (isDuplicateUsername(user)) {
 			e.reject("error.duplicate-field", new Object[]{user.getCredential().getUsername(), "username"}, "User name already exists.");
 		}
 
 		ValidationUtils.rejectIfEmptyOrWhitespace(e, "emailAddress", 
-				"error.required-short", new Object[]{"Email Address"},"Email address is required.");
+				"error.required", new Object[]{"Email Address"},"Email address is required.");
 		if (!ValidatorUtil.isEmail(user.getEmailAddress())) {
 			e.rejectValue("emailAddress", "error.invalid-email-address",new Object[]{user.getEmailAddress()},"Email Address is invalid.");
 		}
@@ -61,9 +61,9 @@ public class UserValidator implements Validator {
 
 		if (user.getIsNew()) {
 			ValidationUtils.rejectIfEmptyOrWhitespace(e, "credential.newPassword", 
-				"error.required-short", new Object[]{"Password"},"Password is required.");
+				"error.required", new Object[]{"Password"},"Password is required.");
 			ValidationUtils.rejectIfEmptyOrWhitespace(e, "credential.confirmPassword", 
-				"error.required-short", new Object[]{"Confirm Password"},"Confirm password is required.");
+				"error.required", new Object[]{"Confirm Password"},"Confirm password is required.");
 		}
 		
 		if (!StringUtil.isEmpty(user.getCredential().getNewPassword()) &&

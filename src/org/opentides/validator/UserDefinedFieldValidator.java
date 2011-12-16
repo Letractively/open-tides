@@ -70,9 +70,9 @@ public class UserDefinedFieldValidator implements Validator {
 			List<UserDefinedField> duplicate = userDefinedFieldService.findByExample(example, true);
 			if (duplicate!=null && !duplicate.isEmpty()
 					&& duplicate.get(0).getId() != udf.getId()) {
-				e.reject("error.duplicate-field", new Object[]{ 
-						udf.getClazz().getSimpleName() + " " + udf.getUserField()},
-						"Field is already in use. Please use a different field.");				
+				e.reject("error.duplicate-field", 
+						new Object[]{udf.getClazz().getSimpleName() + " " + udf.getUserField(), "field"}, 
+						"Field is already in use. Please use a different field.");
 			}
 		}
 	}
