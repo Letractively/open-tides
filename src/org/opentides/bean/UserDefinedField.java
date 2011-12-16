@@ -68,11 +68,20 @@ public class UserDefinedField extends BaseEntity
 			listed=true, auditable=true, label="Label")
 	private String label;
 		
+	@Column(name = "CONDITION_") 
+	private String condition;
+	
 	@Column(name = "REFERENCE")
 	private String reference;
 	
 	@Column(name = "ORDER_")
 	private Integer order;
+	
+	@Column(name = "SEARCHABLE")
+	private Boolean searchable = Boolean.FALSE;
+	
+	@Column(name = "LISTED")
+	private Boolean listed = Boolean.FALSE;
 
 	/* (non-Javadoc)
 	 * @see org.opentides.bean.Auditable#getPrimaryField()
@@ -172,6 +181,60 @@ public class UserDefinedField extends BaseEntity
 		this.reference = reference;
 	}
 	
+	/**
+	 * Getter method for condition.
+	 *
+	 * @return the condition
+	 */
+	public final String getCondition() {
+		return condition;
+	}
+
+	/**
+	 * Setter method for condition.
+	 *
+	 * @param condition the condition to set
+	 */
+	public final void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	/**
+	 * Getter method for searchable.
+	 *
+	 * @return the searchable
+	 */
+	public final Boolean getSearchable() {
+		return searchable;
+	}
+
+	/**
+	 * Setter method for searchable.
+	 *
+	 * @param searchable the searchable to set
+	 */
+	public final void setSearchable(Boolean searchable) {
+		this.searchable = searchable;
+	}
+
+	/**
+	 * Getter method for listed.
+	 *
+	 * @return the listed
+	 */
+	public final Boolean getListed() {
+		return listed;
+	}
+
+	/**
+	 * Setter method for listed.
+	 *
+	 * @param listed the listed to set
+	 */
+	public final void setListed(Boolean listed) {
+		this.listed = listed;
+	}
+
 	/**
 	 * Returns the preferred display pattern
 	 * for this user defined field.

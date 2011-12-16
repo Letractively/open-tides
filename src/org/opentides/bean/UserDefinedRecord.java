@@ -19,7 +19,12 @@
 
 package org.opentides.bean;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +32,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author allantan
@@ -166,6 +172,11 @@ public class UserDefinedRecord extends BaseEntity {
 	@JoinColumn(name = "DROPDOWN_9")
 	private SystemCodes dropdown9;
 	
+	@Transient
+	@SuppressWarnings("rawtypes")
+	private static transient Map<Class, List<UserDefinedField>> udfMap = 
+			Collections.synchronizedMap(new HashMap<Class, List<UserDefinedField>>());
+	
 	/**
 	 * Getter method for entityId.
 	 *
@@ -187,6 +198,7 @@ public class UserDefinedRecord extends BaseEntity {
 	 *
 	 * @return the entityClass
 	 */
+	@SuppressWarnings("rawtypes")	
 	public final Class getEntityClass() {
 		return entityClass;
 	}
@@ -195,9 +207,37 @@ public class UserDefinedRecord extends BaseEntity {
 	 *
 	 * @param entityClass the entityClass to set
 	 */
+	@SuppressWarnings("rawtypes")	
 	public final void setEntityClass(Class entityClass) {
 		this.entityClass = entityClass;
 	}
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getSearchProperties()
+	 */
+	@Override
+	public List<String> getSearchProperties() {
+		List<String> searchProperties = new ArrayList<String>();
+		List<UserDefinedField> meta = udfMap.get(this.entityClass);
+		for (UserDefinedField field: meta) {
+			if (field.getSearchable())
+				searchProperties.add("udf."+field.getUserField());
+		}
+		return searchProperties;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getAuditableFields()
+	 */
+	@Override
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> auditable = new ArrayList<AuditableField>();
+		List<UserDefinedField> meta = udfMap.get(this.entityClass);
+		for (UserDefinedField field: meta) {
+			auditable.add(new AuditableField("udf."+field.getUserField(), field.getLabel()));
+		}
+		return auditable;
+	}
+	
 	/**
 	 * Getter method for string0.
 	 *
@@ -998,5 +1038,23 @@ public class UserDefinedRecord extends BaseEntity {
 	public final void setDropdown9(SystemCodes dropdown9) {
 		this.dropdown9 = dropdown9;
 	}
-	
+	/**
+	 * Getter method for udf.
+	 *
+	 * @return the udf
+	 */
+	@SuppressWarnings("rawtypes")
+	public static final List<UserDefinedField> getUdf(Class clazz) {
+		return udfMap.get(clazz);
+	}	
+	/**
+	 * Setter method for udf.
+	 *
+	 * @param udf the udf to set
+	 */
+	@SuppressWarnings("rawtypes")
+	public static final void setUdf(Class clazz, List<UserDefinedField> udf) {
+		udfMap.put(clazz, udf);
+	}
+
 }
