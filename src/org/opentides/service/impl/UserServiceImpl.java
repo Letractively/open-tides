@@ -43,6 +43,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		UserService {
@@ -221,6 +222,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 			cred.setUsername("admin");
 			cred.setPassword("ideyatech");
 			cred.setEnabled(true);
+			cred.setUser(user);
 			user.setCredential(cred);
 			user.setEmailAddress("admin@ideyatech.com");
 			user.setFirstName("SuperAdmin");
@@ -251,26 +253,32 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 */
 	public void updateLogin(
 			AuthenticationSuccessEvent authenticationSuccessEvent) {
-		String username = authenticationSuccessEvent.getAuthentication()
-				.getName();
-		String completeName = username;
-		Object userObj = authenticationSuccessEvent.getAuthentication()
-				.getPrincipal();
-		if (userObj instanceof SessionUser) {
-			SessionUser user = (SessionUser) userObj;
-			completeName = user.getCompleteName() + " [" + username + "] ";
-		}
 		UserDAO userDAO = (UserDAO) getDao();
-		userDAO.updateLastLogin(username);
-		// also add log to audit history log
+		String username = authenticationSuccessEvent.getAuthentication().getName();
 		BaseUser user = userDAO.loadByUsername(username);
+		WebAuthenticationDetails details = (WebAuthenticationDetails) authenticationSuccessEvent.getAuthentication().getDetails();
+		String address = details.getRemoteAddress();
+		if (user.getTotalLoginCount()== null)
+			user.setTotalLoginCount(1l);
+		else
+			user.setTotalLoginCount(user.getTotalLoginCount()+1);
+		user.setPrevLoginIP(user.getLastLoginIP());
+		user.setLastLoginIP(address);
+		user.setLastLogin(new Date());
+		user.setSkipAudit(true);		
+		userDAO.saveEntityModel(user);
+		// userDAO.updateLastLogin(username);
+		
 		// force the audit user details
+		String completeName = user.getCompleteName() + " [" + username + "] ";
 		user.setAuditUserId(user.getId());
 		if (user.getOffice() != null)
 			user.setAuditOfficeName(user.getOffice().getValue());
 		user.setAuditUsername(username);
+		user.setSkipAudit(false);
 		String message = completeName + " has logged-in";
 		AuditLogDAOImpl.logEvent(message, message, user);
+		
 	}
 
 	/**
