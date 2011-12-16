@@ -5,7 +5,7 @@
 <%@ taglib prefix="idy" uri="http://www.ideyatech.com/tides"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<td colspan="4">
+<td colspan="4" class="remove-highlight">
 <form:form commandName="usergroup" id="usergroup-form-${usergroup.id}" action="" cssClass="user">
 	<idy:form_title isNew="${usergroup.isNew}" formName="usergroup"/>
 	<div class="content">	
@@ -14,19 +14,19 @@
 			<!-- this is a hack to crud.js to handle validation messages. -->
 			<c:if test="${usergroup.isNew}">
 			<!-- <tr id="usergroup-row-new"> -->
-			</c:if>			
-			<div class='errorBox'>
+			</c:if>
+			<div class='error-box'>
 				<form:errors path="*" />
             </div>
 		</c:if>
 		</spring:bind>
     	<div class="form-row"> 
             <label for="name"><spring:message code="label.name" /></label>
-			<form:input path="name" size="40" maxlength="100" />
+			<form:input path="name" size="40" maxlength="100" /><span class="required">*</span>
         </div>
 		<div class="form-row">
             <label for="description"><spring:message code="label.description" /></label>
-			<form:input path="description" size="40" maxlength="100" />
+			<form:input path="description" size="40" maxlength="100" /><span class="required">*</span>
         </div>
         <div class="form-row">
 		<label for="roles"><spring:message code="label.roles" /></label>	        
