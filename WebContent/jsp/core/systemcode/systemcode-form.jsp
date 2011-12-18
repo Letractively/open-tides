@@ -4,24 +4,25 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 
-<td colspan="4">
+<td colspan="4" class="remove-highlight">
 <form:form commandName="systemCode" id="systemCode-form-${systemCode.id}" action="">
 	<ot:form_title isNew="${systemCode.isNew}" formName="system-codes"/>
 	
-	<div class="content">	
+	<div class="system-codes-form">	
 		<spring:bind path="systemCode.*">
 		<c:if test="${status.error}">
-			<div class='errorBox'>
+			<div class='error-box'>
 			<!-- this is a hack to crud.js to handle validation messages. -->
 			<c:if test="${systemCode.isNew}">
 			<!-- <tr id="system-row-new"> -->
 			</c:if>
-				<form:errors path="*" />
+				<form:errors path="*" /> 
             </div>
 		</c:if>
 		</spring:bind>
-		<div class="fieldsBox">
-    	<div id="categorySelector" class="form-row"> <label for="category"><spring:message code="label.category" /></label>
+	
+    	<div id="categorySelector" class="form-row">
+        	<label for="category"><spring:message code="label.category" /></label>
     		<select id="categorySelect" name="category" onchange="javascript:checkNewCategory(true);">
     			<option value="0">Select a Category</option>
             	<option value="0">-- New Category --</option>
@@ -34,7 +35,9 @@
 				</c:otherwise>
 				</c:choose>
             </c:forEach>
-            </select></div>
+            </select>
+        </div>
+        
 		<div class="form-row">  
             <label for="key"><spring:message code="label.key" /></label>
 			<form:input path="key" maxlength="20" />
@@ -42,6 +45,10 @@
         <div class="form-row"> 
 		    <label for="value"><spring:message code="label.value" /></label>
 			<form:input path="value" maxlength="50" />
+        </div>
+        <div class="form-row"> 
+		    <label for="numberValue"><spring:message code="label.number-value" /></label>
+			<form:input path="numberValue" />
         </div>
 		<div class="form-row"> 
             <label for="office"><spring:message code="label.override-office" /> </label>
@@ -52,6 +59,7 @@
         </div>
 		</div>
 		<div class="button">
+			<label class="special">&nbsp;</label>
 		  	<ot:submit_button id="${systemCode.id}" page="admin/system-codes.jspx" formName="systemCode-form-${systemCode.id}" prefix="system"/>
   			<ot:cancel_button id="${systemCode.id}" page="admin/system-codes.jspx" prefix="system"/>
 		</div>
