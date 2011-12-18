@@ -125,7 +125,7 @@ public class SystemCodes extends BaseProtectedEntity
 	/**
 	 * @return the numberValue
 	 */
-	public final Long getNumberValue() {
+	public final synchronized Long getNumberValue() {
 		return this.numberValue;
 	}
 
@@ -179,7 +179,10 @@ public class SystemCodes extends BaseProtectedEntity
 		List<String> props = new ArrayList<String>();
 		props.add("key");
 		props.add("value");
+		props.add("numberValue");
 		props.add("category");
+		props.add("owner");
+		props.add("ownerOffice");
 		return props;
 	}
 
@@ -187,7 +190,10 @@ public class SystemCodes extends BaseProtectedEntity
 		List<AuditableField> props = new ArrayList<AuditableField>();
 		props.add(new AuditableField("key","Key"));
 		props.add(new AuditableField("value","Value"));
+		props.add(new AuditableField("numberValue","Number Value"));
 		props.add(new AuditableField("category","Category"));
+		props.add(new AuditableField("owner","Access Owner"));
+		props.add(new AuditableField("ownerOffice","Access Office"));
 		return props;
 	}
 
