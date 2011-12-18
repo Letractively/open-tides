@@ -46,7 +46,6 @@ public class AddWidgetController extends AbstractController {
 	private UserService userService;
 	
 	private String formView = "/core/widget/widget-add";
-	private String dashboardView = "home";
 
 	@Override
 	protected ModelAndView handleRequestInternal(
@@ -89,13 +88,6 @@ public class AddWidgetController extends AbstractController {
 		this.formView = formView;
 	}
 
-
-	/**
-	 * @param successView the successView to set
-	 */
-	public void setDashboardView(String dashboardView) {
-		this.dashboardView = dashboardView;
-	}
 
 	/**
 	 * @param widgetService the widgetService to set
