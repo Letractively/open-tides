@@ -23,6 +23,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.opentides.bean.Widget;
+import org.opentides.bean.user.BaseUser;
 
 /**
  * This is the service interface for Widget.
@@ -72,5 +73,12 @@ public interface WidgetService extends BaseCrudService<Widget> {
 	 * @return int
 	 */
 	public int getColumnConfig();
+	
+	/**
+	 * Returns all the default widgets for the user
+	 * @param user
+	 * @return
+	 */
+	public List<Widget> findDefaultWidget(BaseUser user); 
 //-- End custom codes. Do not delete this comment line.
 }

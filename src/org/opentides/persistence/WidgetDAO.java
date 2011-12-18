@@ -19,7 +19,10 @@
 
 package org.opentides.persistence;
 
+import java.util.List;
+
 import org.opentides.bean.Widget;
+import org.opentides.bean.user.BaseUser;
 
 /**
  * This is the dao interface for Widget.
@@ -29,5 +32,11 @@ import org.opentides.bean.Widget;
  
 public interface WidgetDAO extends BaseEntityDAO<Widget, Long> {
 //-- Start custom codes. Do not delete this comment line.
+	/**
+	 * Returns all the default widgets for the user
+	 * @param user
+	 * @return
+	 */
+	public List<Widget> findDefaultWidget(BaseUser user);
 //-- End custom codes. Do not delete this comment line.
 }

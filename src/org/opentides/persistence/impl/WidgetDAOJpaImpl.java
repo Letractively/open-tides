@@ -18,7 +18,16 @@
  */
 package org.opentides.persistence.impl;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.opentides.bean.Widget;
+import org.opentides.bean.user.BaseUser;
+import org.opentides.bean.user.UserGroup;
+import org.opentides.bean.user.UserRole;
 import org.opentides.persistence.WidgetDAO;
 
 
@@ -31,5 +40,28 @@ import org.opentides.persistence.WidgetDAO;
 public class WidgetDAOJpaImpl extends BaseEntityDAOJpaImpl<Widget, Long>
 		implements WidgetDAO {
 	//-- Start custom codes. Do not delete this comment line.
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.WidgetDAO#findDefaultWidget(org.opentides.bean.user.BaseUser)
+	 */
+	@Override
+	public List<Widget> findDefaultWidget(BaseUser user) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Set<String> roles = new HashSet<String>();
+		if(user.getGroups() != null){
+			for (UserGroup group : user.getGroups()) {
+				if(group.getRoles() != null){
+					for(UserRole userRole : group.getRoles()){
+						roles.add(userRole.getRole());
+					}
+				}
+			}
+		}
+		map.put("roles", roles);
+		List<Widget> list = findByNamedQuery("jpql.widget.findDefaultWidgets", map);
+		if (list == null || list.size() == 0)
+			return null;
+		
+		return list;
+	}
 	//-- End custom codes. Do not delete this comment line.
 }

@@ -31,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.opentides.bean.UrlResponseObject;
 import org.opentides.bean.Widget;
+import org.opentides.bean.user.BaseUser;
+import org.opentides.persistence.WidgetDAO;
 import org.opentides.service.WidgetService;
 import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
@@ -216,6 +218,17 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 				widgets.add(widget);					
 		}
 		return widgets;
+	}
+	
+	/**
+	 * Returns all the default widgets for the user
+	 * @param user
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public List<Widget> findDefaultWidget(BaseUser user) {
+		return ((WidgetDAO) getDao()).findDefaultWidget(user);
 	}
 
 	/**
