@@ -124,7 +124,7 @@
             
             <div class="search-results-footer">
         		<div class="numbers">
-                    <ot:paging results="${results}" baseURL="/admin/system-codes.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" />
+                    <ot:paging results="${results}" baseURL="${url_context}/admin/system-codes.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="systemCodeSearch"/>
                 </div>
             </div>
             <a name="addform"></a>  
