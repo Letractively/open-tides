@@ -145,7 +145,6 @@
 	<bean id="addWidgetController" autowire="byName"
 		class="org.opentides.controller.AddWidgetController">
 		<property name="formView" value="core/widget/widget-add" />
-		<property name="dashboardView" value="home" />
 	</bean>
 	<bean id="externalWidgetController" class="org.opentides.controller.ExternalWidgetController"
 		autowire="byName">
