@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.opentides.bean.SystemCodes;
 import org.opentides.persistence.SystemCodesDAO;
+import org.opentides.util.StringUtil;
 
 public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Long> implements
 		SystemCodesDAO {
@@ -89,8 +90,12 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 	@Override
 	protected String appendClauseToExample(SystemCodes example,
 			boolean exactMatch) {
+		String clause = "";
+		// search by category should be specific
+		if (!StringUtil.isEmpty(example.getCategory())) {
+			clause = "category = '"+example.getCategory()+"' and ";
+		}	
 		// exclude all system code with category KEYGEN
-		return "category != 'KEYGEN'";
+		return clause + "category != 'KEYGEN'";
 	}
-	
 }
