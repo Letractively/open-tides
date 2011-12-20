@@ -37,7 +37,7 @@
        		<c:forEach items="${roles}" var="role">
                 <idy:close_list prev="${prevRole}" curr="${role.value}" />
                 <idy:open_list prev="${prevRole}" curr="${role.value}" />
-                <li class="closed"><form:checkbox path="roleNames" value="${role.key}" class="check"/> <c:out value="${fn:substring(role.value,8,-1)}"/>
+                <li class="closed"><form:checkbox path="roleNames" value="${role.key}" class="check"/> <c:out value="${fn:substring(role.value,11,-1)}"/>
                 <c:set var="prevRole" value="${role.value}"/>
     		</c:forEach>
             </ul>
