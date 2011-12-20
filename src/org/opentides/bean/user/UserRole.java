@@ -41,9 +41,10 @@ public class UserRole extends BaseEntity {
 
 	@Column(name = "AUTHORITY")
 	private String role;
-
+	
+	// userGroup is nullable, to support username linkage
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "USERGROUP_ID", nullable = false)
+	@JoinColumn(name = "USERGROUP_ID", nullable = true)
 	private UserGroup userGroup;
 
 	public UserRole() {
