@@ -35,7 +35,7 @@
             			<c:forEach items="${userGroups}" var="usergroup">
             				<td>
             				<c:if test="${not empty usergroup.userRoleMap[role.key]}">
-								X
+								<a title="${usergroup.name}">X</a>
             				</c:if>
             				</td>
             			</c:forEach>
