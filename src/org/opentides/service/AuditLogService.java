@@ -39,4 +39,7 @@ public interface AuditLogService {
 	
 	@SuppressWarnings("rawtypes")
 	public List<AuditLog> findLogByReferenceAndClass(String reference, List<Class> types);
+
+	@SuppressWarnings("rawtypes")
+	public List<AuditLog> findLogLikeReferenceAndClass(String reference, List<Class> types);
 }
