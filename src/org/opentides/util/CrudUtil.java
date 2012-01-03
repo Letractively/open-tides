@@ -61,6 +61,7 @@ public class CrudUtil {
     public static String buildCreateMessage(Auditable obj) {
     	StringBuffer message = new StringBuffer("Added ");
     	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName()); 
+    	String primary = obj.getPrimaryField().getFieldName();
     	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(obj.getPrimaryField().getTitle())
@@ -74,7 +75,7 @@ public class CrudUtil {
 		int count = 0;
 		for (AuditableField property:auditFields) {
 			Object ret = retrieveNullableObjectValue(obj, property.getFieldName());
-			if (ret!=null && ret.toString().trim().length()>0) {
+			if (ret!=null && ret.toString().trim().length()>0 && !primary.equals(property.getFieldName())) {
 				if (count > 0) 
 					message.append(" and ");
 				message.append(property.getTitle())
@@ -456,7 +457,7 @@ public class CrudUtil {
 			Expression exp = parser.parseExpression(expression);
 			return exp.getValue(obj, Boolean.class); 		
 		} catch (Exception e) {
-			_log.error("Failed to evaluate expression ["+expression+"]", e);
+			_log.debug("Failed to evaluate expression ["+expression+"] for object ["+obj.getClass()+"]");
 			return false;
 		}
 	}
