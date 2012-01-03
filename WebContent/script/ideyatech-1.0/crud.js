@@ -133,7 +133,8 @@ IDEYATECH.util = function() {
 		if (!IDEYATECH.util.isEmpty(rootId) && $('#' + rootId).length == 0) {
 			var parent = document.getElementById(args[0]);
 			var userCallback = args[1];
-			IDEYATECH.util.updateInnerHTML(parent.id, parent.innerHTML + str);
+			if (parent != null) 
+				IDEYATECH.util.updateInnerHTML(parent.id, parent.innerHTML + str);
 			if (typeof userCallback == 'function') {
 				try {
 					userCallback.call();
@@ -281,10 +282,11 @@ IDEYATECH.util = function() {
 		 *            - append = true, will append result instead of replace
 		 * 			  - postdata = parameter to append in the form submission 
 		 * 			  - formName = name of the form to be submitted
+		 * 			  - evaluate = true, will evaluate javascript code
 		 */
 
 		submitForm : function(url, argument) {
-			var args = [ argument['divId'], argument['callback'] ];
+			var args = [ argument['divId'], argument['callback'], argument['evaluate'] ];
 
 			var successCallback = function(data) {
 				__replace(data, args);
@@ -307,7 +309,7 @@ IDEYATECH.util = function() {
 				// use stardard ajax submit
 				if (argument['multipart'] == 'true' ||
 					$('#' + argument['formName']).attr('enctype') == 'multipart/form-data')
-					alert('Program Error.\n Please include jquery.form.js to support multipart form submission.');
+					alert('Program Error.\n Please include jquery.form.js to support multipart form submission.' + err);
 				options['data'] = $('#' + argument['formName']).serialize() + '&' + argument['postdata'];
 				$.ajax(url, options);				
 			};
