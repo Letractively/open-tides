@@ -82,6 +82,19 @@ public class AuditLogServiceImpl implements AuditLogService {
 		return auditLogDAO.findByNamedQuery("jpql.audit.findByReferenceAndClass",params);
 	}
 
+	@SuppressWarnings("rawtypes")
+	@Transactional(readOnly=true)
+	public List<AuditLog> findLogLikeReferenceAndClass(String reference,
+			List<Class> types) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("reference", reference);
+		params.put("likeReference", "%"+reference+":%");
+		if (types==null || types.isEmpty())
+			return new ArrayList<AuditLog>();
+		params.put("entityClass", types);
+		return auditLogDAO.findByNamedQuery("jpql.audit.findLikeReferenceAndClass",params);
+	}
+
 	/**
 	 * Setter method for auditLogDAO.
 	 *
