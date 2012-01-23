@@ -52,7 +52,7 @@
             </div>            
             <div class="form-row">
                 <label for="label"><spring:message code="label.user-defined-field.condition" />: </label>
-                <form:input path="condition" /> (e.g. obj.caseCategory.value="Adjudication")
+                <form:input path="condition" /> (e.g. caseCategory.title=="Adjudication")
             </div>
             <div class="form-row" >
                 <label for="label" class="special">&nbsp;</label>
