@@ -28,7 +28,17 @@
             <label for="description"><spring:message code="label.description" /></label>
 			<form:input path="description" size="40" maxlength="100" /><span class="required">*</span>
         </div>
-        <div class="form-row">
+		<div class="form-row">
+            <label for="description"><spring:message code="label.copy-from" /></label>
+            <input type="checkbox" id="enable-copy-${usergroup.id}"/>
+            <select id="copy-roles-${usergroup.id}">
+            	<option id=""> </option>
+            	<c:forEach var="groupOptions" items="${userGroupList}">
+            		<option value="${groupOptions.id}">${groupOptions.name}</option>
+            	</c:forEach>
+            </select>
+        </div>
+        <div id="roles-tree" class="form-row">
 		<label for="roles"><spring:message code="label.roles" /></label>	        
         </div>
         <div class="form-row">
@@ -37,7 +47,7 @@
        		<c:forEach items="${roles}" var="role">
                 <idy:close_list prev="${prevRole}" curr="${role.value}" />
                 <idy:open_list prev="${prevRole}" curr="${role.value}" />
-                <li class="closed"><form:checkbox path="roleNames" value="${role.key}" class="check"/> <c:out value="${fn:substring(role.value,11,-1)}"/>
+                <li class="closed"><form:checkbox path="roleNames" value="${role.key}" class="check ${role.key}"/> <c:out value="${fn:substring(role.value,11,-1)}"/>
                 <c:set var="prevRole" value="${role.value}"/>
     		</c:forEach>
             </ul>
@@ -51,6 +61,7 @@
 </td> 
 <script language="javascript">
 	$(document).ready(function() {
+		$('#copy-roles-${usergroup.id}').hide();
     	$("#roles-${usergroup.id}").treeview();
     	$("input.check").click(function() {
     	    if ($(this).is(":checked")) {
@@ -66,6 +77,27 @@
     	        }
     	    }
     	});
+    	$('#enable-copy-${usergroup.id}').click(function() {
+    		if($(this).attr('checked')) {
+    			$('#copy-roles-${usergroup.id}').show();
+    		} else {
+    			$('#copy-roles-${usergroup.id}').hide();
+    		}
+    	});    	
+    	$('#copy-roles-${usergroup.id}').change(function(){
+    		// uncheck all checkboxes in this role
+    		$('#roles-${usergroup.id} .check').removeAttr("checked");    
+     		$.ajax({
+				url : "roles-list.jspx?userGroupId="+$('#copy-roles-${usergroup.id}').val(),
+				type : 'GET',
+				dataType : "json",
+				success : function(data) {
+					$.each(data.roles, function(index, role) {
+						$('#roles-${usergroup.id} .'+role).attr("checked","true");						
+					});
+				}
+			});
+     	});
 	});
 	
 </script>
