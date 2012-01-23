@@ -51,6 +51,7 @@ public class UserGroupController extends BaseCrudController<UserGroup> {
 	protected Map referenceData(HttpServletRequest request) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("roles", ((UserGroupService) getService()).getRoles());
+		model.put("userGroupList", getService().findAll());
 		return model;
 	}
 	
