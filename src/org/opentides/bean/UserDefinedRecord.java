@@ -40,7 +40,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name="USER_DEFINED_RECORD")
-public class UserDefinedRecord extends BaseEntity {
+public class UserDefinedRecord extends BaseEntity implements Auditable, Searchable {
 
 	private static final long serialVersionUID = 276235925368271733L;
 
@@ -173,6 +173,9 @@ public class UserDefinedRecord extends BaseEntity {
 	private SystemCodes dropdown9;
 	
 	@Transient
+	private transient String reference;
+	
+	@Transient
 	@SuppressWarnings("rawtypes")
 	private static transient Map<Class, List<UserDefinedField>> udfMap = 
 			Collections.synchronizedMap(new HashMap<Class, List<UserDefinedField>>());
@@ -211,6 +214,7 @@ public class UserDefinedRecord extends BaseEntity {
 	public final void setEntityClass(Class entityClass) {
 		this.entityClass = entityClass;
 	}
+	
 	/* (non-Javadoc)
 	 * @see org.opentides.bean.BaseEntity#getSearchProperties()
 	 */
@@ -218,9 +222,11 @@ public class UserDefinedRecord extends BaseEntity {
 	public List<String> getSearchProperties() {
 		List<String> searchProperties = new ArrayList<String>();
 		List<UserDefinedField> meta = udfMap.get(this.entityClass);
-		for (UserDefinedField field: meta) {
-			if (field.getSearchable())
-				searchProperties.add("udf."+field.getUserField());
+		if (meta!=null) {
+			for (UserDefinedField field: meta) {
+				if (field.getSearchable())
+					searchProperties.add(field.getUserField());
+			}
 		}
 		return searchProperties;
 	}
@@ -232,12 +238,53 @@ public class UserDefinedRecord extends BaseEntity {
 	public List<AuditableField> getAuditableFields() {
 		List<AuditableField> auditable = new ArrayList<AuditableField>();
 		List<UserDefinedField> meta = udfMap.get(this.entityClass);
-		for (UserDefinedField field: meta) {
-			auditable.add(new AuditableField("udf."+field.getUserField(), field.getLabel()));
+		if (meta!=null) {
+			for (UserDefinedField field: meta) {
+				String fieldName = field.getUserField();
+				// for dropdown values (i.e. SystemCodes, lets use the value field for audit log)
+				if (fieldName.startsWith("dropdown")) 
+					fieldName+=".value";
+				auditable.add(new AuditableField(fieldName, field.getLabel()));
+			}
 		}
 		return auditable;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	public AuditableField getPrimaryField() {
+		return new AuditableField("","");
+	}
+	
+	/**
+	 * Standard support method for searching
+	 * @param prefix - prefix to prepend in the field. 
+	 * 				   This is usually the variable name of the udf in the class. (e.g. "udf.")
+	 * @return
+	 */
+	public List<String> getSearchProperties(String prefix) {
+		List<String> searchProperties = new ArrayList<String>();
+		for (String prop:this.getSearchProperties()) {
+			searchProperties.add(prefix+prop);
+		}
+		return searchProperties;
+	}
+	
+	/**
+	 * Standard support method for audit logging.
+	 * @param prefix - prefix to prepend in the field. 
+	 * 				   This is usually the variable name of the udf in the class. (e.g. "udf.")
+	 * @return
+	 */
+	public List<AuditableField> getAuditableFields(String prefix) {
+		List<AuditableField> auditable = new ArrayList<AuditableField>();
+		for (AuditableField audit:this.getAuditableFields()) {
+			auditable.add(new AuditableField(prefix+audit.getFieldName(), audit.getTitle()));
+		}
+		return auditable;		
+	}
+
 	/**
 	 * Getter method for string0.
 	 *
@@ -1056,5 +1103,380 @@ public class UserDefinedRecord extends BaseEntity {
 	public static final void setUdf(Class clazz, List<UserDefinedField> udf) {
 		udfMap.put(clazz, udf);
 	}
-
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((boolean0 == null) ? 0 : boolean0.hashCode());
+		result = prime * result
+				+ ((boolean1 == null) ? 0 : boolean1.hashCode());
+		result = prime * result
+				+ ((boolean2 == null) ? 0 : boolean2.hashCode());
+		result = prime * result
+				+ ((boolean3 == null) ? 0 : boolean3.hashCode());
+		result = prime * result
+				+ ((boolean4 == null) ? 0 : boolean4.hashCode());
+		result = prime * result
+				+ ((boolean5 == null) ? 0 : boolean5.hashCode());
+		result = prime * result
+				+ ((boolean6 == null) ? 0 : boolean6.hashCode());
+		result = prime * result
+				+ ((boolean7 == null) ? 0 : boolean7.hashCode());
+		result = prime * result
+				+ ((boolean8 == null) ? 0 : boolean8.hashCode());
+		result = prime * result
+				+ ((boolean9 == null) ? 0 : boolean9.hashCode());
+		result = prime * result + ((date0 == null) ? 0 : date0.hashCode());
+		result = prime * result + ((date1 == null) ? 0 : date1.hashCode());
+		result = prime * result + ((date2 == null) ? 0 : date2.hashCode());
+		result = prime * result + ((date3 == null) ? 0 : date3.hashCode());
+		result = prime * result + ((date4 == null) ? 0 : date4.hashCode());
+		result = prime * result + ((date5 == null) ? 0 : date5.hashCode());
+		result = prime * result + ((date6 == null) ? 0 : date6.hashCode());
+		result = prime * result + ((date7 == null) ? 0 : date7.hashCode());
+		result = prime * result + ((date8 == null) ? 0 : date8.hashCode());
+		result = prime * result + ((date9 == null) ? 0 : date9.hashCode());
+		result = prime * result
+				+ ((dropdown0 == null) ? 0 : dropdown0.hashCode());
+		result = prime * result
+				+ ((dropdown1 == null) ? 0 : dropdown1.hashCode());
+		result = prime * result
+				+ ((dropdown2 == null) ? 0 : dropdown2.hashCode());
+		result = prime * result
+				+ ((dropdown3 == null) ? 0 : dropdown3.hashCode());
+		result = prime * result
+				+ ((dropdown4 == null) ? 0 : dropdown4.hashCode());
+		result = prime * result
+				+ ((dropdown5 == null) ? 0 : dropdown5.hashCode());
+		result = prime * result
+				+ ((dropdown6 == null) ? 0 : dropdown6.hashCode());
+		result = prime * result
+				+ ((dropdown7 == null) ? 0 : dropdown7.hashCode());
+		result = prime * result
+				+ ((dropdown8 == null) ? 0 : dropdown8.hashCode());
+		result = prime * result
+				+ ((dropdown9 == null) ? 0 : dropdown9.hashCode());
+		result = prime * result
+				+ ((entityClass == null) ? 0 : entityClass.hashCode());
+		result = prime * result
+				+ ((entityId == null) ? 0 : entityId.hashCode());
+		result = prime * result + ((number0 == null) ? 0 : number0.hashCode());
+		result = prime * result + ((number1 == null) ? 0 : number1.hashCode());
+		result = prime * result + ((number2 == null) ? 0 : number2.hashCode());
+		result = prime * result + ((number3 == null) ? 0 : number3.hashCode());
+		result = prime * result + ((number4 == null) ? 0 : number4.hashCode());
+		result = prime * result + ((number5 == null) ? 0 : number5.hashCode());
+		result = prime * result + ((number6 == null) ? 0 : number6.hashCode());
+		result = prime * result + ((number7 == null) ? 0 : number7.hashCode());
+		result = prime * result + ((number8 == null) ? 0 : number8.hashCode());
+		result = prime * result + ((number9 == null) ? 0 : number9.hashCode());
+		result = prime * result + ((string0 == null) ? 0 : string0.hashCode());
+		result = prime * result + ((string1 == null) ? 0 : string1.hashCode());
+		result = prime * result + ((string2 == null) ? 0 : string2.hashCode());
+		result = prime * result + ((string3 == null) ? 0 : string3.hashCode());
+		result = prime * result + ((string4 == null) ? 0 : string4.hashCode());
+		result = prime * result + ((string5 == null) ? 0 : string5.hashCode());
+		result = prime * result + ((string6 == null) ? 0 : string6.hashCode());
+		result = prime * result + ((string7 == null) ? 0 : string7.hashCode());
+		result = prime * result + ((string8 == null) ? 0 : string8.hashCode());
+		result = prime * result + ((string9 == null) ? 0 : string9.hashCode());
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserDefinedRecord other = (UserDefinedRecord) obj;
+		if (boolean0 == null) {
+			if (other.boolean0 != null)
+				return false;
+		} else if (!boolean0.equals(other.boolean0))
+			return false;
+		if (boolean1 == null) {
+			if (other.boolean1 != null)
+				return false;
+		} else if (!boolean1.equals(other.boolean1))
+			return false;
+		if (boolean2 == null) {
+			if (other.boolean2 != null)
+				return false;
+		} else if (!boolean2.equals(other.boolean2))
+			return false;
+		if (boolean3 == null) {
+			if (other.boolean3 != null)
+				return false;
+		} else if (!boolean3.equals(other.boolean3))
+			return false;
+		if (boolean4 == null) {
+			if (other.boolean4 != null)
+				return false;
+		} else if (!boolean4.equals(other.boolean4))
+			return false;
+		if (boolean5 == null) {
+			if (other.boolean5 != null)
+				return false;
+		} else if (!boolean5.equals(other.boolean5))
+			return false;
+		if (boolean6 == null) {
+			if (other.boolean6 != null)
+				return false;
+		} else if (!boolean6.equals(other.boolean6))
+			return false;
+		if (boolean7 == null) {
+			if (other.boolean7 != null)
+				return false;
+		} else if (!boolean7.equals(other.boolean7))
+			return false;
+		if (boolean8 == null) {
+			if (other.boolean8 != null)
+				return false;
+		} else if (!boolean8.equals(other.boolean8))
+			return false;
+		if (boolean9 == null) {
+			if (other.boolean9 != null)
+				return false;
+		} else if (!boolean9.equals(other.boolean9))
+			return false;
+		if (date0 == null) {
+			if (other.date0 != null)
+				return false;
+		} else if (!date0.equals(other.date0))
+			return false;
+		if (date1 == null) {
+			if (other.date1 != null)
+				return false;
+		} else if (!date1.equals(other.date1))
+			return false;
+		if (date2 == null) {
+			if (other.date2 != null)
+				return false;
+		} else if (!date2.equals(other.date2))
+			return false;
+		if (date3 == null) {
+			if (other.date3 != null)
+				return false;
+		} else if (!date3.equals(other.date3))
+			return false;
+		if (date4 == null) {
+			if (other.date4 != null)
+				return false;
+		} else if (!date4.equals(other.date4))
+			return false;
+		if (date5 == null) {
+			if (other.date5 != null)
+				return false;
+		} else if (!date5.equals(other.date5))
+			return false;
+		if (date6 == null) {
+			if (other.date6 != null)
+				return false;
+		} else if (!date6.equals(other.date6))
+			return false;
+		if (date7 == null) {
+			if (other.date7 != null)
+				return false;
+		} else if (!date7.equals(other.date7))
+			return false;
+		if (date8 == null) {
+			if (other.date8 != null)
+				return false;
+		} else if (!date8.equals(other.date8))
+			return false;
+		if (date9 == null) {
+			if (other.date9 != null)
+				return false;
+		} else if (!date9.equals(other.date9))
+			return false;
+		if (dropdown0 == null) {
+			if (other.dropdown0 != null)
+				return false;
+		} else if (!dropdown0.equals(other.dropdown0))
+			return false;
+		if (dropdown1 == null) {
+			if (other.dropdown1 != null)
+				return false;
+		} else if (!dropdown1.equals(other.dropdown1))
+			return false;
+		if (dropdown2 == null) {
+			if (other.dropdown2 != null)
+				return false;
+		} else if (!dropdown2.equals(other.dropdown2))
+			return false;
+		if (dropdown3 == null) {
+			if (other.dropdown3 != null)
+				return false;
+		} else if (!dropdown3.equals(other.dropdown3))
+			return false;
+		if (dropdown4 == null) {
+			if (other.dropdown4 != null)
+				return false;
+		} else if (!dropdown4.equals(other.dropdown4))
+			return false;
+		if (dropdown5 == null) {
+			if (other.dropdown5 != null)
+				return false;
+		} else if (!dropdown5.equals(other.dropdown5))
+			return false;
+		if (dropdown6 == null) {
+			if (other.dropdown6 != null)
+				return false;
+		} else if (!dropdown6.equals(other.dropdown6))
+			return false;
+		if (dropdown7 == null) {
+			if (other.dropdown7 != null)
+				return false;
+		} else if (!dropdown7.equals(other.dropdown7))
+			return false;
+		if (dropdown8 == null) {
+			if (other.dropdown8 != null)
+				return false;
+		} else if (!dropdown8.equals(other.dropdown8))
+			return false;
+		if (dropdown9 == null) {
+			if (other.dropdown9 != null)
+				return false;
+		} else if (!dropdown9.equals(other.dropdown9))
+			return false;
+		if (entityClass == null) {
+			if (other.entityClass != null)
+				return false;
+		} else if (!entityClass.equals(other.entityClass))
+			return false;
+		if (entityId == null) {
+			if (other.entityId != null)
+				return false;
+		} else if (!entityId.equals(other.entityId))
+			return false;
+		if (number0 == null) {
+			if (other.number0 != null)
+				return false;
+		} else if (!number0.equals(other.number0))
+			return false;
+		if (number1 == null) {
+			if (other.number1 != null)
+				return false;
+		} else if (!number1.equals(other.number1))
+			return false;
+		if (number2 == null) {
+			if (other.number2 != null)
+				return false;
+		} else if (!number2.equals(other.number2))
+			return false;
+		if (number3 == null) {
+			if (other.number3 != null)
+				return false;
+		} else if (!number3.equals(other.number3))
+			return false;
+		if (number4 == null) {
+			if (other.number4 != null)
+				return false;
+		} else if (!number4.equals(other.number4))
+			return false;
+		if (number5 == null) {
+			if (other.number5 != null)
+				return false;
+		} else if (!number5.equals(other.number5))
+			return false;
+		if (number6 == null) {
+			if (other.number6 != null)
+				return false;
+		} else if (!number6.equals(other.number6))
+			return false;
+		if (number7 == null) {
+			if (other.number7 != null)
+				return false;
+		} else if (!number7.equals(other.number7))
+			return false;
+		if (number8 == null) {
+			if (other.number8 != null)
+				return false;
+		} else if (!number8.equals(other.number8))
+			return false;
+		if (number9 == null) {
+			if (other.number9 != null)
+				return false;
+		} else if (!number9.equals(other.number9))
+			return false;
+		if (string0 == null) {
+			if (other.string0 != null)
+				return false;
+		} else if (!string0.equals(other.string0))
+			return false;
+		if (string1 == null) {
+			if (other.string1 != null)
+				return false;
+		} else if (!string1.equals(other.string1))
+			return false;
+		if (string2 == null) {
+			if (other.string2 != null)
+				return false;
+		} else if (!string2.equals(other.string2))
+			return false;
+		if (string3 == null) {
+			if (other.string3 != null)
+				return false;
+		} else if (!string3.equals(other.string3))
+			return false;
+		if (string4 == null) {
+			if (other.string4 != null)
+				return false;
+		} else if (!string4.equals(other.string4))
+			return false;
+		if (string5 == null) {
+			if (other.string5 != null)
+				return false;
+		} else if (!string5.equals(other.string5))
+			return false;
+		if (string6 == null) {
+			if (other.string6 != null)
+				return false;
+		} else if (!string6.equals(other.string6))
+			return false;
+		if (string7 == null) {
+			if (other.string7 != null)
+				return false;
+		} else if (!string7.equals(other.string7))
+			return false;
+		if (string8 == null) {
+			if (other.string8 != null)
+				return false;
+		} else if (!string8.equals(other.string8))
+			return false;
+		if (string9 == null) {
+			if (other.string9 != null)
+				return false;
+		} else if (!string9.equals(other.string9))
+			return false;
+		return true;
+	}
+	
+	/**
+	 * Setter method for reference.
+	 *
+	 * @param reference the reference to set
+	 */
+	public void setReference(String reference) {
+		this.reference = reference;
+		this.setUserId();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getReference()
+	 */
+	@Override
+	public String getReference() {
+		return reference;
+	}
+		
 }
