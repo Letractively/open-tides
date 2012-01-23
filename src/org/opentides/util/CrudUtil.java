@@ -22,8 +22,10 @@ package org.opentides.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +78,10 @@ public class CrudUtil {
 		for (AuditableField property:auditFields) {
 			Object ret = retrieveNullableObjectValue(obj, property.getFieldName());
 			if (ret!=null && ret.toString().trim().length()>0 && !primary.equals(property.getFieldName())) {
+				if (ret.getClass().isAssignableFrom(Date.class)) {
+					if (!DateUtil.hasTime((Date) ret))
+						ret = DateUtil.dateToString((Date)ret, "MM/dd/yyyy");
+				}
 				if (count > 0) 
 					message.append(" and ");
 				message.append(property.getTitle())
@@ -132,7 +138,16 @@ public class CrudUtil {
 			Object newValue = retrieveNullableObjectValue(newObject, property.getFieldName());
 			if (oldValue == null) oldValue = "";
 			if (newValue == null) newValue = "";
-			
+			if (oldValue instanceof Date) {
+				// convert date to timestamp due to since hibernate stores
+				// date as timestamp
+				oldValue = new Timestamp(((Date) oldValue).getTime());
+			}
+			if (newValue instanceof Date) {
+				// convert date to timestamp due to since hibernate stores
+				// date as timestamp
+				newValue = new Timestamp(((Date) newValue).getTime());
+			}
 			if (!oldValue.equals(newValue)) {
 				if (count > 0) 
 					message.append(" and ");
@@ -161,10 +176,19 @@ public class CrudUtil {
 					} 
 				} else {
 					message.append(property.getTitle());
-					if (!StringUtil.isEmpty(oldValue.toString()))
-					message.append(" from '")
-							.append(oldValue.toString())
-							.append("'");
+					// TODO: formatting of date below is not locale specific
+					if (oldValue instanceof Timestamp) {
+						if (!DateUtil.hasTime((Timestamp) oldValue))
+							oldValue = DateUtil.dateToString((Timestamp) oldValue, "MM/dd/yyyy");
+					}
+					if (newValue instanceof Timestamp) {
+						if (!DateUtil.hasTime((Timestamp) newValue))
+							newValue = DateUtil.dateToString((Timestamp) newValue, "MM/dd/yyyy");
+					}
+					if (!StringUtil.isEmpty(oldValue.toString())) 
+						message.append(" from '")
+								.append(oldValue.toString())
+								.append("'");					
 					message.append(" to '")
 						.append(newValue.toString())
 						.append("'");
@@ -457,7 +481,8 @@ public class CrudUtil {
 			Expression exp = parser.parseExpression(expression);
 			return exp.getValue(obj, Boolean.class); 		
 		} catch (Exception e) {
-			_log.debug("Failed to evaluate expression ["+expression+"] for object ["+obj.getClass()+"]");
+			_log.debug("Failed to evaluate expression ["+expression+"] for object ["+obj.getClass()+"].");
+			_log.debug(e.getMessage());
 			return false;
 		}
 	}
@@ -483,23 +508,27 @@ public class CrudUtil {
 			} else if (Collection.class.isAssignableFrom(valueObject.getClass())) {
 				Collection<Object> list = (Collection<Object>) valueObject;
 				int ctr=0;
-				String comma = "";
+				StringBuffer buff = new StringBuffer();
 				for (Object item:list) {
 					if (ctr++>0)
-						comma += ", ";
+						buff.append(", ");
 					if (SystemCodes.class.isAssignableFrom(item.getClass())) {
 						SystemCodes entity  = (SystemCodes) item;
 						// use id 
-						comma += "'" + entity.getKey() + "'";
+						buff.append("'")
+							.append(entity.getKey())
+							.append("'");
 					} else
 					if (BaseEntity.class.isAssignableFrom(item.getClass())) {
 						BaseEntity entity  = (BaseEntity) item;
 						// use id 
-						comma += entity.getId();
+						buff.append(entity.getId());
 					} else
-						comma += "'" + item.toString() + "'";
+						buff.append("'")
+						.append(item.toString())
+						.append("'");
 				}
-				sql = sql.replace(sqlMatcher.group(), comma);				
+				sql = sql.replace(sqlMatcher.group(), buff.toString());				
 			} else
 				sql = sql.replace(sqlMatcher.group(), valueObject.toString());
 		}
