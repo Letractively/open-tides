@@ -22,6 +22,7 @@
 				<prop key="/widget-persist.jspx">persistWidgetController</prop>
 				<prop key="/widget-external.jspx">externalWidgetController</prop>
 				<prop key="/generate-report.jspx">generateReportController</prop>
+				<prop key="/admin/roles-list.jspx">rolesListController</prop>
 				<prop key="/admin/user-defined-field.jspx">userDefinedFieldController</prop>
 				<prop key="/admin/report.jspx">reportController</prop>
 				<prop key="/admin/system-codes.jspx">systemCodesController</prop>
@@ -195,6 +196,11 @@
 		<property name="validator" ref="userGroupValidator" />
 	</bean>
 
+	<bean id="rolesListController" class="org.opentides.controller.RolesListController">
+		<property name="userGroupService" ref="userGroupService" />
+		<property name="roleListView" value="core/usergroup/roles-list" />		
+	</bean>
+	
 	<bean id="generateReportController" class="org.opentides.controller.GenerateReportController">
 		<property name="service" ref="reportService" />
 	</bean>
