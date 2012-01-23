@@ -105,6 +105,15 @@ public class DateUtil {
     }
     
     /**
+     * Checks if the given date has a time recorded or just plain 00:00:00.000
+     * @param date
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+	public static boolean hasTime(Date date) {
+    	return (date.getHours() + date.getMinutes() +date.getSeconds() > 0);
+    }
+    /**
 	 * Get current date according to client's time zone.
 	 * @param calendar - adapting calendar
 	 * @param timeZone - client time zone
