@@ -30,6 +30,7 @@
 	    <div class="form-row">  
             <label for="emailAddress"><spring:message code="label.email-address"/></label> &nbsp;
 	    		<form:input path="emailAddress" size="40" maxlength="100" cssStyle="text"/>
+	    		 <span class="required">*</span>
         </div>
 	    <div class="form-row">  
             <label class="special" for="submit">&nbsp;</label><input type="submit" value="Submit"> &nbsp; <input type="button" value="Cancel" onclick="window.location='<c:url value='/home.jspx'/>'">
