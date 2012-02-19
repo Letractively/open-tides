@@ -25,13 +25,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.opentides.bean.Auditable;
+import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 import org.opentides.util.SecurityUtil;
 
 
 @Entity
 @Table(name="USERS")
-public class UserCredential extends BaseEntity{
+public class UserCredential extends BaseEntity implements Auditable {
 	private static final long serialVersionUID = -8078097647300665926L;
 	
 	@Column(name = "USERNAME", unique=true)
@@ -168,6 +170,14 @@ public class UserCredential extends BaseEntity{
 		return result;
 	}
 	/* (non-Javadoc)
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	@Override
+	public AuditableField getPrimaryField() {
+		return new AuditableField("username", "Username");
+	}	
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -179,7 +189,7 @@ public class UserCredential extends BaseEntity{
 		if (getClass() != obj.getClass())
 			return false;
 		final UserCredential other = (UserCredential) obj;
-		if (enabled != other.enabled)
+		if (!enabled.equals(other.enabled))
 			return false;
 		if (password == null) {
 			if (other.password != null)
@@ -192,5 +202,5 @@ public class UserCredential extends BaseEntity{
 		} else if (!username.equals(other.username))
 			return false;
 		return true;
-	}	
+	}
 }
