@@ -19,6 +19,8 @@
 package org.opentides.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuditLogServiceImpl implements AuditLogService {
 
 	private AuditLogDAO auditLogDAO;
+	
+	/** 
+	 * Inner class to do sorting 
+	 * Sort with latest audit log first
+	 * **/
+	private static class CreateDateComparator implements Comparator<AuditLog> {
+		@Override
+		public int compare(AuditLog arg0, AuditLog arg1) {
+			return arg1.getCreateDate().compareTo(arg0.getCreateDate());
+		}
+	}	
 	
 	/**
 	 * Counts all the record of this object
@@ -95,6 +108,14 @@ public class AuditLogServiceImpl implements AuditLogService {
 		return auditLogDAO.findByNamedQuery("jpql.audit.findLikeReferenceAndClass",params);
 	}
 
+	/**
+	 * Helper to sort a set of audit log entries by createDate.
+	 * @param logs
+	 */
+	public void sortByDate(List<AuditLog> logs) {
+		Collections.sort(logs, new CreateDateComparator());
+	}
+	
 	/**
 	 * Setter method for auditLogDAO.
 	 *

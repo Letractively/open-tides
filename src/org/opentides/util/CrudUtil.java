@@ -62,7 +62,7 @@ public class CrudUtil {
      */
     public static String buildCreateMessage(Auditable obj) {
     	StringBuffer message = new StringBuffer("Added ");
-    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName()); 
+    	String friendlyName = CrudUtil.getReadableName(obj); 
     	String primary = obj.getPrimaryField().getFieldName();
     	message.append(friendlyName)  // class name
     		.append(" ")
@@ -101,7 +101,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyCreateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Added new ");
-    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
+    	String friendlyName = CrudUtil.getReadableName(obj);
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -121,7 +121,7 @@ public class CrudUtil {
 	public static String buildUpdateMessage(Auditable oldObject, Auditable newObject) {
     	
     	StringBuffer message = new StringBuffer("Changed ");
-    	String friendlyName = CrudUtil.getReadableName(oldObject.getClass().getName()); 
+    	String friendlyName = CrudUtil.getReadableName(oldObject); 
     	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(oldObject.getPrimaryField().getTitle())
@@ -209,7 +209,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyUpdateMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Updated ");
-    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
+    	String friendlyName = CrudUtil.getReadableName(obj);
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -227,7 +227,7 @@ public class CrudUtil {
      */
     public static String buildDeleteMessage(Auditable obj) {
     	StringBuffer message = new StringBuffer("Deleted ");
-    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName()); 
+    	String friendlyName = CrudUtil.getReadableName(obj); 
     	message.append(friendlyName)  // class name
     		.append(" ")
     		.append(obj.getPrimaryField().getTitle())
@@ -245,7 +245,7 @@ public class CrudUtil {
      */
     public static String buildFriendlyDeleteMessage(Auditable obj){
     	StringBuffer message = new StringBuffer("Deleted ");
-    	String friendlyName = CrudUtil.getReadableName(obj.getClass().getName());
+    	String friendlyName = CrudUtil.getReadableName(obj);
     	message.append(friendlyName);
     	AuditableField primaryField = obj.getPrimaryField();
     	if (primaryField != null){
@@ -559,13 +559,14 @@ public class CrudUtil {
 	 * @param entityClass
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static String getReadableName(String entityClass) {
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static String getReadableName(Auditable object) {
+		String entityClass = object.getClass().getName();			
 		try {
 			Class clazz = Class.forName(entityClass);
 			try {
 				Method method = clazz.getMethod("readableName");
-				return method.invoke(null).toString().trim();
+				return method.invoke(object).toString().trim();
 			} catch (Exception e) {
 				String name = clazz.getSimpleName();
 				return name.replaceAll("([A-Z])", " $1").trim();
@@ -573,6 +574,17 @@ public class CrudUtil {
 		} catch (ClassNotFoundException e) {
 			_log.warn("Attempt to get readableName for unknown class ["+entityClass+"]");
 			return "";
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static String getReadableName(Class clazz) {
+		try {
+			Method method = clazz.getMethod("readableName");
+			return method.invoke(null).toString().trim();
+		} catch (Exception e) {
+			String name = clazz.getSimpleName();
+			return name.replaceAll("([A-Z])", " $1").trim();
 		}
 	}
 }

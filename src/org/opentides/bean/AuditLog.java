@@ -305,7 +305,7 @@ public class AuditLog implements Serializable, Searchable {
 	 * @return
 	 */
 	public final String getEntityName() {
-		return CrudUtil.getReadableName(entityClass.getName());
+		return CrudUtil.getReadableName(entityClass);
 	}
 	/**
 	 * Getter method for entityClass.
@@ -524,5 +524,5 @@ public class AuditLog implements Serializable, Searchable {
 	public final void setLogAction(String logAction) {
 		this.logAction = logAction;
 	}
-    
+	
 }
