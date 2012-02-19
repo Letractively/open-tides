@@ -43,6 +43,8 @@ public interface BaseCrudService<T extends BaseEntity> extends BaseService {
 	public long countByExample(T example, boolean exactMatch);
 	public T load(String sid);
 	public T load(Long id);
+	public T load(String sid, boolean filter);
+	public T load(Long id, boolean filter);
 	public void delete(String sid);
 	public void delete(Long id);
 	public void setDao(BaseEntityDAO<T,Long>  dao);
