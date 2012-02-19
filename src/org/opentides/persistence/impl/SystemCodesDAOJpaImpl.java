@@ -90,12 +90,17 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 	@Override
 	protected String appendClauseToExample(SystemCodes example,
 			boolean exactMatch) {
-		String clause = "";
-		// search by category should be specific
-		if (!StringUtil.isEmpty(example.getCategory())) {
-			clause = "category = '"+example.getCategory()+"' and ";
-		}	
-		// exclude all system code with category KEYGEN
-		return clause + "category != 'KEYGEN'";
+		return "category != 'KEYGEN'";
 	}
+
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.impl.BaseEntityDAOJpaImpl#appendOrderToExample(org.opentides.bean.BaseEntity)
+	 */
+	@Override
+	protected String appendOrderToExample(SystemCodes example) {
+		if (StringUtil.isEmpty(example.getOrderOption()))
+			return "order by value";
+		else
+			return super.appendOrderToExample(example);
+	}	
 }
