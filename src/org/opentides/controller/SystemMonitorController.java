@@ -18,13 +18,17 @@
  */
 package org.opentides.controller;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.hibernate.stat.Statistics;
 import org.opentides.service.SystemCodesService;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,6 +39,8 @@ public class SystemMonitorController extends AbstractController {
 	private String viewName = "core/monitor/system-monitor";
 	
 	private SystemCodesService systemCodesService;
+	
+	private static Logger _log = Logger.getLogger(SystemMonitorController.class);
 
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
@@ -65,6 +71,23 @@ public class SystemMonitorController extends AbstractController {
 		model.put("heapFreeSize", heapFreeSize/1024);
 		model.put("startDate", startDate);
 		model.put("statistics", stats);
+		
+		// Display MANIFEST.MF settings for version tracking
+		InputStream fis = null;
+        try {
+			fis = getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
+			Manifest manifest = new Manifest(fis);
+	        Attributes atts = manifest.getMainAttributes();
+	        model.put("buildVendor",	atts.getValue("Implementation-Vendor"));
+	        model.put("buildTitle",		atts.getValue("Implementation-Title"));
+	        model.put("buildVersion",	atts.getValue("Implementation-Version"));
+        } catch(Exception e) {
+        	_log.warn("Failed to retrieve information from MANIFEST.MF", e);
+        } finally {
+        	if (fis!=null)
+        		fis.close();        	
+        }
+
 		return new ModelAndView(viewName, model);
 	}
 
