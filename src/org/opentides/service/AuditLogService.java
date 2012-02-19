@@ -42,4 +42,6 @@ public interface AuditLogService {
 
 	@SuppressWarnings("rawtypes")
 	public List<AuditLog> findLogLikeReferenceAndClass(String reference, List<Class> types);
+	
+	public void sortByDate(List<AuditLog> logs);
 }
