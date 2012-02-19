@@ -77,7 +77,7 @@ public class WidgetValidator implements Validator {
 		try {
 			key = this.widgetService.findByName(widget.getName());
 			if (key != null){
-				if(key.getId()!=widget.getId())
+				if(!key.getId().equals(widget.getId()))
 					return true;
 			}
 		} catch (EntityNotFoundException e) {
@@ -96,7 +96,7 @@ public class WidgetValidator implements Validator {
 		try {
 			key = this.widgetService.findByUrl(widget.getUrl());
 			if (key != null){
-				if(key.getId()!=widget.getId())
+				if (!key.getId().equals(widget.getId()))
 					return true;
 			}
 		} catch (EntityNotFoundException e) {

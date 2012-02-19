@@ -79,7 +79,7 @@ public class SystemCodesValidator implements Validator {
 		try {
 			key = this.systemCodesService.findByKey(systemCodes);
 			if (key != null){
-				if(key.getId()!=systemCodes.getId())
+				if(!key.getId().equals(systemCodes.getId()))
 					return true;
 			}
 			

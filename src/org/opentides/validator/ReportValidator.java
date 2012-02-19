@@ -102,7 +102,7 @@ public class ReportValidator implements Validator {
 		try {
 			key = this.reportService.findByName(report.getName());
 			if (key != null){
-				if(key.getId()!=report.getId())
+				if(!key.getId().equals(report.getId()))
 					return true;
 			}
 		} catch (EntityNotFoundException e) {

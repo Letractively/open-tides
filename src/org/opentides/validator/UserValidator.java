@@ -83,7 +83,9 @@ public class UserValidator implements Validator {
 		String userName = user.getCredential().getUsername();
 		if (userName != null && !StringUtil.isEmpty(userName)){
 			BaseUser userCheck = userDAO.loadByUsername(userName);
-			if (userCheck != null && user.getId() != userCheck.getId()) 
+			if (userCheck != null && user.isNew())
+				return true;		
+			if (userCheck != null && !userCheck.getId().equals(user.getId())) 
 				return true;
 		}
 		return false;
@@ -98,7 +100,9 @@ public class UserValidator implements Validator {
 		String email = user.getEmailAddress();
 		if (email != null && !StringUtil.isEmpty(email)){
 			BaseUser userCheck = userDAO.loadByEmailAddress(email);
-			if (userCheck != null && user.getId() != userCheck.getId()) 
+			if (userCheck != null && user.isNew())
+				return true;			
+			if (userCheck != null && !userCheck.getId().equals(user.getId())) 
 				return true;
 		}
 		return false;
