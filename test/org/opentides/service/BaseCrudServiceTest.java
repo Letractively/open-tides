@@ -60,9 +60,9 @@ public class BaseCrudServiceTest extends BaseTidesTest{
 	public void testFindByExamplePaging(){
 		SystemCodes example = new SystemCodes();
 		example.setDisableProtection(true);
-		example.setCategory("O");
+		example.setCategory("COUNTRY");
 		
-		List<SystemCodes> expected = jdbcTemplate.query("SELECT * FROM SYSTEM_CODES WHERE CATEGORY_ LIKE '%O%' limit 4,7", new SystemCodesMapper());
+		List<SystemCodes> expected = jdbcTemplate.query("SELECT * FROM SYSTEM_CODES WHERE CATEGORY_ LIKE '%COUNTRY%' limit 4,7", new SystemCodesMapper());
 		List<SystemCodes> actual = systemCodesService.findByExample(example, 4, 5);
 		_log.debug("Size not exact match: "+expected.size());
 		assertEquals(expected.size(), actual.size());
@@ -72,9 +72,9 @@ public class BaseCrudServiceTest extends BaseTidesTest{
 	public void testFindByExampleExactMatch(){
 		SystemCodes example = new SystemCodes();
 		example.setDisableProtection(true);
-		example.setCategory("O");
+		example.setCategory("COUNTRY");
 		
-		List<SystemCodes> expected = jdbcTemplate.query("SELECT * FROM SYSTEM_CODES WHERE CATEGORY_='O'", new SystemCodesMapper());
+		List<SystemCodes> expected = jdbcTemplate.query("SELECT * FROM SYSTEM_CODES WHERE CATEGORY_='COUNTRY'", new SystemCodesMapper());
 		List<SystemCodes> actual = systemCodesService.findByExample(example,true);
 		_log.debug("Size exact match: "+expected.size());
 		assertEquals(expected.size(), actual.size());
@@ -107,9 +107,9 @@ public class BaseCrudServiceTest extends BaseTidesTest{
 	public void testCountAllByExample(){
 		SystemCodes example = new SystemCodes();
 		example.setDisableProtection(true);
-		example.setCategory("O");
+		example.setCategory("COUNTRY");
 		
-		long expected = jdbcTemplate.queryForLong("SELECT count(*) FROM SYSTEM_CODES WHERE CATEGORY_ LIKE '%O%'");
+		long expected = jdbcTemplate.queryForLong("SELECT count(*) FROM SYSTEM_CODES WHERE CATEGORY_ LIKE '%COUNTRY%'");
 		long actual = systemCodesService.countByExample(example);
 		assertEquals(expected, actual);
 		

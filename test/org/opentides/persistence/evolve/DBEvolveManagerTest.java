@@ -8,36 +8,18 @@ import java.util.List;
 
 import org.junit.Test;
 import org.opentides.InvalidImplementationException;
+import org.opentides.testsuite.BaseTidesTest;
 import org.springframework.test.context.transaction.BeforeTransaction;
-import org.springframework.test.jpa.AbstractJpaTests;
 
 /**
  * @author allantan
  *
  */
-public class DBEvolveManagerTest extends AbstractJpaTests {
+public class DBEvolveManagerTest extends BaseTidesTest {
 
     private DBEvolveManager manager;
     private List<DBEvolve> testList;
-    
-    /**
-     * 
-     */
-    public DBEvolveManagerTest() {
-        super();
-        setAutowireMode(AUTOWIRE_BY_NAME);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.springframework.test.AbstractSingleSpringContextTests#getConfigLocations()
-     */
-    @Override
-    protected String[] getConfigLocations() {
-        return new String[] { 
-                "file:WebContent/WEB-INF/tides/tidesContext*.xml",
-                "file:WebContent/WEB-INF/tides/testConfig.xml" 
-              };
-    }
+  
     
     @Override
     @BeforeTransaction

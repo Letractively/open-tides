@@ -35,7 +35,7 @@ public class CrudUtilTest {
 	@Test
 	public void testBuildCreateMessage() {
 		SystemCodes sc = new SystemCodes("category","key","value");
-		String expected = "Added System Codes Value:value - Key=key and Value=value and Category=category";
+		String expected = "Added System Codes Value:value - Key=key and Category=category";
 		Assert.assertEquals(expected,
 				CrudUtil.buildCreateMessage(sc));
 	}
@@ -339,8 +339,7 @@ public class CrudUtilTest {
 
     @Test
     public void testGetReadableName() {
-		Assert.assertEquals("System Codes", CrudUtil
-				.getReadableName("org.opentides.bean.SystemCodes"));
+		Assert.assertEquals("System Codes", CrudUtil.getReadableName(SystemCodes.class));
     }
     
 	@Test
