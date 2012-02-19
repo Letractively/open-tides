@@ -26,12 +26,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 /**
  * The system codes class is a lookup table used for drop-downs.
  * Developer must ensure category is consistently used in the application.
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="SYSTEM_CODES")
 public class SystemCodes extends BaseProtectedEntity 
 	implements Serializable, Searchable, Auditable, Sortable {
