@@ -41,6 +41,7 @@ import org.opentides.bean.Uploadable;
 import org.opentides.bean.UserDefinable;
 import org.opentides.service.BaseCrudService;
 import org.opentides.service.FileInfoService;
+import org.opentides.service.SystemCodesService;
 import org.opentides.service.UserDefinedFieldService;
 import org.opentides.util.DateUtil;
 import org.opentides.util.FileUtil;
@@ -632,9 +633,8 @@ public class BaseCrudController<T extends BaseEntity> extends
      */
     protected final List<SystemCodes> getSystemCodesByCategory(
             String categoryName) {
-        SystemCodes example = new SystemCodes();
-        example.setCategory(categoryName);
-        return systemCodesService.findByExample(example, true);
+    	SystemCodesService service = (SystemCodesService) systemCodesService;
+    	return service.findSystemCodesByCategory(categoryName);
     }
 
     /**
