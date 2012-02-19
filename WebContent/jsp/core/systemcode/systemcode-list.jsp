@@ -46,12 +46,12 @@
             
             <div class="form-row"> 
                 <label for="key"><spring:message code="label.key" /></label>
-                <form:input path="key" maxlength="20" />
+                <form:input path="key" maxlength="50" />
             </div>
             
             <div class="form-row"> 
                 <label for="value"><spring:message code="label.value" /></label>
-                <form:input path="value" maxlength="50" />		
+                <form:input path="value" maxlength="128" />
             </div>
             
 	        <div class="form-row"> 
