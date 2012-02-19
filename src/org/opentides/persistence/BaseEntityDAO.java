@@ -138,7 +138,7 @@ public interface BaseEntityDAO<T extends BaseEntity, ID extends Serializable> {
 	public long countByExample(T example, boolean exactMatch);
     
 	/**
-	 * Returns instance of the entity.
+	 * Returns instance of the entity. Assuming filter and lock is false.
 	 * @param id
 	 * @return
 	 */
@@ -147,10 +147,11 @@ public interface BaseEntityDAO<T extends BaseEntity, ID extends Serializable> {
 	/**
 	 * Returns instance of the entity.
 	 * @param id
+	 * @param filter - should we append filter clause
 	 * @param lock - do we acquire a lock for writing
 	 * @return
 	 */
-	public T loadEntityModel(ID id, boolean lock);
+	public T loadEntityModel(ID id, boolean filter, boolean lock);
 	
 	/**
 	 * Removes the entity

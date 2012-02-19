@@ -81,17 +81,30 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 	                .getGenericSuperclass()).getActualTypeArguments()[0];
 		}
 	}
-
-	public final T loadEntityModel(ID id, boolean lock) {
+	
+	@SuppressWarnings("unchecked")
+	public final T loadEntityModel(ID id, boolean filter, boolean lock) {
         T entity;
-        entity = getEntityManager().find(getEntityBeanType(), id);
+        if (filter) {        	
+			String filterClause = this.getSecurityFilter();
+			String whereClause = doSQLAppend(filterClause, "obj.id = "+id);			
+			Query query = getEntityManager().createQuery("from " + 
+	        		getEntityBeanType().getName() + " obj where "+ whereClause);
+			try {
+				return (T) query.getSingleResult();
+			} catch(NoResultException nre) {
+				return null;
+			}
+        } else {
+        	entity = getEntityManager().find(getEntityBeanType(), id);
+        }
         if (lock)
         	getEntityManager().lock(entity, javax.persistence.LockModeType.WRITE);
         return entity;
 	}
-	
+		
 	public final T loadEntityModel(ID id) {
-		return this.loadEntityModel(id, false);
+		return this.loadEntityModel(id, false, false);
 	}
 	
 	public final void saveEntityModel(T obj) {
@@ -130,7 +143,7 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 	}
     
 	public final long countAll() {
-		return (Long) getEntityManager().createQuery("select count(*) from " + 
+		return (Long) getEntityManager().createQuery("select count(id) from " + 
 				getEntityBeanType().getName() + " obj " +
 				doSQLAppend("", this.buildSecurityFilterClause(null))).getSingleResult();
 	}
@@ -148,7 +161,7 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 			whereClause = doSQLAppend(whereClause, append);
 			whereClause = doSQLAppend(whereClause, filterClause);
 			if (_log.isDebugEnabled()) _log.debug("Count QBE >> "+whereClause);
-			return (Long) getEntityManager().createQuery("select count(*) from " + 
+			return (Long) getEntityManager().createQuery("select count(id) from " + 
 					getEntityBeanType().getName() + " obj " + whereClause).getSingleResult();
 		} else {
 			throw new InvalidImplementationException("Parameter example ["+example.getClass().getName()+"] is not an instance of Searchable");
@@ -340,22 +353,30 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 				BaseProtectedEntity.class.isAssignableFrom(example.getClass())) {
 			BaseProtectedEntity bpe = (BaseProtectedEntity) example;
 			if (!bpe.isDisableProtection()) {
-				// retrieve list of available security filters
-				for (String key:securityFilter.keySet()) {
-					if (SecurityUtil.currentUserHasPermission(key)) {
-						String filterClause = securityFilter.get(key);
-						SessionUser sessionUser = SecurityUtil.getSessionUser();
-						// allanctan: 12/12/2011 - Removed query from db, instead use sessionUser
-						// BaseUser user = getEntityManager().find(BaseUser.class, sessionUser.getId());
-						return CrudUtil.replaceSQLParameters(filterClause, sessionUser);
-					}
-				}
-				return "1!=1";
+				return getSecurityFilter();
 			}
-			// no filter found?!? fine, let's disable access then...
 		}
 		// no security needed
 		return "";
+	}
+	
+	/**
+	 * Helper method to retrieve applicable security filter
+	 * for the user and entity.
+	 */
+	private String getSecurityFilter() {
+		// retrieve list of available security filters
+		for (String key:securityFilter.keySet()) {
+			if (SecurityUtil.currentUserHasPermission(key)) {
+				String filterClause = securityFilter.get(key);
+				SessionUser sessionUser = SecurityUtil.getSessionUser();
+				// allanctan: 12/12/2011 - Removed query from db, instead use sessionUser
+				// BaseUser user = getEntityManager().find(BaseUser.class, sessionUser.getId());
+				return CrudUtil.replaceSQLParameters(filterClause, sessionUser);
+			}
+		}
+		// no filter found?!? fine, let's disable access then...
+		return "1!=1";		
 	}
 	
 	private String doSQLAppend(String whereClause, String append) {
