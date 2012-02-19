@@ -35,7 +35,7 @@
                             	</div>
                                 <p><c:out value="${record.principal.completeName}"></c:out></p>
                                 <p><c:out value="${record.principal.position}"></c:out></p>
-                                <p><c:out value="${record.principal.office}"/></p>
+                                <p><c:out value="${record.principal.officeName}"/></p>
                            	</td>
                             <td class="col-3"><c:out value="${record.lastRequest}"/></td>
                             <td class="col-4">
