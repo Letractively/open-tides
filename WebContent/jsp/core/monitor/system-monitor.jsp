@@ -13,15 +13,18 @@
 <div id="bd">
     <div class="yui-g">
     	<div class="main" id="systemmonitor">
-	        <div class="title-wrapper">
-	        	<div class="title" id="systemmonitor-title"><span><spring:message code="label.system-monitor" /></span></div>
-	        </div>
+	       <div class="title-wrapper" id="systemmonitor-title"><!-- <span> --><spring:message code="label.system-monitor" /><!-- </span> --></div>	        	
 	        
 	        <div class="contents">
-	        	<b>Available Processors:</b><br/>
+	        	<span class="bold">Application:</span><br/>
+	        	Software: ${buildTitle}<br/>
+	        	Vendor: ${buildVendor}<br/>
+	        	Version: ${buildVersion}<br/>
+	        	<hr/>
+	        	<span class="bold">Available Processors:</span><br/>
 	        	Available Processors: ${processors}<br/>		                                                                            
 	        	<hr/>
-	        	<b>Memory Usage:</b><br/>
+	        	<span class="bold">Memory Usage:</span><br/>
 	        	Heap Size: <fmt:formatNumber type="number" pattern="#,###,###" value="${heapSize}" /> Kb<br/>		                                                                            
 	        	Maximum Heap Size: <fmt:formatNumber type="number" pattern="#,###,###" value="${heapMaxSize}" /> Kb<br/>		                                                                            
 	        	Free Heap Size: <fmt:formatNumber type="number" pattern="#,###,###" value="${heapFreeSize}" /> Kb<br/>	
@@ -30,7 +33,7 @@
 	       		Database statistics is not enabled.
 	       </c:if>                                                                            
 	       <c:if test="${not empty statistics}">	                                                                            
-	        	<b>Database Statistics:</b><br/>
+	        	<span class="bold">Database Statistics:</span><br/>
 	        	Start Time: <fmt:formatDate value="${startDate}" pattern="MM/dd/yyyy HH:mm" /> <br/> 
 	        	Transactions: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.transactionCount}" /> <br/>		                                                                            
 	        	Successful Transactions: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.successfulTransactionCount}" /> <br/>		                                                                            
@@ -56,7 +59,7 @@
 	        	Collections Recreated: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.collectionRecreateCount}" /> <br/>		                                                                            
 	        	Collections Fetched: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.collectionFetchCount}" /> <br/>		                                                                            
 	        	<hr/>		                   
-	        	<b>Cache Statistics:</b><br/>                                    	                                                         
+	        	<span class="bold">Cache Statistics:</span><br/>                                    	                                                         
 	        	Second Level Cache Puts: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.secondLevelCachePutCount}" /> <br/>		                                                                            
 	        	Second Level Cache Hits: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.secondLevelCacheHitCount}" /> <br/>		                                                                            
 	        	Second Level Cache Misses: <fmt:formatNumber type="number" pattern="#,###,###" value="${statistics.secondLevelCacheMissCount}" /> <br/>		                                                                            
