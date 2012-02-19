@@ -145,6 +145,7 @@ public class BaseCrudServiceImpl<T extends BaseEntity> extends
 			}
 		}
 	}
+	
 
 	/**
 	 * Loads an object based on the given id
@@ -155,9 +156,44 @@ public class BaseCrudServiceImpl<T extends BaseEntity> extends
 	 */
 	@Transactional(readOnly=true) 
 	public final T load(Long id) {
-		return dao.loadEntityModel(id);
+		return dao.loadEntityModel(id, false, false);
 	}
 
+	/**
+	 * Loads an object based on the given id
+	 * 
+	 * @param id
+	 *            to load
+	 * @param filter - apply security filter?
+	 * @return object
+	 */
+	@Transactional(readOnly=true) 
+	public final T load(Long id, boolean filter) {
+		return dao.loadEntityModel(id, filter, false);
+	}
+
+	/**
+	 * Loads an object based on the given id
+	 * 
+	 * @param id
+	 *            to load
+	 * @param filter - apply security filter?
+	 * @return object
+	 */
+	@Transactional(readOnly=true) 
+	public final T load(String sid, boolean filter) {
+		if (StringUtil.isEmpty(sid)) {
+			throw new InvalidImplementationException("ID parameter is empty.");
+		} else {
+			try {
+				Long id = Long.parseLong(sid);
+				return load(id, filter);
+			} catch (NumberFormatException nfe) {
+				throw new InvalidImplementationException("ID parameter is not numeric.");
+			}
+		}
+	}
+	
 	/**
 	 * Save the object via DAO.
 	 * 
