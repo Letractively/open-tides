@@ -56,6 +56,9 @@ public class WidgetDAOJpaImpl extends BaseEntityDAOJpaImpl<Widget, Long>
 				}
 			}
 		}
+		if (roles==null || roles.isEmpty()) {
+			return null;
+		}
 		map.put("roles", roles);
 		List<Widget> list = findByNamedQuery("jpql.widget.findDefaultWidgets", map);
 		if (list == null || list.size() == 0)
