@@ -102,6 +102,8 @@ public class AuditLogInterceptor extends EmptyInterceptor {
 		        	Session tempSession = 
 		                HibernateUtil.getSessionFactory().openSession(); 
 		        	Auditable old = (Auditable) tempSession.get(entity.getClass(), auditable.getId());
+		        	if (old == null)
+		        		return false; // old object is not yet persisted?
 		        	synchronized(oldies) {
 		        		oldies.put(old.getId(), old);
 		        	}
@@ -116,6 +118,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
         return false; 
     } 
     
+	@SuppressWarnings("rawtypes")
 	@Override
     public void postFlush(Iterator iterator) 
                     throws CallbackException { 
@@ -158,8 +161,7 @@ public class AuditLogInterceptor extends EmptyInterceptor {
 	        				auditMessage = CrudUtil.buildDeleteMessage(entity);
 	        			}else{
 	        				auditMessage = entity.getAuditMessage();
-	        			}
-	        			
+	        			}	        			
 	        			AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);       				
 	        		}
 	        	}        	
@@ -182,8 +184,8 @@ public class AuditLogInterceptor extends EmptyInterceptor {
 	        			}else{
 	        				auditMessage = entity.getAuditMessage();
 	        			}
-	        			
-	        			AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);	
+	        			if (!StringUtil.isEmpty(auditMessage))
+	        				AuditLogDAOImpl.logEvent(friendlyMessage, auditMessage, entity);	
 	        		}
                	}
         	}
