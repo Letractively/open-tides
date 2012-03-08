@@ -89,6 +89,11 @@
 								<input type="checkbox" name="${parameter.name}" value="${option.key}" /> ${option.value}<br/>
         					</c:forEach>
 	        			</c:when>
+	        			<c:when test="${parameter.type=='prompt.command'}">
+						  <c:forEach items="${parameter.properties}" var="option">
+						       ${option.value.html}
+						  </c:forEach>
+						</c:when>
 	        			<c:otherwise>
 		        			<input type="text" name="${parameter.name}" /> 
 	        			</c:otherwise>
