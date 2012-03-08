@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.opentides.bean.DynamicReport;
+import org.opentides.bean.DynamicReportParameter;
 import org.opentides.bean.ReportDefinition;
 import org.opentides.bean.SortedProperties;
 import org.opentides.persistence.ReportDAO;
@@ -63,7 +65,7 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
     private static Logger _log = Logger.getLogger(ReportServiceImpl.class);
 
 	private DataSource dataSource;
-		
+	private Map<String, DynamicReportParameter> dynamicParameters;
 	private String jasperPath;
 
 	@Transactional(readOnly=true)
@@ -121,7 +123,13 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 	 								_log.warn("Unable to find file ["+ jasperPath + value+"]");
 	 							else
 	 								ret.put(param, stream);
-							} else {
+							} else if("java.util.List".equals(className)){
+								if(value!=null){
+									String[] values = value.split(","); 
+									List<String> temp = Arrays.asList(values);
+									ret.put(param, temp);
+							    }
+							}else {
 								Class classDefinition = Class.forName(className);
 						        Object objectValue = classDefinition.getConstructor(String.class).newInstance(value);					
 						        ret.put(param, objectValue);
@@ -202,6 +210,9 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 							for (Object[] option : rs) {
 								property.put(Long.valueOf(option[1].toString()), option[0].toString());
 							}
+						}else if("prompt.command".equals(propName)){
+							missed.setType(propName);
+							property.put(propValue, dynamicParameters.get(propValue));
 						}else
 							property.put(propName, propValue);
 					}
@@ -354,6 +365,13 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 	public void setJasperPath(String jasperPath) {
 		this.jasperPath = jasperPath;
 	}
+
+	public void setDynamicParameters(
+			Map<String, DynamicReportParameter> dynamicParameters) {
+		this.dynamicParameters = dynamicParameters;
+	}
+	
+	
 	
 }
 
