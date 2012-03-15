@@ -356,16 +356,22 @@ IDEYATECH.crud = function() {
 		 * @return {String} title Main title of record to display.
 		 */
 		confirmDelete : function(divId, url, title) {
-			if (confirm('Are you sure to delete [' + title + ']?')) {
+			if (confirm('Are you sure you want to delete [' + title + ']?')) {
 				var args = [ divId ];
 				var successCallback = function(data) {
 					$('#' + args[0]).fadeOut('slow');
 				};
-
+				var errorCallback = function(data) {
+					if(data.responseText.indexOf("HTTP Status 500")> -1){
+						alert("You're trying to delete [" + title + "], but is being used by the system.");
+					}else{
+						__failure;
+					}
+				};
 				$.ajax(url, {
 					type : 'GET',
 					success : successCallback,
-					error : __failure
+					error : errorCallback
 				});
 			}
 		},
