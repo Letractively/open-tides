@@ -194,6 +194,7 @@
 		<property name="pageSize" value="${search.page.size}" />
 		<property name="numLinks" value="${search.links.displayed}" />
 		<property name="validator" ref="userGroupValidator" />
+		<property name="userWidgetsService" ref="userWidgetsService"/>
 	</bean>
 
 	<bean id="rolesListController" class="org.opentides.controller.RolesListController">

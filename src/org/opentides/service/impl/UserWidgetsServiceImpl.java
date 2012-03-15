@@ -18,12 +18,15 @@
  */
 package org.opentides.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.opentides.bean.UserWidgets;
 import org.opentides.bean.Widget;
 import org.opentides.bean.user.BaseUser;
+import org.opentides.bean.user.UserGroup;
+import org.opentides.bean.user.UserRole;
 import org.opentides.persistence.UserWidgetsDAO;
 import org.opentides.service.UserService;
 import org.opentides.service.UserWidgetsService;
@@ -165,6 +168,21 @@ public class UserWidgetsServiceImpl extends BaseCrudServiceImpl<UserWidgets>
 	@Transactional(readOnly = true)
 	public long countUserWidgetsColumn(Integer column, long userId) {
 		return ((UserWidgetsDAO) getDao()).countUserWidgetsColumn(column, userId);
+	}
+	
+	public void removeUserGroupWidgetsWithAccessCodes(UserGroup userGroup, List<UserRole> userAccessRoles) {
+		List<String> rolesList = new ArrayList<String>(userAccessRoles.size());
+		for (UserRole userRole : userAccessRoles) {
+			rolesList.add(userRole.getRole());
+		}
+		
+		//get all the widgets with the access roles from the user
+		List<Widget> widgets = widgetService.findWidgetWithAccessCode(rolesList);
+		for (Widget widget : widgets) {
+			for(BaseUser baseUser : userGroup.getUsers()) {
+				((UserWidgetsDAO) getDao()).deleteUserWidget(widget.getId(), baseUser.getId());
+			}
+		}
 	}
 	
 //-- End custom codes. Do not delete this comment line.

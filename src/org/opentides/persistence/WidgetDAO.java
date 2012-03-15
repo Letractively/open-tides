@@ -38,5 +38,12 @@ public interface WidgetDAO extends BaseEntityDAO<Widget, Long> {
 	 * @return
 	 */
 	public List<Widget> findDefaultWidget(BaseUser user);
+	
+	/**
+	 * Returns all the widgets with the given access codes/roles
+	 * @param accessCodes
+	 * @return
+	 */
+	public List<Widget> findWidgetWithAccessCode(List<String> accessCodes);
 //-- End custom codes. Do not delete this comment line.
 }

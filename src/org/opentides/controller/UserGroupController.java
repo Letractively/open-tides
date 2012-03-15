@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.opentides.bean.user.UserGroup;
 import org.opentides.bean.user.UserRole;
 import org.opentides.service.UserGroupService;
+import org.opentides.service.UserWidgetsService;
 
 
 /**
@@ -35,6 +36,7 @@ import org.opentides.service.UserGroupService;
  */
 public class UserGroupController extends BaseCrudController<UserGroup> {
 	
+	UserWidgetsService userWidgetsService;
 	
 	/* (non-Javadoc)
 	 * @see org.opentides.controller.BaseCrudController#preUpdateAction(org.opentides.bean.BaseEntity)
@@ -44,6 +46,7 @@ public class UserGroupController extends BaseCrudController<UserGroup> {
 		for (UserRole deleteRole:command.getRemoveList()) {
 			((UserGroupService) getService()).removeUserRole(deleteRole);			
 		}
+		userWidgetsService.removeUserGroupWidgetsWithAccessCodes(command, command.getRemoveList());
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -53,6 +56,10 @@ public class UserGroupController extends BaseCrudController<UserGroup> {
 		model.put("roles", ((UserGroupService) getService()).getRoles());
 		model.put("userGroupList", getService().findAll());
 		return model;
+	}
+	
+	public void setUserWidgetsService(UserWidgetsService userWidgetsService) {
+		this.userWidgetsService = userWidgetsService;
 	}
 	
 }

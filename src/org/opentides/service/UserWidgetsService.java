@@ -23,6 +23,8 @@ import java.util.List;
 import org.opentides.bean.UserWidgets;
 import org.opentides.bean.Widget;
 import org.opentides.bean.user.BaseUser;
+import org.opentides.bean.user.UserGroup;
+import org.opentides.bean.user.UserRole;
 
 /**
  * This is the service interface for UserWidgets.
@@ -80,6 +82,16 @@ public interface UserWidgetsService extends BaseCrudService<UserWidgets> {
 	 * @param userId - specific user
 	 */
 	public long countUserWidgetsColumn(Integer column, long userId);
+	
+	/**
+	 * Removes the user widgets for all widget with the given access roles and usergroup.
+	 * Note that list of access roles pertains to all of the usergroups's access roles, including non-widget
+	 * specific roles. The method will be responsible in weeding out non-widget-specific access roles.
+	 * 
+	 * @param userId
+	 * @param userAccessRoles
+	 */
+	public void removeUserGroupWidgetsWithAccessCodes(UserGroup userGroup, List<UserRole> userAccessRoles);
 	
 //-- End custom codes. Do not delete this comment line.
 }

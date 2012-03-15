@@ -20,7 +20,9 @@
 package org.opentides.persistence.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -68,6 +70,13 @@ public class UserWidgetsDAOJpaImpl extends BaseEntityDAOJpaImpl<UserWidgets, Lon
 		return ((Long) query.getSingleResult()).intValue();
 	}
 
-	
+	@Override
+	public void deleteUserWidget(long widgetId, long baseUserId) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userId", baseUserId);
+		params.put("widgetId", widgetId);
+		
+		executeByNamedQuery("jpql.widget.deleteUserWidgetsByWidgetAndUser", params);
+	}
 	//-- End custom codes. Do not delete this comment line.
 }

@@ -79,6 +79,13 @@ public interface WidgetService extends BaseCrudService<Widget> {
 	 * @param user
 	 * @return
 	 */
-	public List<Widget> findDefaultWidget(BaseUser user); 
+	public List<Widget> findDefaultWidget(BaseUser user);
+	
+	/**
+	 * Returns the widgets with the given access codes/roles
+	 * @param accessCodes
+	 * @return
+	 */
+	public List<Widget> findWidgetWithAccessCode(List<String> accessCodes);
 //-- End custom codes. Do not delete this comment line.
 }

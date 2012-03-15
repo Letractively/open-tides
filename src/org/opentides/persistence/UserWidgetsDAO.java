@@ -46,5 +46,12 @@ public interface UserWidgetsDAO extends BaseEntityDAO<UserWidgets, Long> {
 	 * @param userId - specific user
 	 */
 	public long countUserWidgetsColumn(Integer column,long userId);
+	
+	/**
+	 * Deletes the user widget given the user and widget
+	 * @param widgetId
+	 * @param baseUserId
+	 */
+	public void deleteUserWidget(long widgetId, long baseUserId);
 //-- End custom codes. Do not delete this comment line.
 }

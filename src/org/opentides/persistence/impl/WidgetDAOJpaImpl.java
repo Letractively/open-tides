@@ -66,5 +66,13 @@ public class WidgetDAOJpaImpl extends BaseEntityDAOJpaImpl<Widget, Long>
 		
 		return list;
 	}
+	
+	@Override
+	public List<Widget> findWidgetWithAccessCode(List<String> accessCodes) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("roles", accessCodes);
+		
+		return findByNamedQuery("jpql.widget.findWidgetsWithAccessCode", params);
+	}
 	//-- End custom codes. Do not delete this comment line.
 }
