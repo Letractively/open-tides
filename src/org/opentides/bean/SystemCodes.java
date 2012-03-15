@@ -28,6 +28,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.opentides.util.StringUtil;
 
 
 /**
@@ -88,28 +89,36 @@ public class SystemCodes extends BaseProtectedEntity
 	 * @return the key
 	 */
 	public String getKey() {
-		return key;
+		if(!StringUtil.isEmpty(key))
+			return key.trim();
+		else
+			return key;
 	}
 
 	/**
 	 * @param key the key to set
 	 */
 	public void setKey(String key) {
-		this.key = key;
+		if(!StringUtil.isEmpty(key))
+			this.key = key.trim();
 	}
 
 	/**
 	 * @return the value
 	 */
 	public String getValue() {
-		return value;
+		if(!StringUtil.isEmpty(value))
+			return value.trim();
+		else
+			return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
 	public void setValue(String value) {
-		this.value = value;
+		if(!StringUtil.isEmpty(value))
+			this.value = value.trim();
 	}
 
 	/**

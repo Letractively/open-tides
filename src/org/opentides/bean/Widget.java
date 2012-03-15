@@ -38,6 +38,7 @@ import javax.persistence.Transient;
 import org.hightides.annotations.HiddenField;
 import org.hightides.annotations.TextArea;
 import org.hightides.annotations.TextField;
+import org.opentides.util.StringUtil;
 
 /**
  * The Widget entity is responsible for holding the dashboard widgets and and its cache.
@@ -126,14 +127,18 @@ public class Widget extends BaseEntity implements Searchable, Auditable, Uploada
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		if(!StringUtil.isEmpty(name))
+			return name.trim();
+		else
+			return name;
 	}
 
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if(!StringUtil.isEmpty(name))
+			this.name = name.trim();
 	}
 
 	/**
@@ -211,14 +216,18 @@ public class Widget extends BaseEntity implements Searchable, Auditable, Uploada
 	 * @return the accessCode
 	 */
 	public String getAccessCode() {
-		return accessCode;
+		if(!StringUtil.isEmpty(accessCode))
+			return accessCode.trim();
+		else
+			return accessCode;
 	}
 
 	/**
 	 * @param accessCode the accessCode to set
 	 */
 	public void setAccessCode(String accessCode) {
-		this.accessCode = accessCode;
+		if(!StringUtil.isEmpty(accessCode))
+			this.accessCode = accessCode.trim();
 	}
 	
 	/**
@@ -307,6 +316,7 @@ public class Widget extends BaseEntity implements Searchable, Auditable, Uploada
 		props.add("url");
 		props.add("accessCode");
 		props.add("isUserDefined");
+		props.add("title");
 		return props;
 	}
 
@@ -398,10 +408,14 @@ public class Widget extends BaseEntity implements Searchable, Auditable, Uploada
 	}
 
 	public String getTitle() {
-		return title;
+		if(!StringUtil.isEmpty(title))
+			return title.trim();
+		else
+			return title;
 	}
 
 	public void setTitle(String title) {
-		this.title = title;
+		if(!StringUtil.isEmpty(title))
+			this.title = title.trim();
 	}
 }

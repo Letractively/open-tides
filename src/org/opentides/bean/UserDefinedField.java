@@ -133,7 +133,10 @@ public class UserDefinedField extends BaseEntity
 	 * @return the label
 	 */
 	public final String getLabel() {
-		return label;
+		if(!StringUtil.isEmpty(label))
+			return label.trim();
+		else
+			return label;
 	}
 
 	/**
@@ -142,7 +145,8 @@ public class UserDefinedField extends BaseEntity
 	 * @param label the label to set
 	 */
 	public final void setLabel(String label) {
-		this.label = label;
+		if(!StringUtil.isEmpty(label))
+			this.label = label.trim();
 	}
 
 	/**
