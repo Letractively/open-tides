@@ -230,7 +230,18 @@ public class WidgetServiceImpl extends BaseCrudServiceImpl<Widget>
 	public List<Widget> findDefaultWidget(BaseUser user) {
 		return ((WidgetDAO) getDao()).findDefaultWidget(user);
 	}
-
+	
+	/**
+	 * Returns the widgets with the given access codes/roles
+	 * @param accessCodes
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly=true)
+	public List<Widget> findWidgetWithAccessCode(List<String> accessCodes) {
+		return ((WidgetDAO) getDao()).findWidgetWithAccessCode(accessCodes);
+	}
+	
 	/**
 	 * Setter method for iPAddress.
 	 *
