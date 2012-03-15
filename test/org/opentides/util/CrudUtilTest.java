@@ -136,6 +136,7 @@ public class CrudUtilTest {
 		Assert.assertEquals(
 						" where obj.key like '%PH%' and obj.value like '%Philippines%'",
        						CrudUtil.buildJpaQueryString(sc, false));
+
        	
 //       	Category cat = new Category();
 //       	cat.setId(12l);
@@ -144,6 +145,50 @@ public class CrudUtilTest {
 //       						CrudUtil.buildJpaQueryString(sc, true));
 //       	Assert.assertEquals(" where key like '%PH%' and value like '%Philippines%' and category.id = 12",
 //       						CrudUtil.buildJpaQueryString(sc, false));
+    }
+    
+    @Test 
+    public void testBuildJpqQueryStringSpecialChars() {
+    	SystemCodes sc = new SystemCodes();
+		// handle (%)
+    	sc.setValue("Phil%");
+    	sc.setKey("");
+		Assert.assertEquals(
+				" where obj.value = 'Phil%'",
+       						CrudUtil.buildJpaQueryString(sc, true));
+		Assert.assertEquals(
+				" where obj.value like '%Phil\\%%'",
+       						CrudUtil.buildJpaQueryString(sc, false));
+
+		// handle '
+    	sc.setValue("Phil's");
+    	sc.setKey("");
+		Assert.assertEquals(
+				" where obj.value = 'Phil''s'",
+       						CrudUtil.buildJpaQueryString(sc, true));
+		Assert.assertEquals(
+				" where obj.value like '%Phil''s%'",
+       						CrudUtil.buildJpaQueryString(sc, false));
+
+		// handle (\)
+    	sc.setValue("Phil's\\Jay");
+    	sc.setKey("");
+		Assert.assertEquals(
+				" where obj.value = 'Phil''s\\\\Jay'",
+       						CrudUtil.buildJpaQueryString(sc, true));
+		Assert.assertEquals(
+				" where obj.value like '%Phil''s\\\\\\\\Jay%'",
+       						CrudUtil.buildJpaQueryString(sc, false));
+		
+		// handle (_)
+    	sc.setValue("Phil_Jay");
+    	sc.setKey("");
+		Assert.assertEquals(
+				" where obj.value = 'Phil_Jay'",
+       						CrudUtil.buildJpaQueryString(sc, true));
+		Assert.assertEquals(
+				" where obj.value like '%Phil\\_Jay%'",
+       						CrudUtil.buildJpaQueryString(sc, false));
     }
     
     /**
