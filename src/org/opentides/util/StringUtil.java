@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.opentides.InvalidImplementationException;
 
@@ -47,6 +48,29 @@ public class StringUtil {
     		return true;
     	else
     		return false;
+    }
+    
+    /**
+     * Escapes special characters for HQL.
+     * @param str
+     * @param escapeForLike
+     */
+    public static String escapeSql(String str, boolean escapeForLike){
+		if (str == null) {
+			return null;
+		} else {
+			str = StringUtils.replace(str, "'", "''");
+			if(escapeForLike) {
+				//escape special characters for LIKE
+				str = StringUtils.replace(str, "\\", "\\\\\\\\");
+				str = StringUtils.replace(str, "%", "\\%");
+				str = StringUtils.replace(str, "_", "\\_");
+			} else {
+				//escape backslash for EQUALS (=) 
+				str = StringUtils.replace(str, "\\", "\\\\");
+			}
+		}
+    	return str;
     }
     
     public static String toFixedString(int value, int length) {

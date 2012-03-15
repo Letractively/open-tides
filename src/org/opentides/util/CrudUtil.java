@@ -278,7 +278,7 @@ public class CrudUtil {
 				if (String.class.isAssignableFrom(ret.getClass()) && !exactMatch) {
 					clause.append(property)
 						.append(" like '%")
-						.append(ret.toString())
+						.append(StringUtil.escapeSql(ret.toString(), true))
 						.append("%'");
 				} else if(SystemCodes.class.isAssignableFrom(ret.getClass())) {
 					SystemCodes sc = (SystemCodes) ret;
@@ -311,7 +311,7 @@ public class CrudUtil {
 				} else {
 					clause.append(property)
 						.append(" = '")
-						.append(ret.toString())
+						.append(StringUtil.escapeSql(ret.toString(), false))
 						.append("'");
 				}
 				count++;
