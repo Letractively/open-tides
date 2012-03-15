@@ -23,6 +23,19 @@
   		} else
   			ni.innerHTML = dropDownHTML;
 	}
+  	function clearSearchPane(){
+		var searchForm = document.getElementById('systemCodeSearch');
+		var formElements = searchForm.elements;
+		for (var i = 0; i < formElements.length; i++){
+			if (formElements[i].type.toLowerCase() == "text"){
+				//for text field element
+				formElements[i].value = "";
+			}else if (formElements[i].type.toLowerCase() == "select-one"){
+				//for select element
+				formElements[i].selectedIndex = 0;
+			}
+		}	
+	}
   </script>
   
 </idy:header>
@@ -67,6 +80,7 @@
             <div class="form-row"> 
                 <label class="special">&nbsp;</label>
                 <input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
+                <input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>
             </div>
             
         </form:form>
@@ -127,17 +141,25 @@
                     <ot:paging results="${results}" baseURL="${url_context}/admin/system-codes.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="systemCodeSearch"/>
                 </div>
             </div>
-            <a name="addform"></a>  
+
         </div>           	
     </div>    
 </div>
 
 <idy:footer>
 <script type="text/javascript">
-$(document).ready(function() {
-	$('.addLink a, .addLink input').click(function() {
-		window.location=window.location+"#addform";
-	});
-});
+function clearSearchPane(){
+	var searchForm = document.getElementById('systemCodeSearch');
+	var formElements = searchForm.elements;
+	for (var i = 0; i < formElements.length; i++){
+		if (formElements[i].type.toLowerCase() == "text"){
+			//for text field element
+			formElements[i].value = "";
+		}else if (formElements[i].type.toLowerCase() == "select-one"){
+			//for select element
+			formElements[i].selectedIndex = 0;
+		}
+	}	
+}
 </script>
 </idy:footer>

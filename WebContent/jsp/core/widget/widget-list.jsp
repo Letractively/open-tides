@@ -43,7 +43,8 @@
                         </div>
 
 					<ot:sort_input searchFormId="widgetSearch"/>
-					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />					
+					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />	
+					<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>				
 					</form:form>
 				</div>
 				<hr class="broad"/>
@@ -91,4 +92,20 @@
     </div>
     <!-- END OF BODY -->
 <!-- FOOT -->
-<idy:footer /> 
+<idy:footer>
+	<script type="text/javascript">
+		function clearSearchPane(){
+			var searchForm = document.getElementById('widgetSearch');
+			var formElements = searchForm.elements;
+			for (var i = 0; i < formElements.length; i++){
+				if (formElements[i].type.toLowerCase() == "text"){
+					//for text field element
+					formElements[i].value = "";
+				}else if (formElements[i].type.toLowerCase() == "select-one"){
+					//for select element
+					formElements[i].selectedIndex = 0;
+				}
+			}	
+		}
+	</script>
+</idy:footer>
