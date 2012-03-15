@@ -199,6 +199,20 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 		return new AuditableField("username","Username");
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getAuditableFields()
+	 */
+	@Override
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> auditableFields = new ArrayList<AuditableField>();
+		auditableFields.add(new AuditableField("firstName", "First Name"));
+		auditableFields.add(new AuditableField("lastName", "Last Name"));
+		auditableFields.add(new AuditableField("middleName", "Middle Name"));
+		auditableFields.add(new AuditableField("emailAddress", "Email Address"));
+
+		return auditableFields;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

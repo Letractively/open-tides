@@ -19,6 +19,9 @@
 
 package org.opentides.bean.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -176,6 +179,16 @@ public class UserCredential extends BaseEntity implements Auditable {
 	public AuditableField getPrimaryField() {
 		return new AuditableField("username", "Username");
 	}	
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.BaseEntity#getAuditableFields()
+	 */
+	@Override
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> auditableFields = new ArrayList<AuditableField>();
+		auditableFields.add(new AuditableField("username", "Username"));
+		return auditableFields;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
