@@ -19,6 +19,7 @@
 package org.opentides.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,10 +44,13 @@ public class UserGroupController extends BaseCrudController<UserGroup> {
 	 */
 	@Override
 	protected void preUpdateAction(UserGroup command) {
-		for (UserRole deleteRole:command.getRemoveList()) {
+		for (UserRole deleteRole : command.getRemoveList()) {
 			((UserGroupService) getService()).removeUserRole(deleteRole);			
 		}
-		userWidgetsService.removeUserGroupWidgetsWithAccessCodes(command, command.getRemoveList());
+		
+		List<UserRole> removeList = command.getRemoveList();
+		if(removeList != null && !removeList.isEmpty())
+			userWidgetsService.removeUserGroupWidgetsWithAccessCodes(command, command.getRemoveList());
 	}
 
 	@SuppressWarnings("rawtypes")
