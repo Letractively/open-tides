@@ -36,6 +36,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
  * @author allanctan
  *
  */
+@SuppressWarnings("deprecation")
 public class RequestPasswordResetController extends SimpleFormController {
 	
 	private static Logger _log = Logger.getLogger(UserServiceImpl.class);
