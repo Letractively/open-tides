@@ -202,7 +202,8 @@
 		<property name="roleListView" value="core/usergroup/roles-list" />		
 	</bean>
 	
-	<bean id="generateReportController" class="org.opentides.controller.GenerateReportController">
+	<bean id="generateReportController" class="org.opentides.controller.GenerateReportController"
+		autowire="byName">
 		<property name="service" ref="reportService" />
 	</bean>
 
