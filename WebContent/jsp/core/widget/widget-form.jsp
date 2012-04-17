@@ -28,7 +28,7 @@
 			
 			<div class="form-row"> 
                 <label for="title"><spring:message code="label.widget.title" />: </label>
-	            <form:input path="title" /> 
+	            <form:input path="title" /> <sup class="required">*</sup>
             </div>
             
             <div class="form-row"> 				
