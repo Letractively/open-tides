@@ -39,67 +39,92 @@
 <div id="bd" class="yui-skin-sam">
     <div class="yui-g">
     	<div class="main" id="report">
-	        <div class="title-wrapper">
-	        	<div class="title" id="report-title"><span><spring:message code="label.report" /></span></div>
-	        </div>
+	       	<div class="title-wrapper">
+               <c:choose>
+               		<c:when test="${not empty param.reportName}">
+               	   		<c:out value="${param.reportName}" />
+               		</c:when>
+               		<c:otherwise>
+               			<spring:message code="label.report" />
+               		</c:otherwise>
+               </c:choose>
+        	</div>
 	        <div class="contents">
 	        	<p ><spring:message code="label.please-fill-up-the-following" /></p>
 	        	<form>
-	        	<c:forEach items="${requestParameters}" var="entry">
-	        		<input type="hidden" name="${entry.key}" 
-	        			value='<c:forEach items="${entry.value}" var="value" varStatus="status"><c:if test="${status.count>1}">,</c:if>${value}</c:forEach>'/>
-	        	</c:forEach>
+	        		        <c:forEach items="${requestParameters}" var="entry">
+	        						<input type="hidden" name="${entry.key}"  value='<c:forEach items="${entry.value}" var="value" varStatus="status"><c:if test="${status.count>1}">,</c:if>${value}</c:forEach>'/>
+	        				        <input type="hidden" name="requestParameters" value="${entry.key}"/>
+	        				</c:forEach>
 	        	
-	        	<c:forEach items="${missingParameters}" var="parameter">
-	        		<p><label for="${parameter.name}">${parameter.label} :</label>
-	        		<c:choose>
-	        			<c:when test="${parameter.clazz=='java.util.Date'}">
-							<input type="text" id="${parameter.name}" name="${parameter.name}" class="calendarTextInput"/> 
-							<img src="${url_context}<spring:theme code='datepicker'/>" id="${parameter.name}Image"/>
-							<div id="${parameter.name}Container" class="containerDate"></div> 
-							<script>
-								YAHOO.report.calendar.init = function() {
-									YAHOO.report.calendar.${parameter.name} = 
-										new YAHOO.widget.Calendar("${parameter.name}","${parameter.name}Container", 
-																	{ title:"Enter ${parameter.label}:", 
-																	  close:true } );
-									YAHOO.report.calendar.${parameter.name}.render();
-							
-									// Listener to show the 1-up Calendar when the button is clicked
-									YAHOO.util.Event.addListener("${parameter.name}Image", "click", 
-											YAHOO.report.calendar.${parameter.name}.show, YAHOO.report.calendar.${parameter.name}, true);
-											
-									YAHOO.report.calendar.${parameter.name}.selectEvent.subscribe(handleSelect, 
-											[YAHOO.report.calendar.${parameter.name},'${parameter.name}'], true);
-								}
-								YAHOO.util.Event.onDOMReady(YAHOO.report.calendar.init);
-								
-							</script>
-	        			</c:when>
-	        			<c:when test="${parameter.type=='dropdown'}">
-	        				<select name="${parameter.name}">
-	        					<c:forEach items="${parameter.properties}" var="option">
-		        					<option value="${option.key}">${option.value}
-	        					</c:forEach>
-	        				</select>
-	        			</c:when>
-	        			<c:when test="${parameter.type=='checkbox'}">
-							<input type="hidden" name="${parameter.name}" value="" />
-        					<c:forEach items="${parameter.properties}" var="option">
-								<input type="checkbox" name="${parameter.name}" value="${option.key}" /> ${option.value}<br/>
-        					</c:forEach>
-	        			</c:when>
-	        			<c:when test="${parameter.type=='prompt.command'}">
-						  <c:forEach items="${parameter.properties}" var="option">
-						       ${option.value.html}
-						  </c:forEach>
-						</c:when>
-	        			<c:otherwise>
-		        			<input type="text" name="${parameter.name}" /> 
-	        			</c:otherwise>
-	        		</c:choose></p>
-	        	</c:forEach>
-	        	<input type="submit" value="Submit" />
+	        				<c:forEach items="${missingParameters}" var="parameter">
+	        				             <c:choose>
+	        				               <c:when test="${parameter.name == 'validator'}">
+	        				               		<div class="form-row" style="display:none;"><label for="${parameter.name}" class="col-1">${parameter.label}</label>
+	        				               </c:when>
+	        				               <c:otherwise>
+	        				               		<div class="form-row"><label for="${parameter.name}" class="col-1">${parameter.label}</label>
+	        				               </c:otherwise>
+	        				             </c:choose>
+	        				            <c:choose>
+	        							        <c:when test="${parameter.clazz=='java.util.Date'}">
+														<div class="L">
+																	<input type="text" id="${parameter.name}"  name="${parameter.name}" class="num-date" />
+    																<img src="${url_context}<spring:theme code="trash"/>" onClick="javascript: document.getElementById('${parameter.name}').value='';" title="Cancel" class="iconz"/>
+   																	<span class="required">*</span>
+   														</div>
+   														
+   														<div class="clear"></div>
+   														
+														<script type="text/javascript">
+																	var dateId = "${parameter.name}";
+																	dateId = dateId.replace(/\./g, "\\.");
+																	$("#"+dateId).datepicker({
+																			showOn : "button",
+																			buttonImage : '${url_context}<spring:theme code="datepicker"/>',
+																			buttonImageOnly : true,
+																	});
+														</script>
+											</c:when>
+	        								<c:when test="${parameter.type=='dropdown'}">
+								        				<select name="${parameter.name}">
+								        							<c:forEach items="${parameter.properties}" var="option">
+									        									<option value="${option.key}">${option.value}
+								        							</c:forEach>
+								        				</select><span class="required">*</span>
+	        								</c:when>
+						        			<c:when test="${parameter.type=='checkbox'}">
+														<input type="hidden" name="${parameter.name}" value="" />
+							        					<c:forEach items="${parameter.properties}" var="option">
+																	<input type="checkbox" name="${parameter.name}" value="${option.key}" /> ${option.value}<br/>
+							        					</c:forEach>
+							        					<span class="required">*</span>
+						        			</c:when>
+						        				<c:when test="${parameter.type=='prompt.command'}">
+						        				 <c:forEach items="${parameter.properties}" var="option">
+						        				        		${option.value.html}
+						        				    </c:forEach>
+						        				    <span class="required">*</span>
+						        				</c:when>
+						        			<c:when test="${parameter.name eq 'validator'}">
+						        				<c:forEach items="${parameter.properties}" var="option">
+						        				        	<input type="hidden" value="${option.value}" name="validator" />
+						        				 </c:forEach>
+						        			</c:when>		
+						        			<c:otherwise>
+							        					<input type="text" name="${parameter.name}" /><span class="required">*</span> 
+						        			</c:otherwise>
+	        						</c:choose>
+	        						  
+	        					</div>
+	        			</c:forEach>
+	        			
+			        	<div class="form-row">
+			        			<label class="special">&nbsp;</label>
+			        			<input type="submit" value="Submit" />
+			        			<input type="button" value="<spring:message code="label.back" text="Back"/>" onclick="window.location='reports-view.jspx'" />
+			        	</div>
+	        	
 	        	</form>
 	        </div>                                
 		</div><!-- END OF main -->

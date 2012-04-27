@@ -30,6 +30,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.apache.log4j.Logger;
 import org.opentides.bean.DynamicReport;
 import org.opentides.bean.ReportDefinition;
@@ -37,6 +38,7 @@ import org.opentides.service.ReportService;
 import org.opentides.util.StringUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.opentides.bean.BaseReportValidator;
 
 /**
  * @author allantan
@@ -51,7 +53,9 @@ public class GenerateReportController extends AbstractController {
 	private ReportService service;
 	
 	private String reportWebPath = "/jasper";
-
+	
+	private Map<String,BaseReportValidator> reportValidators;
+	
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -109,8 +113,32 @@ public class GenerateReportController extends AbstractController {
 		try {
 			jasperStream = getReportStream(request.getParameter(DynamicReport.REPORT_FILE), "jasper");
 			jrXmlStream = getReportStream(request.getParameter(DynamicReport.REPORT_FILE), "jrxml");
-			
-			Map<String, Object> reportParam = service.getParameterValues(request.getParameterMap(), jrXmlStream);
+			Map<String,String[]> parameters = request.getParameterMap();
+			String[] validatorParam = parameters.get("validator");
+			if(validatorParam != null){
+		    String key = validatorParam[0]; 
+		    BaseReportValidator validator = reportValidators.get(key); //retrieve the particular validator of a report
+		    if(validator.supports(DynamicReport.class)){  //only validate from the Report Module
+		    List<String> errorMessages = validator.validate(request); //validate entered data
+			if(errorMessages != null){
+				Map<String,Object> model = new HashMap<String,Object>();
+			    Map<String,String[]> requestParameters = transformRequest(request);  //retrieve original request parameters
+				List<ReportDefinition>  missingParameters = service.getMissingParameters(
+						requestParameters , jrXmlStream); //retrieve original missed parameters
+				if (!missingParameters.isEmpty()) {
+					model.put("missingParameters", missingParameters);
+				}
+				model.put("requestParameters", requestParameters);
+			    model.put("errorMessages",errorMessages);     
+				return new ModelAndView(paramView,model);
+			     }
+			   }else{
+				   throw new IllegalArgumentException("Validator does not support command class [" + 
+						              DynamicReport.class.getName() + "]");
+			   }
+		    }
+		
+			Map<String, Object> reportParam = service.getParameterValues(parameters, jrXmlStream);
 			String reportFormat = request.getParameter(DynamicReport.REPORT_FORMAT);
 			this.setHeader(response);
 			
@@ -193,6 +221,16 @@ public class GenerateReportController extends AbstractController {
 		}		
 		return stream;
 	}
+	
+	private Map<String,String[]> transformRequest(HttpServletRequest request){
+		String[] requestKeys = request.getParameterValues("requestParameters"); 
+		Map<String,String[]> parameters = request.getParameterMap();
+		Map<String,String[]> newRequest =  new HashMap<String,String[]>();
+		for(String key: requestKeys){
+			  newRequest.put(key,parameters.get(key));
+		}
+		return newRequest;
+	}
  
 	/**
 	 * Disables page caching of report.
@@ -213,4 +251,12 @@ public class GenerateReportController extends AbstractController {
 	public void setService(ReportService reportService) {
 		this.service = reportService;
 	}
+
+	public void setReportValidators(Map<String, BaseReportValidator> reportValidators) {
+		this.reportValidators = reportValidators;
+	}
+
+	
+	
+	
 }
