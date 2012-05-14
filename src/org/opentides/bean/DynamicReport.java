@@ -46,6 +46,10 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 	@JoinColumn(name="REPORT_SCREENSHOT_ID")
 	private List<FileInfo> screenshot;
 	
+	@Column(name = "TITLE")
+	@TextArea
+	private String title;
+	
 	@Column(name = "DESCRIPTION")
 	@TextArea
 	private String description;
@@ -80,6 +84,14 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 
 	public void setScreenshot(List<FileInfo> screenshot) {
 		this.screenshot = screenshot;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getDescription() {
