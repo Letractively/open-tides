@@ -41,8 +41,8 @@
         <c:when test="${fn:startsWith(field.userField, 'date')==true}">
         <div class="L">
             <a id="show${field.userField}" title="${field.label}" class="date-picker">
-            <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
-            <input type="text" name="${fieldRef}" id="${field.userField}" value="${udfDate}" class="num-date" readonly="true"/>
+            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<input type="text" name="${fieldRef}" id="${field.userField}" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
             </a>
             <img src="${url_context}<spring:theme code="trash"/>" 
                 onClick="javascript: document.getElementById('${field.userField}').value=''; document.getElementById('${field.userField}').focus();" 
