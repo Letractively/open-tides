@@ -75,7 +75,7 @@
 		<div class="requiredInfo">
 			<sup class="required">*</sup> Indicates required field.
 		</div>
-				<div class="button">
+		<div class="button">
 		  	<ot:submit_button id="${widget.id}" page="admin/widget.jspx" formName="widget-form-${widget.id}" prefix="widget" multipart="true"/>
   			<ot:cancel_button id="${widget.id}" page="admin/widget.jspx" prefix="widget"/>
 		</div>

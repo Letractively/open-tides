@@ -36,9 +36,12 @@
                             <label for="label"><spring:message code="label.user-defined-field.label" />: </label>
 	                        <form:input path="label" />
                         </div>
-    					<ot:sort_input searchFormId="userDefinedFieldSearch"/>
-    					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
-    					<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>									
+                        <ot:sort_input searchFormId="userDefinedFieldSearch"/>
+                        <div class="form-row">
+    						<label class="special">&nbsp;</label>
+    						<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
+    						<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>
+    					</div>									
 					</form:form>
 				</div>
 

@@ -48,7 +48,6 @@
     
         <div id="search-criteria" class="search-criteria">
         <form:form commandName="systemCode" id="systemCodeSearch" action="${url_context}/admin/system-codes.jspx">
-            
             <div class="form-row"> 
                 <label for="category"><spring:message code="label.category" /></label>
                 <form:select path="category">
@@ -56,17 +55,14 @@
                     <form:options items="${categories}" itemValue="category" itemLabel="category" />
                 </form:select>
             </div>
-            
             <div class="form-row"> 
                 <label for="key"><spring:message code="label.key" /></label>
                 <form:input path="key" maxlength="50" />
             </div>
-            
             <div class="form-row"> 
                 <label for="value"><spring:message code="label.value" /></label>
                 <form:input path="value" maxlength="128" />
             </div>
-            
 	        <div class="form-row"> 
 	            <label for="office"><spring:message code="label.override-office" /> </label>
 	            <form:select path="ownerOffice">
@@ -74,15 +70,12 @@
 		        	<form:options items="${officeList}" itemValue="key" itemLabel="value" />
 				</form:select>
 	        </div>						
-            
             <ot:sort_input searchFormId="systemCodeSearch"/>
-            
             <div class="form-row"> 
                 <label class="special">&nbsp;</label>
                 <input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
                 <input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>
             </div>
-            
         </form:form>
         </div>
         
