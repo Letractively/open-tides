@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -63,6 +64,10 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 	
 	@Column(name = "REPORT_PATH")
 	private String reportPath;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "REPORT_GROUP", nullable=true)
+	private SystemCodes reportGroup;
 	
 	@Transient
 	private transient CommonsMultipartFile jasperFile;
@@ -142,11 +147,20 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 		this.jrxmlFile = jrxmlFile;
 	}
 
+	public SystemCodes getReportGroup() {
+		return reportGroup;
+	}
+
+	public void setReportGroup(SystemCodes reportGroup) {
+		this.reportGroup = reportGroup;
+	}
+
 	public List<AuditableField> getAuditableFields() {
 		List<AuditableField> props = new ArrayList<AuditableField>();
 		props.add(new AuditableField("name","Name"));
 		props.add(new AuditableField("reportFile","Report File"));
-		props.add(new AuditableField("accessCode","Access Code"));		
+		props.add(new AuditableField("accessCode","Access Code"));
+		props.add(new AuditableField("reportGroup.value","Report Group"));
 		return props;
 	}
 
@@ -157,6 +171,7 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 		props.add("name");
 		props.add("reportFile");
 		props.add("accessCode");
+		props.add("reportGroup.value");
 		return props;
 	}
 
