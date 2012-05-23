@@ -138,14 +138,14 @@ public class SystemCodes extends BaseProtectedEntity
 	/**
 	 * @return the numberValue
 	 */
-	public final synchronized Long getNumberValue() {
+	public synchronized Long getNumberValue() {
 		return this.numberValue;
 	}
 
 	/**
 	 * @param numberValue the numberValue to set
 	 */
-	public final synchronized void setNumberValue(Long numberValue) {
+	public synchronized void setNumberValue(Long numberValue) {
 	    this.numberValue = numberValue;
 	}
 	
