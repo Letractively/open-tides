@@ -26,6 +26,12 @@
 			<p><label for="description"><spring:message code="label.report.description" />: </label>
 	<form:textarea path="description" rows="3" cols="20"  /> </p>
 
+			<p><label for="reportGroup"><spring:message code="label.report.reportGroup" />: </label>
+	<form:select path="reportGroup">
+            	<form:option value="" label="" />
+            	<form:options items="${reportGroupList}" itemValue="id" itemLabel="value"/>
+            </form:select>  <sup class="required">*</sup></p>
+	
 			<p><label for="accessCode"><spring:message code="label.report.accessCode" />: </label>
 	<form:input path="accessCode" /> </p>
 
