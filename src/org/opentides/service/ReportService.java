@@ -89,5 +89,10 @@ public interface ReportService extends BaseCrudService<DynamicReport> {
 	 * @return
 	 */
 	public List<DynamicReport> getCurrentUserReports();
-
+	
+	/**
+	 * Returns all the reports ordered by report group.
+	 * @return
+	 */
+	public List<DynamicReport> findAllReportsOrderByReportGroup();
 }

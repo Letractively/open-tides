@@ -51,8 +51,8 @@ import org.opentides.bean.ReportDefinition;
 import org.opentides.bean.SortedProperties;
 import org.opentides.persistence.ReportDAO;
 import org.opentides.service.ReportService;
-import org.opentides.util.SecurityUtil;
 import org.opentides.util.FileUtil;
+import org.opentides.util.SecurityUtil;
 import org.opentides.util.StringUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +67,7 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 	private DataSource dataSource;
 	private Map<String, DynamicReportParameter> dynamicParameters;
 	private String jasperPath;
-
+	
 	@Transactional(readOnly=true)
 	public DynamicReport findByName(String name) {
 		DynamicReport example = new DynamicReport();
@@ -90,7 +90,7 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	@Transactional(readOnly=true)	
 	public Map<String, Object> getParameterValues(
 			Map<String, String[]> requestParams, InputStream reportFile) {
@@ -371,8 +371,9 @@ public class ReportServiceImpl extends BaseCrudServiceImpl<DynamicReport> implem
 		this.dynamicParameters = dynamicParameters;
 	}
 	
-	
-	
+	public List<DynamicReport> findAllReportsOrderByReportGroup() {
+		return ((ReportDAO) getDao()).findAllReportsOrderByReportGroup();
+	}
 }
 
 

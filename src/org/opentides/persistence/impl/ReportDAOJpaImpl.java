@@ -19,7 +19,9 @@
 
 package org.opentides.persistence.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.opentides.bean.DynamicReport;
 import org.opentides.persistence.ReportDAO;
@@ -40,6 +42,18 @@ public class ReportDAOJpaImpl extends BaseEntityDAOJpaImpl<DynamicReport, Long>
 		List<Object[]> queryResult = getEntityManager().createNativeQuery(
 				queryString).getResultList();				
 		return queryResult;
+	}
+    
+	/**
+	 * Returns all the reports ordered by report group.
+	 * @return
+	 */
+	public List<DynamicReport> findAllReportsOrderByReportGroup() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<DynamicReport> list = findByNamedQuery("jpql.report.findAllReportsOrderByReportGroup", map);
+		if (list == null || list.size() == 0)
+			return null;
+		return list;
 	}
 	
 //- End custom codes. Do not delete this comment line.

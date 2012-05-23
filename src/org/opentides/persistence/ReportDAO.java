@@ -37,5 +37,7 @@ public interface ReportDAO extends BaseEntityDAO<DynamicReport, Long> {
 	 * @param queryString
 	 */
 	public List<Object[]> getParamOptionResults(String queryString);
+
+	public List<DynamicReport> findAllReportsOrderByReportGroup();
 //-- End custom codes. Do not delete this comment line.
 }
