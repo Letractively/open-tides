@@ -34,14 +34,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.opentides.bean.Auditable;
+import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.Searchable;
 import org.opentides.util.StringUtil;
 
-
 @Entity
 @Table(name = "USERGROUP")
-public class UserGroup extends BaseEntity implements Searchable {
+public class UserGroup extends BaseEntity implements Searchable, Auditable {
 	private static final long serialVersionUID = 1959110420702540834L;
 
 	@Column(name = "NAME", unique = true, nullable = false)
@@ -58,6 +59,9 @@ public class UserGroup extends BaseEntity implements Searchable {
 
 	@Transient
 	private transient List<UserRole> removeList = new ArrayList<UserRole>(); // list of user roles for deletion
+	
+	@Transient
+	private transient List<UserRole> addedList = new ArrayList<UserRole>(); // list of user roles to add
 	
 	@Transient
 	private transient List<String> roleNames; // used for checkboxes in UI
@@ -85,6 +89,7 @@ public class UserGroup extends BaseEntity implements Searchable {
 	 */
 	public void setRoleNames(List<String> roleNames) {
 		removeList = new ArrayList<UserRole>();
+		addedList = new ArrayList<UserRole>();
 		this.roleNames = new ArrayList<String>();
 		if (roleNames == null) {
 			for (UserRole role : roles) {
@@ -110,6 +115,7 @@ public class UserGroup extends BaseEntity implements Searchable {
 		}
 		// now we need to add what's left in rNames
 		for (String name : roleNames) {
+			addedList.add(new UserRole(this, name));
 			roles.add(new UserRole(this, name));
 		}
 	}
@@ -225,6 +231,22 @@ public class UserGroup extends BaseEntity implements Searchable {
 		return props;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	@Override
+	public AuditableField getPrimaryField() {
+		return new AuditableField("name","Name");
+	}
+	
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> props = new ArrayList<AuditableField>();
+		props.add(new AuditableField("name","Name"));
+		props.add(new AuditableField("description","Description"));
+		props.add(new AuditableField("roles.role","Roles"));
+		return props;
+	}
+	
 	/**
 	 * Getter method for removeList.
 	 *
@@ -232,6 +254,15 @@ public class UserGroup extends BaseEntity implements Searchable {
 	 */
 	public final List<UserRole> getRemoveList() {
 		return removeList;
+	}
+
+	/**
+	 * Getter method for addedList.
+	 *
+	 * @return the addedList
+	 */
+	public List<UserRole> getAddedList() {
+		return addedList;
 	}
 
 	/**
