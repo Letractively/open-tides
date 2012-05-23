@@ -19,7 +19,9 @@
 
 package org.opentides.bean.user;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -28,12 +30,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.opentides.bean.Auditable;
+import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 
 @Entity
 @AttributeOverride(name = "ID", column = @Column(insertable = false, updatable = false))
 @Table(name = "AUTHORITIES")
-public class UserRole extends BaseEntity {
+public class UserRole extends BaseEntity implements Auditable {
 	private static final long serialVersionUID = -2779918759002560767L;
 
 	@Column(name = "USERNAME")
@@ -90,6 +94,21 @@ public class UserRole extends BaseEntity {
 		this.userGroup = userGroup;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	@Override
+	public AuditableField getPrimaryField() {
+		return new AuditableField("role","Role");
+	}
+	
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> props = new ArrayList<AuditableField>();
+		props.add(new AuditableField("userGroup.name","Name"));
+		props.add(new AuditableField("role","Role"));
+		return props;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -124,4 +143,5 @@ public class UserRole extends BaseEntity {
 			return false;
 		return true;
 	}
+
 }
