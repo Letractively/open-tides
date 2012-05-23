@@ -23,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.opentides.bean.Widget;
 import org.opentides.service.WidgetService;
+import org.opentides.util.StringUtil;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -41,7 +42,7 @@ public class WidgetValidator implements Validator {
 	 * 
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean supports(Class clazz) {
 		return Widget.class.isAssignableFrom(clazz);
 	}
@@ -55,10 +56,10 @@ public class WidgetValidator implements Validator {
 	public void validate(Object clazz, Errors e) {
 		Widget widget = (Widget) clazz;
 
-		if(isDuplicateName(widget))
+		if(!StringUtil.isEmpty(widget.getName()) && isDuplicateName(widget))
 			e.reject("error.duplicate-name", new Object[]{"\""+widget.getName()+"\"","name"}, "\""+widget.getName() +"\" already exists. Please try a different name.");
 	
-		if(isDuplicateUrl(widget))
+		if(!StringUtil.isEmpty(widget.getTitle()) && isDuplicateUrl(widget))
 			e.reject("error.duplicate-url", new Object[]{"\""+widget.getUrl()+"\"","url"}, "\""+widget.getUrl() +"\" already exists. Please update the existing url.");
 		
 		

@@ -42,7 +42,7 @@ public class ReportValidator implements Validator {
 	 * 
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean supports(Class clazz) {
 		return DynamicReport.class.isAssignableFrom(clazz);
 	}
@@ -56,10 +56,12 @@ public class ReportValidator implements Validator {
 	public void validate(Object clazz, Errors e) {
 		DynamicReport report = (DynamicReport) clazz;
 
-		if(isDuplicateName(report))
+		if(!StringUtil.isEmpty(report.getName()) && isDuplicateName(report))
 			e.reject("error.duplicate-name", new Object[]{"\""+report.getName()+"\"","name"}, "\""+report.getName() +"\" already exists. Please try a different name.");
 		
 		ValidationUtils.rejectIfEmpty(e, "name", "error.required", new Object[] { "Name" });
+		ValidationUtils.rejectIfEmpty(e, "title", "error.required", new Object[] { "Title" });
+		ValidationUtils.rejectIfEmpty(e, "reportGroup", "error.required", new Object[] { "Report Group" });
 		
 		String reportFile = "";
 		
