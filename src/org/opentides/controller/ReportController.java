@@ -21,15 +21,19 @@ package org.opentides.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.opentides.ControllerException;
-import org.opentides.bean.FileInfo;
 import org.opentides.bean.DynamicReport;
+import org.opentides.bean.FileInfo;
+import org.opentides.bean.SystemCodes;
 import org.opentides.editor.MultipartFileUploadEditor;
+import org.opentides.editor.SystemCodeEditor;
 import org.opentides.service.impl.ReportServiceImpl;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -52,10 +56,19 @@ public class ReportController extends BaseCrudController<DynamicReport> {
 		setMultipleUpload(false);
 	}
 	
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected Map referenceData(HttpServletRequest request) throws Exception {
+		Map<String,Object> model = new HashMap<String,Object>();
+		model.put("reportGroupList", getSystemCodesByCategory("REPORT_GROUP"));
+		return model;
+	}
+
 	@Override
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder binder) throws Exception {
 		binder.registerCustomEditor(CommonsMultipartFile.class, new MultipartFileUploadEditor());
+		binder.registerCustomEditor(SystemCodes.class, new SystemCodeEditor(getSystemCodesService()));
 	}
 
 	@Override
