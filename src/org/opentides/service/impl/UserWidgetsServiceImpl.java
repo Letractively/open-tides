@@ -81,6 +81,7 @@ public class UserWidgetsServiceImpl extends BaseCrudServiceImpl<UserWidgets>
 	}
 	/**
 	 * @param userService the userService to set
+	 * 
 	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
@@ -100,7 +101,12 @@ public class UserWidgetsServiceImpl extends BaseCrudServiceImpl<UserWidgets>
 		widgetObj.setName(widgetName);
 		example.setUser(user);
 		example.setWidget(widgetObj);
-		return this.findByExample(example, 0, 1).get(0);
+		List<UserWidgets> widgets = this.findByExample(example, 0, 1);
+		if(widgets.size() > 0){
+			return widgets.get(0);
+		}else{
+			return null;
+		}
 	}
 
 	public void updateUserWidgetsOrder(UserWidgets userWidgets, int column, int row) {
@@ -181,6 +187,36 @@ public class UserWidgetsServiceImpl extends BaseCrudServiceImpl<UserWidgets>
 		for (Widget widget : widgets) {
 			for(BaseUser baseUser : userGroup.getUsers()) {
 				((UserWidgetsDAO) getDao()).deleteUserWidget(widget.getId(), baseUser.getId());
+			}
+		}
+	}
+
+	@Override
+	public void setupUserGroupWidgets(UserGroup userGroup,
+			List<UserRole> userAccessRoles) {
+		List<String> rolesList = new ArrayList<String>(userAccessRoles.size());
+		for (UserRole userRole : userAccessRoles) {
+			rolesList.add(userRole.getRole());
+		}
+		
+		//get all the widgets with the access roles from the user
+		List<Widget> widgets = widgetService.findWidgetWithAccessCode(rolesList);
+		for(Widget widget : widgets){
+			if(widget.getIsShown()){
+				for(BaseUser user : userGroup.getUsers()) {
+					int[] pos = getColumnRowOfUserWidget(user.getId());
+					UserWidgets tempUserWidgets = this.findSpecificUserWidgets(user, widget.getName());
+					if(tempUserWidgets == null) {
+						UserWidgets userWidgets = new UserWidgets();
+						userWidgets.setWidget(widget);
+						userWidgets.setUser(user);
+						userWidgets.setStatus(1);
+						userWidgets.setColumn(pos[0]);
+						userWidgets.setRow((int)++pos[1]);
+						
+						getDao().saveEntityModel(userWidgets);		
+					}
+				}
 			}
 		}
 	}

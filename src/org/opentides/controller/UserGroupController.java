@@ -48,6 +48,10 @@ public class UserGroupController extends BaseCrudController<UserGroup> {
 			((UserGroupService) getService()).removeUserRole(deleteRole);			
 		}
 		
+		List<UserRole> addedList = command.getAddedList();
+		if(addedList != null && !addedList.isEmpty())
+			userWidgetsService.setupUserGroupWidgets(command, command.getAddedList());
+		
 		List<UserRole> removeList = command.getRemoveList();
 		if(removeList != null && !removeList.isEmpty())
 			userWidgetsService.removeUserGroupWidgetsWithAccessCodes(command, command.getRemoveList());

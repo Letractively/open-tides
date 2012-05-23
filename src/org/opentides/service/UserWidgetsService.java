@@ -93,5 +93,11 @@ public interface UserWidgetsService extends BaseCrudService<UserWidgets> {
 	 */
 	public void removeUserGroupWidgetsWithAccessCodes(UserGroup userGroup, List<UserRole> userAccessRoles);
 	
+	/**
+	 * Automatically add Widgets that is visible by default to all users within the User Group.
+	 * @param userGroup
+	 * @param userAccessRoles
+	 */
+	public void setupUserGroupWidgets(UserGroup userGroup, List<UserRole> userAccessRoles);
 //-- End custom codes. Do not delete this comment line.
 }
