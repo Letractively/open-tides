@@ -566,7 +566,7 @@ public class CrudUtil {
 			Class clazz = Class.forName(entityClass);
 			try {
 				Method method = clazz.getMethod("readableName");
-				return method.invoke(object).toString().trim();
+               	return method.invoke(object).getClass().getSimpleName();
 			} catch (Exception e) {
 				String name = clazz.getSimpleName();
 				return name.replaceAll("([A-Z])", " $1").trim();

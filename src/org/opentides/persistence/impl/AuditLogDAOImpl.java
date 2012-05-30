@@ -19,6 +19,7 @@
 
 package org.opentides.persistence.impl;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -167,10 +168,18 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 	 * @param message
 	 * @param entity
 	 */
+	@SuppressWarnings("rawtypes")
 	public static void logEvent(String friendlyMessage, String message, Auditable entity) { 		
 		Long userId = entity.getAuditUserId();
 		String officeName = entity.getAuditOfficeName();
 		String username = entity.getAuditUsername();
+		Class entityClass = null;
+		try {
+			Method method = entity.getClass().getMethod("readableName");
+           	entityClass  = method.invoke(entity).getClass();
+		} catch (Exception e) {
+			entityClass = entity.getClass();
+		}
 		if (ApplicationStartupListener.isApplicationStarted()) {
 			if (userId==null) {
 				_log.warn("No userId specified for audit logging on object ["+entity.getClass().getName()
@@ -192,7 +201,7 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 	            new AuditLog(friendlyMessage,
 	            			message, 
 	            			entity.getId(), 
-	                        entity.getClass(), 
+	                        entityClass, 
 	                        entity.getReference(),
 	                        userId,
 	                        username,
@@ -203,6 +212,7 @@ public class AuditLogDAOImpl implements AuditLogDAO {
 		    tempSession.close(); 
 		}
     }
+	
 	
     /* (non-Javadoc)
 	 * @see com.ideyatech.core.persistence.impl.BaseEntityDAOJpaImpl#appendClauseToExample(com.ideyatech.core.bean.BaseEntity, boolean)
