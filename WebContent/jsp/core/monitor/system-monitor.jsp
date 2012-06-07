@@ -76,5 +76,3 @@
 	</div><!-- END OF yui-g -->
 </div>
 <idy:footer />
-
-

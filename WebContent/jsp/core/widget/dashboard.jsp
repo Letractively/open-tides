@@ -6,6 +6,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
+<c:set var="url_yui" value="http://yui.yahooapis.com/2.5.1/build" scope="application"/>
 
 <idy:header title_webpage="label.widget">
   <script src="${url_yui}/yahoo-dom-event/yahoo-dom-event.js"></script>
@@ -43,7 +44,7 @@
 				</table>
 				<div id="save-button" class="button">
 					<input type="hidden" id="mergedCheckboxes" name="mergedCheckboxes" value="">
-					<input class="button" type="button" value="Save" onclick="IDEYATECH.checkbox.mergeSubmit('userWidgets','checkboxes','mergedCheckboxes')" />
+					<input class="button" type="button" value="Save" onclick="IDEYATECH.checkbox.mergeSubmit('userWidgets','mergedCheckboxes')" />
 				</div>
 				</form:form>
         	</div><!-- end of contents -->

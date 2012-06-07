@@ -10,9 +10,6 @@
 	[multipart_td]<c:out value="${ widget.name }" />[/multipart_td]
 	[multipart_td]<c:out value="${ widget.title }" />[/multipart_td]
 	[multipart_td]<c:out value="${ widget.isShown == true ? 'Yes' : 'No' }" />[/multipart_td]
-	[multipart_td]<c:out value="${ widget.url }" />[/multipart_td]
-	[multipart_td]<c:out value="${ widget.accessCode }" />[/multipart_td]
-	[multipart_td]<c:out value="${ widget.cacheDuration }" />[/multipart_td]
 	[multipart_td]<fmt:formatDate value="${ widget.lastCacheUpdate }" dateStyle="short" type="DATE" pattern="MMM dd, yyyy hh:mm:ss" />[/multipart_td]
 	[multipart_td]
 		<ot:update_button id="${widget.id}" page="admin/widget.jspx" prefix="widget"/>
@@ -21,9 +18,7 @@
 <c:if test="${newRow}">
 [/multipart_tr] 
 <script language="javascript">
-try{
-	IDEYATECH.crud.cancelNew('widget-');
-	IDEYATECH.crud.refreshTable('widget-table-results', {})
-}catch(e){}
+IDEYATECH.crud.cancelNew('widget-');
+IDEYATECH.crud.refreshTable('widget-table-results', {})
 </script>
 </c:if> 

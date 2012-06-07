@@ -5,16 +5,14 @@
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
-<idy:header title_webpage="label.usergroups">
-  <script src="${url_yui}/yahoo-dom-event/yahoo-dom-event.js"></script>
-</idy:header>
+<idy:header title_webpage="label.usergroups" />
     <!-- BODY -->
     <div id="bd">
         <div class="yui-g">
         <div class="main">
 
             <div class="title-wrapper">
-            	<div class="title"><span><spring:message code="label.usergroups-matrix" /></span></div>
+            	<span><spring:message code="label.usergroups-matrix" /></span>
             </div> 
             
             <div class="contents">
