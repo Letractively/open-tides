@@ -8,8 +8,7 @@
 [multipart_tr id="report-row-${report.id}" status="new"]
 </c:if>
 	[multipart_td]<c:out value="${ report.name }" />[/multipart_td]
-	[multipart_td]<c:out value="${ report.description }" />[/multipart_td]
-	[multipart_td]<c:out value="${ report.accessCode }" />[/multipart_td]
+	[multipart_td]<c:out value="${ report.title }" />[/multipart_td]
 	[multipart_td]
 		<ot:update_button id="${report.id}" page="admin/report.jspx" prefix="report"/>
 		<ot:delete_button id="${report.id}" page="admin/report.jspx" title="${report.name}" prefix="report"/>                  		

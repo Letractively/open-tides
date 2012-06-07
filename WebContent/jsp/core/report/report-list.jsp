@@ -8,69 +8,102 @@
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
 <idy:header title_webpage="label.report">
-  <script src="${url_jquery}"></script>
-  <script src="${url_context}/script/ideyatech-${ot_version}/jquery.form.js"></script>
-  <script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
 </idy:header>
-    <!-- BODY -->
-    <div id="bd">
-        <div class="yui-g">
-        <div class="main" id="report">
-            <div class="title-wrapper">
-                <div class="title" id="report-title"><span><spring:message code="label.report" /></span></div>
-            </div> 
-            
-            <div class="contents">
-    	            <div id="search-criteria">
-					<form:form commandName="report" id="reportSearch" action="${url_context}/admin/report.jspx">
-						<p><label for="name"><spring:message code="label.report.name" />: </label>
-	<form:input path="name" /> </p>
 
-						<p><label for="accessCode"><spring:message code="label.report.accessCode" />: </label>
-	<form:input path="accessCode" /> </p>
+<div class="yui-b reports" id="report">
 
-					<ot:sort_input searchFormId="reportSearch"/>
-					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />	
-					<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>				
-					</form:form>
-				</div>
-				<hr class="broad"/>
-            	<table class="admin-table">
-            		<thead>
-            		<tr>
-						<th><ot:header_sort headerField="name" headerLabel="label.report.name" prefix="${ report }" searchFormId="reportSearch"/></th>
-						<th><ot:header_sort headerField="description" headerLabel="label.report.description" prefix="${ report }" searchFormId="reportSearch"/></th>
-						<th><ot:header_sort headerField="accessCode" headerLabel="label.report.accessCode" prefix="${ report }" searchFormId="reportSearch"/></th>
-            			<th>&nbsp;</th>
-            		</tr>
-            		</thead>
-            		<tbody id="report-table-results">
-            		<c:forEach items="${results.results}" var="record" varStatus="status">
-            		<tr id="report-row-${ record.id }" class="row-style-${ status.count % 2 }">
-						<td><c:out value="${ record.name }" /></td>
-						<td><c:out value="${ record.description }" /></td>
-						<td><c:out value="${ record.accessCode }" /></td>
-                  		<td>
-							<ot:update_button id="${record.id}" page="admin/report.jspx" prefix="report"/>
-                    		<ot:delete_button id="${record.id}" page="admin/report.jspx" title="${ record.name }" prefix="report"/>                  		
-                  		</td>	
-            		</tr>
+    <div class="title-wrapper" id="report-title">
+        <span><spring:message code="label.report" /></span>
+    </div> 
+    
+    <div class="content-wrapper">
+    	<idy:form-instruction formName="reportSearchForm"/>
+        <div id="search-criteria" class="search-criteria" >
+        <form:form commandName="report" id="reportSearch" action="${url_context}/admin/report.jspx">
+        
+            <div class="form-row">
+                <form:label path="name" cssErrorClass="highlight-error"><spring:message code="label.report.name" /></form:label>
+                <form:input path="name" cssErrorClass="highlight-error"/> 
+                <idy:tool-tip formName="reportSearchForm" attributeName="name"/>
+            </div>
 
-            		</c:forEach>
-            		</tbody>
-            		<tr id="report-row-new">
-						<td colspan="4">
-            			</td>
-            		</tr>
-            	</table>
-	            <ot:add_button page="admin/report.jspx" prefix="report"/>
-	            <ot:paging results="${ results }" baseURL="admin/report.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="reportSearch"/>	            	
-        	</div>
+            <div class="form-row">
+            	<form:label path="accessCode" cssErrorClass="highlight-error"><spring:message code="label.report.accessCode" /></form:label>
+            	<form:input path="accessCode" cssErrorClass="highlight-error"/> 
+            	<idy:tool-tip formName="reportSearchForm" attributeName="accessCode"/>
+            </div>
+
+            <ot:sort_input searchFormId="reportSearch"/>
+            <div class="form-row"> 
+                <label class="special">&nbsp;</label>
+                <input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />	
+                <input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>				
+            </div>
+        
+        </form:form>
         </div>
-        </div>    
+        
+        <div class="separator"></div>
+        
+        <div class="search-results">
+        
+            <div class="search-results-header">
+            
+            	<div class="L">
+                    <ot:paging results="${results}" baseURL="admin/report.jspx" pageParamName="page" displaySummary="true" displayPageLinks="false" />
+                </div>
+            
+            	<div class="R">
+                	<ot:add_button page="admin/report.jspx" prefix="report"/>
+                </div>
+                
+                <div class="clear"></div>
+            
+            </div>
+            
+            <div class="search-results-list">
+            <table border="1">
+                <thead>
+                <tr>
+                    <th class="col-1"><ot:header_sort headerField="name" headerLabel="label.report.name" prefix="${ report }" searchFormId="reportSearch"/></th>
+                    <th class="col-2"><ot:header_sort headerField="title" headerLabel="label.report.title" prefix="${ report }" searchFormId="reportSearch"/></th>
+                    <th class="col-3">&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody id="report-table-results">
+                <c:forEach items="${results.results}" var="record" varStatus="status">
+                <tr id="report-row-${ record.id }">
+                    <td class="col-1"><c:out value="${ record.name }" /></td>
+                    <td class="col-2"><c:out value="${ record.title }" /></td>
+                    <td class="col-3">
+                        <ot:update_button id="${record.id}" page="admin/report.jspx" prefix="report"/>
+                        <ot:delete_button id="${record.id}" page="admin/report.jspx" title="${ record.name }" prefix="report"/>                  		
+                    </td>	
+                </tr>
+
+                </c:forEach>
+                </tbody>
+                <tr id="report-row-new">
+                    <td colspan="4">
+                    </td>
+                </tr>
+            </table>
+            </div>
+            
+            <div class="search-results-footer">
+            
+            	<div class="numbers">
+                    <ot:paging results="${ results }" baseURL="report.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="reportSearch"/>	            	
+            	</div>
+            
+            </div>
+            
+        </div>
+    
     </div>
-    <!-- END OF BODY -->
-<!-- FOOT -->
+    
+</div>
+
 <idy:footer>
 	<script type="text/javascript">
 		function clearSearchPane(){

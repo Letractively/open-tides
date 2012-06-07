@@ -3,15 +3,18 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
+<%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
 <!--using  [multipart_td] [/multipart_td] tags for multipart form -->
-[multipart_td colspan="8"]
+[multipart_td colspan="8" class="remove-highlight"]
 <form:form commandName="widget" id="widget-form-${widget.id}" action="" enctype="multipart/form-data">
 	<ot:form_title isNew="${widget.isNew}" formName="widget"/>
-	<div class="content">	
+	<div class="widget-form">	
+		<br/>
+		<idy:form-instruction formName="widgetForm"/>
 		<spring:bind path="widget.*">
 		<c:if test="${status.error}">
-			<div class='errorBox'>
+			<div class='error-box'>
 				<!-- this is a hack to crud.js to handle validation messages. -->
 				<c:if test="${widget.isNew}">
 				<!-- <tr id="widget-row-new" -->
@@ -20,65 +23,100 @@
             </div>
 		</c:if>
 		</spring:bind>
+		<div class="highlight-error-box R">
+	        <span class="required">*</span>
+	        <span class="bold">Required Field</span>			
+		</div>
 		<div class='fieldsBox'>
 			<div class="form-row"> 
-                <label for="name"><spring:message code="label.widget.name" />: </label>
-	            <form:input onblur="this.value=IDEYATECH.util.removeSpaces(this.value);" path="name" /> <sup class="required">*</sup>
+                <form:label path="name" cssErrorClass="highlight-error"><spring:message code="label.widget.name" />: </form:label>
+	            <form:input onblur="this.value=IDEYATECH.util.removeSpaces(this.value);" path="name" cssErrorClass="highlight-error"/> 
+	            <sup class="required">*</sup>
+	            <idy:tool-tip formName="widgetForm" attributeName="name"/>
             </div>
 			
 			<div class="form-row"> 
-                <label for="title"><spring:message code="label.widget.title" />: </label>
-	            <form:input path="title" /> <sup class="required">*</sup>
+                <form:label path="title" cssErrorClass="highlight-error"><spring:message code="label.widget.title" />: </form:label>
+	            <form:input path="title" cssErrorClass="highlight-error"/> 
+	            <sup class="required">*</sup>
+	            <idy:tool-tip formName="widgetForm" attributeName="title"/>
             </div>
             
             <div class="form-row"> 				
-                <form:checkbox path="isShown" /><label for="isShown"><spring:message code="label.widget.isShown" /></label>
+                <form:checkbox path="isShown" cssErrorClass="highlight-error"/>
+                <form:label path="isShown" cssErrorClass="highlight-error"><spring:message code="label.widget.isShown" /></form:label>
+                <idy:tool-tip formName="widgetForm" attributeName="isShown"/>
 			</div>
 			
 			<div class="form-row"> 
-                <label for="description"><spring:message code="label.widget.description" />: </label>
-	            <form:textarea path="description" rows="3" cols="20"  /> 
+                <form:label path="description" cssErrorClass="highlight-error"><spring:message code="label.widget.description" />: </form:label>
+	            <form:textarea path="description" rows="3" cols="20" cssErrorClass="highlight-error"/>
+	            <idy:tool-tip formName="widgetForm" attributeName="description"/> 
             </div>
 
 			<div class="form-row"> 
-                <label for="url"><spring:message code="label.widget.url" />: </label>
-	            <form:input path="url" /> <sup class="required">*</sup>
+                <form:label path="url" cssErrorClass="highlight-error"><spring:message code="label.widget.url" />: </form:label>
+	            <form:input path="url" cssErrorClass="highlight-error"/> 
+	            <sup class="required">*</sup>
+	            <idy:tool-tip formName="widgetForm" attributeName="url"/>
             </div>
 
 			<div class="form-row"> 
-                <label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
-	            <form:input path="accessCode" />
+                <form:label path="accessCode" cssErrorClass="highlight-error"><spring:message code="label.widget.accessCode" />: </form:label>
+	            <form:input path="accessCode" cssErrorClass="highlight-error"/>
+	            <idy:tool-tip formName="widgetForm" attributeName="accessCode"/>
             </div>
 
 			<div class="form-row"> 
-                <label for="cacheDuration"><spring:message code="label.widget.cacheDuration" />: </label>
-	            <form:input path="cacheDuration" /> 
+                <form:label path="cacheDuration" cssErrorClass="highlight-error"><spring:message code="label.widget.cacheDuration" />: </form:label>
+	            <form:input path="cacheDuration" cssErrorClass="highlight-error"/>
+	            <idy:tool-tip formName="widgetForm" attributeName="cacheDuration"/> 
             </div>
 	
 			<div class="form-row"> 
-                <label for="screenshot"><spring:message code="label.widget.screenshot" />: </label>
+                <form:label path="screenshot" cssErrorClass="highlight-error"><spring:message code="label.widget.screenshot" />: </form:label>
 	            <spring:bind path="screenshot">
 		            <input type="file" name="attachment"/>
 	            </spring:bind> (150 x 100)<br/>
             	<c:forEach items = "${widget.files}" var="fileInfo">
             		<img src="view-image.jspx?FileInfoId=${fileInfo.id}" width="150"/>
             	</c:forEach>
+            	<idy:tool-tip formName="widgetForm" attributeName="screenshot"/>
 			</div>
 
 			<div class="form-row"> 
-                <label for="lastCacheUpdate"><spring:message code="label.widget.lastCacheUpdate" />: </label>
-	            <form:input path="lastCacheUpdate" /> 
+                <form:label path="lastCacheUpdate" cssErrorClass="highlight-error"><spring:message code="label.widget.lastCacheUpdate" />: </form:label>
+	            <form:input path="lastCacheUpdate" cssErrorClass="highlight-error"/>
+	            <idy:tool-tip formName="widgetForm" attributeName="lastCacheUpdate"/> 
             </div>
-
+            
 			<form:hidden path="isUserDefined"  />
+			
 		</div>
-		<div class="requiredInfo">
-			<sup class="required">*</sup> Indicates required field.
-		</div>
+		
 		<div class="button">
 		  	<ot:submit_button id="${widget.id}" page="admin/widget.jspx" formName="widget-form-${widget.id}" prefix="widget" multipart="true"/>
   			<ot:cancel_button id="${widget.id}" page="admin/widget.jspx" prefix="widget"/>
 		</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			 $('.icon-information').jtooltip({
+		  	     radius       : 5,                   // radius for rounded corners 
+		  	     shadow       : "0 0 0 0 #666",      // tooltip shadow
+		  	     delay        : 200,                 // delay time for tooltip to appear in ms
+		  	     offset       : 2,                   // distance in pixel from element
+		  	     p_offset     : 10,                  // pointer offset from border 
+		  	     c_offset     : 10,                  // pointer offset from element corner
+		  	     pointer      : 8,                   // pointer length 
+		  	     border       : "1px solid #dadada", // border style
+		  	     bgcolor      : "#dadada",           // background color
+		  	     font         : "12px tahoma",       // font style
+		  	     color        : "#464646",           // text colors
+		  	     padding      : "10px",              // padding
+		  	     mode		  : "tooltip"
+		  	  });
+			});
+		</script>
 	</div>
 </form:form>
 </multipart_td> 

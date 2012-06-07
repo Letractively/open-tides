@@ -5,11 +5,6 @@
 <%@ taglib prefix="ot" uri="http://www.ideyatech.com/tides"%>
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 <idy:header title_webpage="label.system-codes">
-
-  <script src="${url_jquery}"></script>
-  <script src="${url_jquery_ui}"></script>
-  <script src="${url_context}/script/ideyatech-${ot_version}/crud.js"></script>
-  
   <script type="text/javascript">
   	function checkNewCategory(fromDropdown) {
  		var dropDownHTML  ='<label for="category"><spring:message code="label.category" /></label><select name="category" onclick="javascript:checkNewCategory(true);"><option value="0">Select a Category</option><option value="0">-- New Category --</option><c:forEach items="${categories}" var="record" varStatus="status"><option>${record.category}</option></c:forEach></select>';
@@ -37,7 +32,6 @@
 		}	
 	}
   </script>
-  
 </idy:header>
 
 <div class="yui-b system-codes" id="systemcodes">
@@ -45,37 +39,48 @@
     <div class="title-wrapper" id="systemcodes-title"><spring:message code="label.system-codes" /></div> 
     
     <div class="content-wrapper">
-    
+    	<idy:form-instruction formName="systemCodesSearchForm"/>
         <div id="search-criteria" class="search-criteria">
         <form:form commandName="systemCode" id="systemCodeSearch" action="${url_context}/admin/system-codes.jspx">
+            
             <div class="form-row"> 
-                <label for="category"><spring:message code="label.category" /></label>
-                <form:select path="category">
+                <form:label path="category" cssErrorClass="highlight-error"><spring:message code="label.category" /></form:label>
+                <form:select path="category" cssErrorClass="highlight-error">
                     <form:option value="">Select a Category</form:option>
                     <form:options items="${categories}" itemValue="category" itemLabel="category" />
                 </form:select>
+                <idy:tool-tip formName="systemCodesSearchForm" attributeName="name"/>
             </div>
+            
             <div class="form-row"> 
-                <label for="key"><spring:message code="label.key" /></label>
-                <form:input path="key" maxlength="50" />
+                <form:label path="key" cssErrorClass="highlight-error"><spring:message code="label.key" /></form:label>
+                <form:input path="key" maxlength="50" cssErrorClass="highlight-error"/>
+                <idy:tool-tip formName="systemCodesSearchForm" attributeName="key"/>
             </div>
+            
             <div class="form-row"> 
-                <label for="value"><spring:message code="label.value" /></label>
-                <form:input path="value" maxlength="128" />
+                <form:label path="value" cssErrorClass="highlight-error"><spring:message code="label.value" /></form:label>
+                <form:input path="value" maxlength="128" cssErrorClass="highlight-error"/>
+                <idy:tool-tip formName="systemCodesSearchForm" attributeName="value"/>
             </div>
+            
 	        <div class="form-row"> 
-	            <label for="office"><spring:message code="label.override-office" /> </label>
-	            <form:select path="ownerOffice">
+	            <form:label path="ownerOffice" cssErrorClass="highlight-error"><spring:message code="label.override-office" /> </form:label>
+	            <form:select path="ownerOffice" cssErrorClass="highlight-error">
 	                <form:option value=""></form:option>
 		        	<form:options items="${officeList}" itemValue="key" itemLabel="value" />
 				</form:select>
+				<idy:tool-tip formName="systemCodesSearchForm" attributeName="ownerOffice"/>
 	        </div>						
+            
             <ot:sort_input searchFormId="systemCodeSearch"/>
+            
             <div class="form-row"> 
                 <label class="special">&nbsp;</label>
                 <input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />
                 <input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>
             </div>
+            
         </form:form>
         </div>
         
@@ -140,19 +145,4 @@
 </div>
 
 <idy:footer>
-<script type="text/javascript">
-function clearSearchPane(){
-	var searchForm = document.getElementById('systemCodeSearch');
-	var formElements = searchForm.elements;
-	for (var i = 0; i < formElements.length; i++){
-		if (formElements[i].type.toLowerCase() == "text"){
-			//for text field element
-			formElements[i].value = "";
-		}else if (formElements[i].type.toLowerCase() == "select-one"){
-			//for select element
-			formElements[i].selectedIndex = 0;
-		}
-	}	
-}
-</script>
 </idy:footer>

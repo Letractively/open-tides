@@ -7,48 +7,56 @@
 <%@ taglib prefix="idy" tagdir="/WEB-INF/tags"%>
 
 <idy:header title_webpage="label.widget">
-  	<script src="${url_jquery}"></script>
-  	<script src="${url_context}/script/ideyatech-${ot_version}/jquery.form.js"></script> 
-  	<script src="${url_script}/crud.js"></script>
 </idy:header>
 
 <!-- BODY -->
 <div class="yui-b widget" id="widget">
 	<div class="title-wrapper">
-	    <span><spring:message code="label.widget" /></span>
-	</div> 
-            
+	    <spring:message code="label.widget" />
+	</div>
+
     <div class="content-wrapper">
+    	<idy:form-instruction formName="widgetSearchForm"/>
     	<div id="search-criteria">
 			<form:form commandName="widget" id="widgetSearch" action="${url_context}/admin/widget.jspx">
 				<div class="form-row"> 
-                	<label for="name"><spring:message code="label.widget.name" />: </label>
-                    <form:input path="name" /> 
-                </div>
+                	<form:label path="name" cssErrorClass="highlight-error"><spring:message code="label.widget.name" />: </form:label>
+                    <form:input path="name" />
+                    <idy:tool-tip formName="widgetSearchForm" attributeName="name"/> 
+               	</div>
+
 				<div class="form-row"> 
-                    <label for="title"><spring:message code="label.widget.title" />: </label>
-                    <form:input path="title" /> 
+                	<form:label path="title" cssErrorClass="highlight-error"><spring:message code="label.widget.title" />: </form:label>
+                    <form:input path="title" cssErrorClass="highlight-error"/>
+                    <idy:tool-tip formName="widgetSearchForm" attributeName="title"/> 
                 </div>
+
 				<div class="form-row"> 
-                    <label for="url"><spring:message code="label.widget.url" />: </label>
-                    <form:input path="url" /> 
+                	<form:label path="url" cssErrorClass="highlight-error"><spring:message code="label.widget.url" />: </form:label>
+                    <form:input path="url" cssErrorClass="highlight-error"/>
+                    <idy:tool-tip formName="widgetSearchForm" attributeName="name"/> 
                 </div>
+
 				<div class="form-row">
-                    <label for="accessCode"><spring:message code="label.widget.accessCode" />: </label>
-                    <form:input path="accessCode" /> 
+                    <form:label path="accessCode" cssErrorClass="highlight-error"><spring:message code="label.widget.accessCode" />: </form:label>
+                    <form:input path="accessCode" cssErrorClass="highlight-error"/>
+                    <idy:tool-tip formName="widgetSearchForm" attributeName="accessCode"/> 
                 </div>
-				<ot:sort_input searchFormId="widgetSearch"/>
+				
 				<div class="form-row">
+					<ot:sort_input searchFormId="widgetSearch"/>
 					<label class="special">&nbsp;</label>
 					<input type="submit" name="Submit_" value="<spring:message code="label.submit" />" />	
-					<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>				
+					<input type="button" name="clear" value="Clear" onclick="clearSearchPane()"/>	
 				</div>
+							
 			</form:form>
 		</div>
-				
+		
 		<div class="separator"></div>
-        <div class="search-results">    
-        	<div class="search-results-header">
+		
+		<div class="search-results">
+			<div class="search-results-header">
               
               	<div class="L">
               		<div class="pagingSummary">
@@ -63,50 +71,43 @@
               	<div class="clear"></div>
               
           	</div>
-          	
-          	<div class="search-results-list">	
-            	<table class="admin-table">
-            		<thead>
-	            		<tr>
-							<th><ot:header_sort headerField="name" headerLabel="label.widget.name" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="title" headerLabel="label.widget.title" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="isShown" headerLabel="label.widget.isShown" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="url" headerLabel="label.widget.url" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="accessCode" headerLabel="label.widget.accessCode" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="cacheDuration" headerLabel="label.widget.cacheDuration" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-							<th><ot:header_sort headerField="lastCacheUpdate" headerLabel="label.widget.lastCacheUpdate" prefix="${ widget }" searchFormId="widgetSearch"/></th>
-	            			<th>&nbsp;</th>
-	            		</tr>
-            		</thead>
-            		<tbody id="widget-table-results">
-	            		<c:forEach items="${results.results}" var="record" varStatus="status">
-		            		<tr id="widget-row-${ record.id }" class="row-style-${ status.count % 2 }">
+			
+			<div class="search-results-list">
+	           	<table class="admin-table">
+	           		<thead>
+	           		<tr>
+						<th class="col-1"><ot:header_sort headerField="name" headerLabel="label.widget.name" prefix="${ widget }" searchFormId="widgetSearch"/></th>
+						<th class="col-2"><ot:header_sort headerField="title" headerLabel="label.widget.title" prefix="${ widget }" searchFormId="widgetSearch"/></th>
+						<th class="col-3"><ot:header_sort headerField="isShown" headerLabel="label.widget.isShown" prefix="${ widget }" searchFormId="widgetSearch"/></th>
+						<th class="col-4"><ot:header_sort headerField="lastCacheUpdate" headerLabel="label.widget.lastCacheUpdate" prefix="${ widget }" searchFormId="widgetSearch"/></th>
+	           			<th class="col-5">&nbsp;</th>
+	           		</tr>
+	           		</thead>
+	           		<tbody id="widget-table-results">
+		           		<c:forEach items="${results.results}" var="record" varStatus="status">
+			           		<tr id="widget-row-${ record.id }" class="row-style-${ status.count % 2 }">
 								<td><c:out value="${ record.name }" /></td>
 								<td><c:out value="${ record.title }" /></td>
 								<td><c:out value="${ record.isShown == true ? 'Yes' : 'No' }" /></td>
-								<td><c:out value="${ record.url }" /></td>
-								<td><c:out value="${ record.accessCode }" /></td>
-								<td><c:out value="${ record.cacheDuration }" /></td>
 								<td><fmt:formatDate value="${ record.lastCacheUpdate }" dateStyle="short" type="DATE" pattern="MMM dd, yyyy hh:mm:ss" /></td>
-		                  		<td>
+		                 		<td>
 									<ot:update_button id="${record.id}" page="admin/widget.jspx" prefix="widget"/>
-		                    		<ot:delete_button id="${record.id}" page="admin/widget.jspx" title="${ record.name }" prefix="widget"/>                  		
-		                  		</td>	
-		            		</tr>
-	            		</c:forEach>
-            		</tbody>
-            		<tr id="widget-row-new">
+			                   		<ot:delete_button id="${record.id}" page="admin/widget.jspx" title="${ record.name }" prefix="widget"/>                  		
+		                 		</td>	
+			           		</tr>
+		           		</c:forEach>
+	           		</tbody>
+	           		<tr id="widget-row-new">
 						<td colspan="9">
-            			</td>
-            		</tr>
-            	</table>
-        	</div>
-		</div>	
-		<ot:paging results="${ results }" baseURL="admin/widget.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="widgetSearch"/>            	
+	           			</td>
+	           		</tr>
+	           	</table>
+          	</div>
+        </div>
+        <ot:paging results="${ results }" baseURL="widget.jspx" pageParamName="page" displaySummary="false" displayPageLinks="true" searchFormId="widgetSearch"/>	            	
 	</div>
 </div>
 <!-- END OF BODY -->
-
 <!-- FOOT -->
 <idy:footer>
 	<script type="text/javascript">

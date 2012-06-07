@@ -16,10 +16,15 @@
 <%@ attribute name="searchFormId" required="false" %>
 <%@ attribute name="displaySummary" required="false" type="java.lang.Boolean" %>
 <%@ attribute name="displayPageLinks" required="false" type="java.lang.Boolean" %>
+<%@ attribute name="recordName" required="false" type="java.lang.String" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<c:set var="tempRecordName" value="records" />
+<c:if test="${not empty recordName}">
+<c:set var="tempRecordName" value="${recordName }" />
+</c:if>
 <c:if test="${(results.totalResults == 0) && (displaySummary)}">
     <div class="pagingSummary"> 
     <spring:message code="msg.no-results-found"/>
@@ -28,7 +33,7 @@
 <c:if test="${results.totalResults > 0}">
 	<c:if test="${displaySummary}">
     <div class="pagingSummary"> 
-	    <span class="records"> Records <strong>${results.startIndex+1}</strong> - <strong>${results.endIndex+1}</strong> of <strong>${results.totalResults}</strong></span>
+	    <span class="records"> Displaying <strong>${results.startIndex+1}</strong> to <strong>${results.endIndex+1}</strong> of <strong>${results.totalResults}</strong> ${tempRecordName }</span>
 	    <span class="searchTime"> (${results.searchTime/1000} seconds)</span>
     </div>
 	</c:if>	
