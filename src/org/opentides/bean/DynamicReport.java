@@ -69,12 +69,23 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 	@JoinColumn(name = "REPORT_GROUP", nullable=true)
 	private SystemCodes reportGroup;
 	
+	@Column(name="ORDER_NUMBER")
+	private Integer orderNumber;
+	
 	@Transient
 	private transient CommonsMultipartFile jasperFile;
 
 	@Transient
 	private transient CommonsMultipartFile jrxmlFile;	
 		
+	public Integer getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(Integer orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -171,7 +182,7 @@ public class DynamicReport extends BaseEntity implements Searchable, Auditable, 
 		props.add("name");
 		props.add("reportFile");
 		props.add("accessCode");
-		props.add("reportGroup.value");
+		props.add("reportGroup.id");
 		return props;
 	}
 

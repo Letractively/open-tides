@@ -101,7 +101,11 @@
                 ${report.reportFile}.jrxml
             </div>
         </c:if>
-
+		<div class="form-row"> 
+            <form:label path="orderNumber" cssErrorClass="highlight-error"><spring:message code="label.report.orderNumber" /></form:label>
+           	<form:input path="orderNumber" cssClass="numbers L" cssErrorClass="highlight-error" cssStyle="min-width: 1em;" onkeydown="return restrictKeys(event);" maxlength="5"/>
+            <idy:tool-tip formName="reportForm" attributeName="orderNumber"/>
+        </div>
         <div class="form-row">
             <label class="special">&nbsp;</label>
             <ot:submit_button id="${report.id}" page="admin/report.jspx" formName="report-form-${report.id}" prefix="report" multipart="true"/>

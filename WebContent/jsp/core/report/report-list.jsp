@@ -10,7 +10,7 @@
 <idy:header title_webpage="label.report">
 </idy:header>
 
-<div class="yui-b reports" id="report">
+<div class="yui-b reports" id="reports">
 
     <div class="title-wrapper" id="report-title">
         <span><spring:message code="label.report" /></span>
@@ -20,6 +20,12 @@
     	<idy:form-instruction formName="reportSearchForm"/>
         <div id="search-criteria" class="search-criteria" >
         <form:form commandName="report" id="reportSearch" action="${url_context}/admin/report.jspx">
+        
+        	<div class="form-row">
+                <form:label path="reportGroup" cssErrorClass="highlight-error"><spring:message code="label.report.reportGroup" /></form:label>
+                <form:select path="reportGroup" cssErrorClass="highlight-error" items="${reportGroupList}" itemValue="id" itemLabel="value"/> 
+                <idy:tool-tip formName="reportSearchForm" attributeName="reportGroup"/>
+            </div>
         
             <div class="form-row">
                 <form:label path="name" cssErrorClass="highlight-error"><spring:message code="label.report.name" /></form:label>
