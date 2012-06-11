@@ -60,7 +60,27 @@
         </c:when>
         <c:when test="${fn:startsWith(field.userField, 'number')==true}">
         <input type="text" name="${fieldRef}" id="${fieldRef}" class="num-date"
-            value="${crud.retrieveObjectValue(object, fieldRef)}"/> 
+            value="${crud.retrieveObjectValue(object, fieldRef)}" onkeydown="return isNumeric(event);"/>
+        <script type="text/javascript">
+	        function isNumeric(e) {
+	    	    var evt = (e) ? e : window.event;
+	    	    var key = (evt.keyCode) ? evt.keyCode : evt.which;
+	    		
+	    	    if(key != null) {
+	    	        key = parseInt(key, 10);
+	    	        if(((key < 48 || key > 57) && 
+    	        		(key != 8 && key != 9 && key != 13 && key != 46) && 
+    	        		(key < 96 || key > 105) && 
+    	        		(key < 35 || key > 40))){
+	 	               return false;
+	 	        	}
+	    	        if(evt.shiftKey && key >= 48 && key <= 57) {
+	    	        	return false;
+	    	        }
+	    	    }
+	    	   	return true;
+	    	}
+        </script> 
         </c:when>
         <c:when test="${fn:startsWith(field.userField, 'boolean')==true}">
             <div class="radio">
