@@ -51,9 +51,17 @@
         <script type="text/javascript">
         $(document).ready(function() {
             $( "#${field.userField}" ).datepicker({
-                showOn: "button",
+                showOn: "both",
                 buttonImage: '${url_context}<spring:theme code="datepicker"/>',
-                buttonImageOnly: true
+                buttonImageOnly: true,
+                minDate: new Date(1901, 1 - 1, 1),
+        		maxDate: "+50y",
+        		yearRange: "1901:+5", /*range is currently selected year-45 to current year+5*/
+        		buttonText: "Choose",
+        		changeMonth : true,
+        		changeYear : true,
+        		dateFormat: 'mm/dd/yy',
+        		constrainInput: true
             });
         });
         </script>
