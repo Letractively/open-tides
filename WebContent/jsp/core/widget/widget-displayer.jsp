@@ -80,7 +80,10 @@
 								</c:when>
 							</c:choose>
 							<div id="ajaxContainer${widgetStatus.count}" class="widgetAjaxContainer">
-								<div id="loader"><img src="${url_context}<spring:theme code="loader"/>"/></div>
+								<div id="loader">
+									<img src="${url_context}<spring:theme code="loader"/>"/>
+									<div class="font-10"><spring:message code="label.loading-panel"/></div>
+								</div>
 							</div>
 							<script type="text/javascript">
                                 ajaxinclude(
