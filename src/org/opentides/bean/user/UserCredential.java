@@ -28,6 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
@@ -35,6 +37,7 @@ import org.opentides.util.SecurityUtil;
 
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="USERS")
 public class UserCredential extends BaseEntity implements Auditable {
 	private static final long serialVersionUID = -8078097647300665926L;

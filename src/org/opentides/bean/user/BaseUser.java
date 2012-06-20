@@ -39,6 +39,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.opentides.bean.Auditable;
 import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseProtectedEntity;
@@ -47,6 +49,7 @@ import org.opentides.bean.SystemCodes;
 import org.opentides.util.StringUtil;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "USER_PROFILE")
 public class BaseUser extends BaseProtectedEntity implements Searchable, Auditable {
 
