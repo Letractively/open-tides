@@ -268,6 +268,40 @@ IDEYATECH.util = function() {
 				dataType: "html"
 			});
 		},
+		
+		/**
+		 * Loads update page into the given div and parameters.
+		 * 
+		 * @method loadPage
+		 * @param {String}
+		 *            url URL where request will be sent
+		 * @param {Object}
+		 *            argument - can include any of the following 
+		 *            - divId = element id containing the row to insert/update page 
+		 *            - callback = method to execute after loading 
+		 *            - append = true, will append result instead of replace
+		 *            - cache = true, will allow browser caching
+		 */
+		loadPagewithCache : function(url, argument) {
+			var args = [ argument['divId'], argument['callback'] ];
+			var successCallback = function(data) {
+				__replace(data, args);
+			};
+
+			if (argument['append'] == 'true')
+				successCallback = function(data) {
+					__append(data, args);
+				};
+
+			$.ajax(url, {
+				success : successCallback,
+				error : __failure,
+				type: "GET",
+			    dataType: "html",
+				cache:true
+			});
+		},
+
 
 		/**
 		 * Submits the form for processing.
