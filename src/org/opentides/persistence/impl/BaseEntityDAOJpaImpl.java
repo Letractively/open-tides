@@ -212,8 +212,13 @@ public class BaseEntityDAOJpaImpl<T extends BaseEntity,ID extends Serializable>
 		String queryString = getJpqlQuery(name);
 		Query queryObject = getEntityManager().createQuery(queryString);
 		if (params != null) {
-			for (Map.Entry<String, Object> entry:params.entrySet())
-				queryObject.setParameter(entry.getKey(), entry.getValue());
+			for (Map.Entry<String, Object> entry:params.entrySet()) {
+				if (entry.getKey()!=null && entry.getKey().startsWith("hint.")) {
+					queryObject.setHint(entry.getKey().substring(5), entry.getValue());
+				} else {
+					queryObject.setParameter(entry.getKey(), entry.getValue());
+				}
+			}
 		}
 		if (start > -1) 
 			queryObject.setFirstResult(start);
