@@ -33,19 +33,22 @@ jQuery.fn.log = function() {
  * For adding inline labels on text boxes
  */
 jQuery.fn.watermark = function(label) {
-    if (IDEYATECH.util.isEmpty(this.val())) {
-        this.val(label);
+    if (IDEYATECH.util.isEmpty($(this).val())) {
+    	$(this).val(label);
+        $(this).addClass("watermark");
     } 
     this.blur(function() {
         if (IDEYATECH.util.isEmpty($(this).val())) {
             $(this).val(label);
+            $(this).addClass("watermark");
         } 
     });
     this.focus(function() {
        if ($(this).val() == label) {
            $(this).val('');
+           $(this).removeClass("watermark");
        } 
-    });    
+    });
 };
 
 /**
@@ -54,6 +57,7 @@ jQuery.fn.watermark = function(label) {
 jQuery.fn.cleanmark = function(label) {
     if (this.val() == label) {
         this.val('');
+        $(this).removeClass("watermark");
     }
 };
 
@@ -268,40 +272,6 @@ IDEYATECH.util = function() {
 				dataType: "html"
 			});
 		},
-		
-		/**
-		 * Loads update page into the given div and parameters.
-		 * 
-		 * @method loadPage
-		 * @param {String}
-		 *            url URL where request will be sent
-		 * @param {Object}
-		 *            argument - can include any of the following 
-		 *            - divId = element id containing the row to insert/update page 
-		 *            - callback = method to execute after loading 
-		 *            - append = true, will append result instead of replace
-		 *            - cache = true, will allow browser caching
-		 */
-		loadPagewithCache : function(url, argument) {
-			var args = [ argument['divId'], argument['callback'] ];
-			var successCallback = function(data) {
-				__replace(data, args);
-			};
-
-			if (argument['append'] == 'true')
-				successCallback = function(data) {
-					__append(data, args);
-				};
-
-			$.ajax(url, {
-				success : successCallback,
-				error : __failure,
-				type: "GET",
-			    dataType: "html",
-				cache:true
-			});
-		},
-
 
 		/**
 		 * Submits the form for processing.
@@ -529,6 +499,9 @@ IDEYATECH.paging = function() {
 	return {
 		searchByPage : function(searchFormId, baseURL, pageNum) {
 			$('#' + searchFormId).attr("action", baseURL + '?page=' + pageNum);
+			if ($('#page')) {
+				$('#page').val(pageNum);
+			}
 			$('#' + searchFormId).submit();
 		}
 	};
