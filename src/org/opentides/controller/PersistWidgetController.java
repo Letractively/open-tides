@@ -62,7 +62,6 @@ public class PersistWidgetController extends MultiActionController {
 			String[] widget = col[i].split(",");
 			int countRow = 1;
 			for (int j=0;j<widget.length;j++) {
-				System.out.println("Col" + countCol + ":" +widget[j]);
 				UserWidgets newUserWidget = userWidgetsService.findSpecificUserWidgets(user, widget[j]);
 				userWidgetsService.updateUserWidgetsOrder(newUserWidget,countCol,countRow);
 				countRow++;

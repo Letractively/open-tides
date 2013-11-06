@@ -84,6 +84,11 @@
             <form:checkbox path="listed" cssErrorClass="highlight-error"/> <spring:message code="label.user-defined-field.is-listed-in-search-results" />
             <idy:tool-tip formName="userDefinedFieldForm" attributeName="listed"/>
         </div>
+        <div class="form-row" >
+        	<form:label path="required" class="special" cssErrorClass="highlight-error">&nbsp;</form:label>
+        	<form:checkbox path="required" cssErrorClass="highlight-error"/> <spring:message code="label.user-defined-field.is-required" />
+            <idy:tool-tip formName="userDefinedFieldForm" attributeName="required"/>
+        </div>
 		<div class="form-row">
 			<label class="special">&nbsp;</label>
 		  		<ot:submit_button id="${userDefinedField.id}" page="admin/user-defined-field.jspx" formName="user-defined-field-form-${userDefinedField.id}" prefix="user-defined-field" />

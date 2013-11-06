@@ -33,7 +33,12 @@
 <c:if test="${results.totalResults > 0}">
 	<c:if test="${displaySummary}">
     <div class="pagingSummary"> 
-	    <span class="records"> Displaying <strong>${results.startIndex+1}</strong> to <strong>${results.endIndex+1}</strong> of <strong>${results.totalResults}</strong> ${tempRecordName }</span>
+	    <c:if test="${results.totalResults > results.pageSize }">
+	   		<span class="records"> Displaying <strong>${results.startIndex+1}</strong> to <strong>${results.endIndex+1}</strong> of <strong>${results.totalResults}</strong> ${tempRecordName }</span>
+	    </c:if>
+	    <c:if test="${results.totalResults <= results.pageSize }">
+	    	<span class="records"> Displaying <strong>${results.endIndex+1}</strong> of <strong>${results.totalResults}</strong> ${tempRecordName }</span>
+	    </c:if>
 	    <span class="searchTime"> (${results.searchTime/1000} seconds)</span>
     </div>
 	</c:if>	

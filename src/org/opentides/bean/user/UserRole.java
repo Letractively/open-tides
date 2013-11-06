@@ -35,7 +35,7 @@ import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 
 @Entity
-@AttributeOverride(name = "ID", column = @Column(insertable = false, updatable = false))
+@AttributeOverride(name = "id", column = @Column(insertable = false, updatable = false))
 @Table(name = "AUTHORITIES")
 public class UserRole extends BaseEntity implements Auditable {
 	private static final long serialVersionUID = -2779918759002560767L;

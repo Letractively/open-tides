@@ -765,6 +765,15 @@ public class BaseCrudController<T extends BaseEntity> extends
 			UserDefinedFieldService userDefinedFieldService) {
 		this.userDefinedFieldService = userDefinedFieldService;
 	}
+	
+	/**
+	 * Getter method for userDefinedFieldService.
+	 *
+	 * @return the userDefinedFieldService
+	 */
+	public final UserDefinedFieldService getUserDefinedFieldService() {
+		return userDefinedFieldService;
+	}
 
 	/**
      * @return the supportsPaging

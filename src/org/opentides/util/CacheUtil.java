@@ -86,4 +86,13 @@ public class CacheUtil {
 		}
 		return ret;				
 	}
+	
+	/**
+	 * Clear the searchable settings for the given class
+	 * @param clazz
+	 */
+	@SuppressWarnings("rawtypes")
+	public static void clearSearchCache(Class clazz) {
+		searchable.remove(clazz);
+	}
 }

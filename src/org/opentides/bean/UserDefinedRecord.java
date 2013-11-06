@@ -99,6 +99,48 @@ public class UserDefinedRecord extends BaseEntity implements Auditable, Searchab
 	@Column(name = "DATE_9")
 	private Date date9;
 
+	@Transient
+	private transient Date date0From;
+	@Transient
+	private transient Date date1From;
+	@Transient
+	private transient Date date2From;
+	@Transient
+	private transient Date date3From;
+	@Transient
+	private transient Date date4From;
+	@Transient
+	private transient Date date5From;
+	@Transient
+	private transient Date date6From;
+	@Transient
+	private transient Date date7From;
+	@Transient
+	private transient Date date8From;
+	@Transient
+	private transient Date date9From;
+	
+	@Transient
+	private transient Date date0To;
+	@Transient
+	private transient Date date1To;
+	@Transient
+	private transient Date date2To;
+	@Transient
+	private transient Date date3To;
+	@Transient
+	private transient Date date4To;
+	@Transient
+	private transient Date date5To;
+	@Transient
+	private transient Date date6To;
+	@Transient
+	private transient Date date7To;
+	@Transient
+	private transient Date date8To;
+	@Transient
+	private transient Date date9To;
+
 	@Column(name = "NUMBER_0")
 	private Double number0;
 	@Column(name = "NUMBER_1")
@@ -604,6 +646,126 @@ public class UserDefinedRecord extends BaseEntity implements Auditable, Searchab
 	 */
 	public final void setDate9(Date date9) {
 		this.date9 = date9;
+	}
+	public Date getDate0From() {
+		return date0From;
+	}
+	public void setDate0From(Date date0From) {
+		this.date0From = date0From;
+	}
+	public Date getDate1From() {
+		return date1From;
+	}
+	public void setDate1From(Date date1From) {
+		this.date1From = date1From;
+	}
+	public Date getDate2From() {
+		return date2From;
+	}
+	public void setDate2From(Date date2From) {
+		this.date2From = date2From;
+	}
+	public Date getDate3From() {
+		return date3From;
+	}
+	public void setDate3From(Date date3From) {
+		this.date3From = date3From;
+	}
+	public Date getDate4From() {
+		return date4From;
+	}
+	public void setDate4From(Date date4From) {
+		this.date4From = date4From;
+	}
+	public Date getDate5From() {
+		return date5From;
+	}
+	public void setDate5From(Date date5From) {
+		this.date5From = date5From;
+	}
+	public Date getDate6From() {
+		return date6From;
+	}
+	public void setDate6From(Date date6From) {
+		this.date6From = date6From;
+	}
+	public Date getDate7From() {
+		return date7From;
+	}
+	public void setDate7From(Date date7From) {
+		this.date7From = date7From;
+	}
+	public Date getDate8From() {
+		return date8From;
+	}
+	public void setDate8From(Date date8From) {
+		this.date8From = date8From;
+	}
+	public Date getDate9From() {
+		return date9From;
+	}
+	public void setDate9From(Date date9From) {
+		this.date9From = date9From;
+	}
+	public Date getDate0To() {
+		return date0To;
+	}
+	public void setDate0To(Date date0To) {
+		this.date0To = date0To;
+	}
+	public Date getDate1To() {
+		return date1To;
+	}
+	public void setDate1To(Date date1To) {
+		this.date1To = date1To;
+	}
+	public Date getDate2To() {
+		return date2To;
+	}
+	public void setDate2To(Date date2To) {
+		this.date2To = date2To;
+	}
+	public Date getDate3To() {
+		return date3To;
+	}
+	public void setDate3To(Date date3To) {
+		this.date3To = date3To;
+	}
+	public Date getDate4To() {
+		return date4To;
+	}
+	public void setDate4To(Date date4To) {
+		this.date4To = date4To;
+	}
+	public Date getDate5To() {
+		return date5To;
+	}
+	public void setDate5To(Date date5To) {
+		this.date5To = date5To;
+	}
+	public Date getDate6To() {
+		return date6To;
+	}
+	public void setDate6To(Date date6To) {
+		this.date6To = date6To;
+	}
+	public Date getDate7To() {
+		return date7To;
+	}
+	public void setDate7To(Date date7To) {
+		this.date7To = date7To;
+	}
+	public Date getDate8To() {
+		return date8To;
+	}
+	public void setDate8To(Date date8To) {
+		this.date8To = date8To;
+	}
+	public Date getDate9To() {
+		return date9To;
+	}
+	public void setDate9To(Date date9To) {
+		this.date9To = date9To;
 	}
 	/**
 	 * Getter method for number0.

@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -151,48 +152,52 @@ public class CrudUtil {
 			if (!oldValue.equals(newValue)) {
 				if (count > 0) 
 					message.append(" and ");
-
-				if (Collection.class.isAssignableFrom(oldValue.getClass()) &&
-						Collection.class.isAssignableFrom(newValue.getClass()) ) {
-					List addedList = new ArrayList();
-					addedList.addAll((List) newValue);
-					addedList.removeAll((List) oldValue);
-					List removedList = new ArrayList();
-					removedList.addAll((List) oldValue);
-					removedList.removeAll((List) newValue);	
-					if (!addedList.isEmpty()) {
-						message.append(" added ")
-								.append(property.getTitle())
-								.append(" ")
-								.append(addedList);
-					} 					
-					if (!removedList.isEmpty()) {
-						if (!addedList.isEmpty()) 
-							message.append(" and");
-						message.append(" removed ")
-								.append(property.getTitle())
-								.append(" ")
-								.append(removedList);						
-					} 
+				if("".equals(newValue)) {
+					message.append(" removed ")
+						.append(property.getTitle());
 				} else {
-					message.append(property.getTitle());
-					// TODO: formatting of date below is not locale specific
-					if (oldValue instanceof Timestamp) {
-						if (!DateUtil.hasTime((Timestamp) oldValue))
-							oldValue = DateUtil.dateToString((Timestamp) oldValue, "MM/dd/yyyy");
-					}
-					if (newValue instanceof Timestamp) {
-						if (!DateUtil.hasTime((Timestamp) newValue))
-							newValue = DateUtil.dateToString((Timestamp) newValue, "MM/dd/yyyy");
-					}
-					if (!StringUtil.isEmpty(oldValue.toString())) 
-						message.append(" from '")
-								.append(oldValue.toString())
-								.append("'");					
-					message.append(" to '")
-						.append(newValue.toString())
-						.append("'");
-				}				
+					if (Collection.class.isAssignableFrom(oldValue.getClass()) &&
+							Collection.class.isAssignableFrom(newValue.getClass()) ) {
+						List addedList = new ArrayList();
+						addedList.addAll((List) newValue);
+						addedList.removeAll((List) oldValue);
+						List removedList = new ArrayList();
+						removedList.addAll((List) oldValue);
+						removedList.removeAll((List) newValue);	
+						if (!addedList.isEmpty()) {
+							message.append(" added ")
+									.append(property.getTitle())
+									.append(" ")
+									.append(addedList);
+						} 					
+						if (!removedList.isEmpty()) {
+							if (!addedList.isEmpty()) 
+								message.append(" and");
+							message.append(" removed ")
+									.append(property.getTitle())
+									.append(" ")
+									.append(removedList);						
+						} 
+					} else {
+						message.append(property.getTitle());
+						// TODO: formatting of date below is not locale specific
+						if (oldValue instanceof Timestamp) {
+							if (!DateUtil.hasTime((Timestamp) oldValue))
+								oldValue = DateUtil.dateToString((Timestamp) oldValue, "MM/dd/yyyy");
+						}
+						if (newValue instanceof Timestamp) {
+							if (!DateUtil.hasTime((Timestamp) newValue))
+								newValue = DateUtil.dateToString((Timestamp) newValue, "MM/dd/yyyy");
+						}
+						if (!StringUtil.isEmpty(oldValue.toString())) 
+							message.append(" from '")
+									.append(oldValue.toString())
+									.append("'");					
+						message.append(" to '")
+							.append(newValue.toString())
+							.append("'");
+					}				
+				}
 				count++;
 			}
 		}
@@ -302,6 +307,8 @@ public class CrudUtil {
 					clause.append(property)
 						.append(" = ")
 						.append(ret.toString());
+				} else if (Date.class.isAssignableFrom(ret.getClass())) {
+					clause.append(getDateRangeClause(example, property));
 				} else if (Class.class.isAssignableFrom(ret.getClass())){
 					Class clazz = (Class) ret;
 					clause.append(property)
@@ -323,7 +330,48 @@ public class CrudUtil {
 	    	return "";
     }
 
-    /**
+    public static String getDateRangeClause(Searchable example, String property) {
+    	StringBuffer clause = new StringBuffer();
+    	SimpleDateFormat defaultDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	property = property.substring(4); // remove the "obj." part
+    	
+    	//try to retrieve dateTo
+		try {
+			Object dateTo = retrieveObjectValue(example, property + "To");
+			if(dateTo != null) {
+				clause.append("obj.").append(property)
+				.append(" <= '")
+				.append(StringUtil.escapeSql(defaultDateFormat.format(dateTo), false))
+				.append("'");
+			}
+		} catch (Exception e) {}
+		//try to retrieve dateFrom
+		try {
+			Object dateFrom = retrieveObjectValue(example, property + "From");
+			if(dateFrom != null) {
+				if(!clause.toString().isEmpty()) {
+					clause.append(" and ");
+				}
+				clause.append("obj.").append(property)
+				.append(" >= '")
+				.append(StringUtil.escapeSql(defaultDateFormat.format(dateFrom), false))
+				.append("'");
+			}
+		} catch (Exception e) {}
+		
+		if(clause.toString().isEmpty()) {
+			Object date = retrieveObjectValue(example, property);
+			if(date != null) {
+				clause.append("obj.").append(property)
+				.append(" = '")
+				.append(StringUtil.escapeSql(defaultDateFormat.format(date), false))
+				.append("'");
+			}
+		}
+		return clause.toString();
+	}
+
+	/**
      * Retrieves the property name for a method name. 
      * (e.g. getName will return name)
      * @param methodName

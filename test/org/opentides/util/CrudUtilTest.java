@@ -92,7 +92,45 @@ public class CrudUtilTest {
 		Assert.assertEquals("",
 				CrudUtil.buildUpdateMessage(oldtc, sametc));
 	}
+	
+	@Test
+	public void testBuildUpdateToEmptyOrBlankMessage() {
+		SystemCodes oldsc = new SystemCodes("categoryold","keyold","old");
+		TestCodes oldtc = new TestCodes();
+		oldtc.setStatus(oldsc);
+		TestCodes newtc = new TestCodes();
+		newtc.setStatus(null);
+		TestCodes sametc = new TestCodes();
+		sametc.setStatus(oldsc);
+		
+		String expected = "Changed Test Codes Key: removed Status";
+		Assert.assertEquals(expected,
+				CrudUtil.buildUpdateMessage(oldtc, newtc));
+		Assert.assertEquals("",
+				CrudUtil.buildUpdateMessage(oldtc, sametc));
+	}
+	
+	@Test
+	public void testBuildUpdateArrayToEmptyMessage() {
+		SystemCodes oldsc = new SystemCodes("categoryold","keyold","valueold");
+		SystemCodes newsc = new SystemCodes("categorynew","keynew","valuenew");
+		SystemCodes samesc = new SystemCodes("categoryold","keysame","valuesame");
+		List<SystemCodes> oldFaves = new ArrayList<SystemCodes>();
+		oldFaves.add(samesc);
+		oldFaves.add(oldsc);
+		List<SystemCodes> newFaves = new ArrayList<SystemCodes>();
+		newFaves.add(newsc);
+		newFaves.add(samesc);
 
+		UserCriteria oldUser = new UserCriteria();
+		UserCriteria newUser = new UserCriteria();
+		oldUser.setFavorites(oldFaves);
+		newUser.setFavorites(null);
+		
+		String expected = "Changed User Criteria Username: removed Favorites";
+		Assert.assertEquals(expected,
+				CrudUtil.buildUpdateMessage(oldUser, newUser));
+	}
 	
 	@Test
     public void testGetPropertyName() {

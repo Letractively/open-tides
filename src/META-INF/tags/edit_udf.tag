@@ -32,13 +32,60 @@
 <c:if test="${(not searchMode) || (searchMode && field.searchable)}">
     ${prefix} 
     <c:set var="fieldRef" value="udf.${field.userField}"/>
-    <label>${field.label}</label>
+    <form:label path="${fieldRef}" cssErrorClass="highlight-error">${field.label}</form:label>
     <c:choose>
         <c:when test="${fn:startsWith(field.userField, 'string')==true}">            
         <input type="text" name="${fieldRef}" id="${fieldRef}" 
             value="${crud.retrieveObjectValue(object, fieldRef)}"/> 
         </c:when>
-        <c:when test="${fn:startsWith(field.userField, 'date')==true}">
+        <%--DATE RANGE PICKER when searchMode == true --%>
+        <c:when test="${fn:startsWith(field.userField, 'date')==true && searchMode}">
+        <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+        <input type="hidden" name="${fieldRef}" id="${field.userField}" value="${udfDate}"/>
+        <div class="L">
+            <a id="show${field.userField}From" title="${field.label} From" class="date-picker">
+            	<c:set var="fieldRef" value="udf.${field.userField}From"/>
+            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<input type="text" name="${fieldRef}" id="${field.userField}From" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
+            </a>
+            <img src="${url_context}<spring:theme code="trash"/>" 
+                onClick="javascript: document.getElementById('${field.userField}From').value=''; document.getElementById('${field.userField}From').focus();" 
+                title="Clear" class="iconz"/>
+        </div>
+        <span class="L" style="padding:5px;">&nbsp;to&nbsp;</span>
+        <div class="L">
+            <a id="show${field.userField}To" title="${field.label} To" class="date-picker">
+            	<c:set var="fieldRef" value="udf.${field.userField}To"/>
+            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<input type="text" name="${fieldRef}" id="${field.userField}To" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
+            </a>
+            <img src="${url_context}<spring:theme code="trash"/>" 
+                onClick="javascript: document.getElementById('${field.userField}To').value=''; document.getElementById('${field.userField}From').focus();" 
+                title="Clear" class="iconz"/>
+        </div>
+        
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $( "#${field.userField}From, #${field.userField}To" ).datepicker({
+                showOn: "both",
+                buttonImage: '${url_context}<spring:theme code="datepicker"/>',
+                buttonImageOnly: true,
+                minDate: new Date(1901, 1 - 1, 1),
+        		maxDate: "+50y",
+        		yearRange: "1901:+5", /*range is currently selected year-45 to current year+5*/
+        		buttonText: "Choose",
+        		changeMonth : true,
+        		changeYear : true,
+        		dateFormat: 'mm/dd/yy',
+        		constrainInput: true,
+        		onClose: function(dateText, inst) {
+        					$("#${field.userField}").val(dateText);
+        				}
+            });
+        });
+        </script>
+        </c:when>
+        <c:when test="${fn:startsWith(field.userField, 'date')==true && not searchMode}">
         <div class="L">
             <a id="show${field.userField}" title="${field.label}" class="date-picker">
             	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
@@ -107,8 +154,11 @@
             </c:forEach>
             </select>
         </c:when>
-    </c:choose>    
-    ${postfix}
+    </c:choose>
+    <c:if test="${field.required && not searchMode}">
+    	<sup class="required">*</sup>
+    </c:if>
+    &nbsp;${postfix}
 </c:if>
 </c:if>
 </c:forEach>

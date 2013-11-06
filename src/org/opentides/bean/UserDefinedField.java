@@ -82,7 +82,10 @@ public class UserDefinedField extends BaseEntity
 	
 	@Column(name = "LISTED")
 	private Boolean listed = Boolean.FALSE;
-
+	
+	@Column(name = "REQUIRED")
+	private Boolean required = Boolean.FALSE;
+	
 	/* (non-Javadoc)
 	 * @see org.opentides.bean.Auditable#getPrimaryField()
 	 */
@@ -237,6 +240,24 @@ public class UserDefinedField extends BaseEntity
 	 */
 	public final void setListed(Boolean listed) {
 		this.listed = listed;
+	}
+
+	/**
+	 * Getter method for required.
+	 *
+	 * @return the required
+	 */
+	public final Boolean getRequired() {
+		return required;
+	}
+
+	/**
+	 * Setter method for required.
+	 *
+	 * @param required the required to set
+	 */
+	public final void setRequired(Boolean required) {
+		this.required = required;
 	}
 
 	/**
