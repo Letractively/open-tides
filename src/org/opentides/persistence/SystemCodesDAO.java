@@ -41,6 +41,12 @@ public interface SystemCodesDAO extends BaseEntityDAO<SystemCodes, Long> {
 	public List<SystemCodes> getAllCategories();
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getAllCategoryValues();
+	
+	/**
 	 * Return SystemCode entity by key.
 	 * @param key
 	 * @return
@@ -57,5 +63,12 @@ public interface SystemCodesDAO extends BaseEntityDAO<SystemCodes, Long> {
      * specified ones 
      */
 	public List<SystemCodes> getAllCategoriesExcept(String ... categories);
+	
+	/**
+	 * 
+	 * @param categories
+	 * @return
+	 */
+	public List<String> getAllCategoryValuesExcept(String ... categories);
 	
 }

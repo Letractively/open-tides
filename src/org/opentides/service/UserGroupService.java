@@ -31,6 +31,10 @@ import org.opentides.bean.user.UserRole;
  */
 public interface UserGroupService extends BaseCrudService<UserGroup> {
 	
+	public static enum CsvColumns {
+		ROLE, GROUP_NAME
+	}
+	
 	public Map<String, String> getRoles();
 
 	public void setRoles(Map<String, String> roles);
@@ -38,4 +42,11 @@ public interface UserGroupService extends BaseCrudService<UserGroup> {
 	public UserGroup loadUserGroupByName(String name); 
 	
 	public boolean removeUserRole(UserRole role);
+	
+	/**
+	 * Set the authorities from a CSV file. The CSV file requires columns for ROLE and GROUP_NAME.
+	 * @param csvFile
+	 * @throws Exception
+	 */
+	public void setAuthoritiesFromCsvFile(String csvFile) throws Exception;
 }

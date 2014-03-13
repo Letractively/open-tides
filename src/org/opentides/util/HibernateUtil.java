@@ -19,10 +19,15 @@
 
 package org.opentides.util;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.scannotation.AnnotationDB;
@@ -35,6 +40,8 @@ import org.scannotation.ClasspathUrlFinder;
  * @author allantan
  */
 public class HibernateUtil {
+	
+	private static final Logger LOGGER = Logger.getLogger(HibernateUtil.class);
 
     /**
      * Local session factory to manage database sessions.
@@ -71,30 +78,72 @@ public class HibernateUtil {
      * Persistence name in hibernate.
      */
     private static String persistenceUnitName = "hibernateConfig";
+    
+    /**
+     * Persistence file
+     */
+    private static String persistenceFile;
 
     /**
      * Static initializer to establish database connection.
      */
     private static void initialize() {
         try { 
-        	URL[] urls = ClasspathUrlFinder.findResourceBases("META-INF/persistence.xml");
+        	URL[] urls = ClasspathUrlFinder.findResourceBases(persistenceFile);
+        	List<URL> toAdd = new ArrayList<URL>();
+        	List<URL> finalUrls = new ArrayList<URL>();
+        	for(URL url : urls) {
+        		LOGGER.debug("URL is : [" + url.getPath() + "] with protocol: [" + url.getProtocol() + "] with file: [" + url.getFile() + "]");
+        		String file = url.getFile();
+        		if(!file.startsWith("file:")) {
+        			file = "file:" + file;
+        		}
+        		if("zip".equals(url.getProtocol())) {
+        			toAdd.add(new URL("jar", url.getHost(), url.getPort(), file));
+        		} else {
+        			toAdd.add(url);
+        		}
+        	}
+    		finalUrls.addAll(toAdd);
+    		for(URL url : finalUrls) {
+    			LOGGER.debug("URL full path: [" + url.toString() +"]");
+        		LOGGER.debug("Final URL is : [" + url.getPath() + 
+        				"] with protocol: [" + url.getProtocol() + 
+        				"] with file: [" + url.getFile() + "]");
+        	}
         	AnnotationDB db = new AnnotationDB();
-        	db.scanArchives(urls);
+        	db.scanArchives(finalUrls.toArray(new URL[finalUrls.size()]));
         	Set<String> entityClasses = db.getAnnotationIndex().get(javax.persistence.Entity.class.getName());
             // Create the SessionFactory
         	Configuration ac =  new Configuration();
-        	Properties properties = XMLPersistenceUtil.getProperties("META-INF/persistence.xml", persistenceUnitName);
+        	Properties properties = XMLPersistenceUtil.getProperties(persistenceFile, persistenceUnitName);
         	ac.setProperties(properties);
         	if (StringUtil.isEmpty(jndiName)) {
 	            ac.setProperty("hibernate.connection.driver_class", driverClassName);
 	            ac.setProperty("hibernate.connection.url", url);
 	            ac.setProperty("hibernate.connection.username", username);
 	            ac.setProperty("hibernate.connection.password", password);
-        	} else
+        	} else {
+        		LOGGER.debug("JNDI not empty. [" + jndiName + "] using persistence [" + persistenceFile + "]" );
         		ac.setProperty("hibernate.connection.datasource", jndiName);
+        	}
             for (String clazz:entityClasses) {
+            	LOGGER.debug("Entity Class : [" + clazz + "]");
             	ac.addAnnotatedClass(Class.forName(clazz));
             }
+            ac.addAnnotatedClass(Class.forName("org.opentides.bean.AuditLog"));
+            ac.addAnnotatedClass(Class.forName("org.opentides.bean.BaseEntity"));
+            ac.addAnnotatedClass(Class.forName("org.opentides.bean.FileInfo"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.SystemCodes"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.Widget"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.UserWidgets"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.user.BaseUser"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.PasswordReset"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.user.UserRole"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.user.UserCredential"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.user.UserGroup"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.UserDefinedRecord"));
+			ac.addAnnotatedClass(Class.forName("org.opentides.bean.UserDefinedField"));
             sessionFactory = ac.buildSessionFactory();
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
@@ -103,7 +152,7 @@ public class HibernateUtil {
         }
     	
     }
-
+    
     public static SessionFactory getSessionFactory() {
     	if (sessionFactory==null)
     		HibernateUtil.initialize();
@@ -166,5 +215,28 @@ public class HibernateUtil {
 	 */
 	public static final void setPersistenceUnitName(String persistenceUnitName) {
 		HibernateUtil.persistenceUnitName = persistenceUnitName;
+	}
+	
+	/**
+	 * Setter method for persistenceFile.
+	 *
+	 * @param persistenceFile the persistenceFile to set
+	 */
+	public void setPersistenceFile(String persistenceFile) {
+		HibernateUtil.persistenceFile = persistenceFile;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		System.out.println(Thread.currentThread().getContextClassLoader().getResource("META-INF/attache-persistence.xml").getPath());
+		URL[] urls = ClasspathUrlFinder.findResourceBases("META-INF/attache-persistence.xml");
+		for(URL url : urls) {
+			System.out.println(url.toString());
+    		System.out.println("URL is : [" + url.getPath() + "] with protocol: [" + url.getProtocol() + "]");
+    		System.out.println(url.getFile());
+    	}
+		AnnotationDB db = new AnnotationDB();
+    	db.scanArchives(urls);
+    	Set<String> entityClasses = db.getAnnotationIndex().get(javax.persistence.Entity.class.getName());
+    	System.out.println(entityClasses);
 	}
 }

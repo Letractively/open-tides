@@ -23,13 +23,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
+<%@ taglib prefix="tides_fn" uri="http://www.ideyatech.com/tides_fn"%>
 
 <c:forEach items="${meta}" var="field"> 
-<c:if test="${(empty field.condition) || crud.evaluateExpression(object, field.condition)}">
+<c:if test="${(empty field.condition) || tides_fn:evaluateExpression(object, field.condition)}">
 <c:if test="${(not searchMode) || (searchMode && field.listed)}">
     ${prefix}
     <c:set var="fieldRef" value="udf.${field.userField}"/>
-    <c:set var="value" value="${crud.retrieveNullableObjectValue(object, fieldRef)}"/>   
+    <c:set var="value" value="${tides_fn:retrieveNullableObjectValue(object, fieldRef)}"/>   
     <c:if test="${ not (searchMode && field.listed)}"> 
     <label>${field.label}</label>
     </c:if>
@@ -47,7 +48,7 @@
             <span><c:if test="${value==true}">Yes</c:if><c:if test="${value!=true}">No</c:if></span>
         </c:when>        
         <c:when test="${fn:startsWith(field.userField, 'dropdown')==true}">
-            <span>${crud.retrieveNullableObjectValue(object, fieldRef).value}</span>
+            <span>${tides_fn:retrieveNullableObjectValue(object, fieldRef).value}</span>
         </c:when>
     </c:choose>
     ${postfix}

@@ -47,7 +47,7 @@
                 <form:label path="category" cssErrorClass="highlight-error"><spring:message code="label.category" /></form:label>
                 <form:select path="category" cssErrorClass="highlight-error">
                     <form:option value="">Select a Category</form:option>
-                    <form:options items="${categories}" itemValue="category" itemLabel="category" />
+                    <form:options items="${categories}"/>
                 </form:select>
                 <idy:tool-tip formName="systemCodesSearchForm" attributeName="name"/>
             </div>

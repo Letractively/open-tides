@@ -20,6 +20,7 @@ package org.opentides.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.opentides.bean.BaseEntity;
 
 /**
  * 
@@ -37,8 +39,18 @@ import org.hibernate.Session;
 public class DBUtil {
 	private static Logger _log = Logger.getLogger(DBUtil.class);
 	private static Map<List<String>, SQLQuery> queryCache = new HashMap<List<String>, SQLQuery>();
+	
+	public static void importCSV(String filename, String tableName, Session session) 
+			throws Exception{
+		importCSV(filename, tableName, session, false);
+	}
+	
+	public static void importCSVAsObject(String filename, String tableName, Session session)
+			throws Exception {
+		importCSV(filename, tableName, session, true);
+	}
 
-	public static void importCSV(String filename, String tableName, Session session)
+	public static void importCSV(String filename, String tableName, Session session, boolean useHibernate)
 			throws Exception {
 		int line = 1;
 
@@ -75,7 +87,11 @@ public class DBUtil {
 					values.remove(index);
 				}
 				// execute this query
-				DBUtil.executeQuery(tableName, tmpHeaders, values, session);
+				if(useHibernate) {
+					DBUtil.executeHqlQuery(tableName, tmpHeaders, values, session);
+				} else {
+					DBUtil.executeQuery(tableName, tmpHeaders, values, session);
+				}
 				line++;
 			}
 			reader.close();
@@ -122,4 +138,34 @@ public class DBUtil {
 		}
 		query.executeUpdate();
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void executeHqlQuery(String className, List<String> headers, List<String> values, Session session) 
+			throws Exception {
+		Object entity = Class.forName(className).newInstance();
+		if(!(entity instanceof BaseEntity)) {
+			throw new Exception("Entity is not an instance of BaseEntity");
+		}
+		for(int i = 0; i < headers.size(); i++) {
+			String property = headers.get(i);
+			String value = values.get(i);
+			Class<?> type = CrudUtil.retrieveObjectType(entity, property);
+			Method method = entity.getClass().getMethod(CrudUtil.getSetterMethodName(property), CrudUtil.retrieveObjectType(entity, property));
+			_log.debug("Casting value : [" + value + "] to " + type.getName());
+			if(type.equals(Long.class) && !StringUtil.isEmpty(value)) {
+				method.invoke(entity, new Long(value));
+			} else if(Enum.class.isAssignableFrom(type)) {
+				method.invoke(entity, Enum.valueOf((Class<Enum>)type, value));
+			} else if(BaseEntity.class.isAssignableFrom(type)) {
+				Long id = Long.parseLong(value);
+				method.invoke(entity, session.load(type, id));
+			} else {
+				method.invoke(entity, type.cast(value));
+			}
+		}
+		BaseEntity baseEntity = (BaseEntity)entity;
+		baseEntity.setSkipAudit(true);
+		session.persist(baseEntity);
+	}
+	
 }

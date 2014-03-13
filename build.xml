@@ -66,9 +66,11 @@
 			<fileset dir="${src.dir}">
 				<include name="**/*.tag" />
 				<include name="**/*.tld" />
+				<exclude name="**/*.log4j.properties"/>
 				<include name="**/*.properties" />
 				<include name="**/*.xml" />
 				<include name="**/*.vm" />
+				<exclude name="**/*persistence.xml"/>
 			</fileset>
 		</copy>
 		<copy todir="${build.dir}/resources" preservelastmodified="true">
@@ -84,7 +86,7 @@
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
 				<include name="**/*.properties" />
-				<include name="**/persistence.xml" />
+				<exclude name="**/persistence.xml" />
 				<include name="**/*.tag" />
 				<include name="**/*.tld" />
 				<include name="**/*.cfg.xml" />

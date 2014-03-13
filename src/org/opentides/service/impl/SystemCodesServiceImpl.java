@@ -57,6 +57,15 @@ public class SystemCodesServiceImpl extends BaseCrudServiceImpl<SystemCodes>
 	public List<SystemCodes> getAllCategories() {
 		return systemCodesDAO.getAllCategories();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.service.SystemCodesService#getAllCategoryValues()
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<String> getAllCategoryValues() {
+		return systemCodesDAO.getAllCategoryValues();
+	}
 
 	@Transactional(readOnly=true)
 	public SystemCodes findByKey(SystemCodes systemCodes) {
@@ -86,5 +95,11 @@ public class SystemCodesServiceImpl extends BaseCrudServiceImpl<SystemCodes>
 
 	public List<SystemCodes> getAllCategoriesExcept(String... categories) {
 		return systemCodesDAO.getAllCategoriesExcept(categories);
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<String> getAllCategoryValuesExcept(String... categories) {
+		return systemCodesDAO.getAllCategoryValuesExcept(categories);
 	}
 }

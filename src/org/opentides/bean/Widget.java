@@ -95,7 +95,7 @@ public class Widget extends BaseEntity implements Searchable, Auditable, Uploada
 	private Date lastCacheUpdate;
 
 	@Lob
-	@Column(name = "CACHE", columnDefinition = "LONGBLOB")
+	@Column(name = "CACHE")
 	private byte[] cache;
 
 	@Column(name = "CACHE_TYPE")

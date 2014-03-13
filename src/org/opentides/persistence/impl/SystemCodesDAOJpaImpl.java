@@ -19,10 +19,13 @@
 package org.opentides.persistence.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Query;
 
 import org.opentides.bean.SystemCodes;
 import org.opentides.persistence.SystemCodesDAO;
@@ -72,6 +75,17 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 			return null;
 		return list;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.SystemCodesDAO#getAllCategoryValues()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAllCategoryValues() {
+		String queryString = getJpqlQuery("jpql.systemcodes.findAllCategories2");
+		Query queryObject = getEntityManager().createQuery(queryString);
+		return queryObject.getResultList();
+	}
 
 	public List<SystemCodes> getAllCategoriesExcept(String... categories) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -82,6 +96,18 @@ public class SystemCodesDAOJpaImpl extends BaseEntityDAOJpaImpl<SystemCodes, Lon
 		if (list == null || list.size() == 0)
 			return new ArrayList<SystemCodes>();
 		return list;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.persistence.SystemCodesDAO#getAllCategoryValuesExcept(java.lang.String[])
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getAllCategoryValuesExcept(String... categories) {
+		String queryString = getJpqlQuery("jpql.systemcodes.findAllCategoriesExcept2");
+		Query queryObject = getEntityManager().createQuery(queryString);
+		queryObject.setParameter("categories", Arrays.asList(categories));
+		return queryObject.getResultList();
 	}
 
 	/* (non-Javadoc)

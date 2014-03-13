@@ -26,9 +26,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt"%>
+<%@ taglib prefix="tides_fn" uri="http://www.ideyatech.com/tides_fn"%>
 
 <c:forEach items="${meta}" var="field"> 
-<c:if test="${(empty field.condition) || crud.evaluateExpression(object, field.condition)}">
+<c:if test="${(empty field.condition) || tides_fn:evaluateExpression(object, field.condition)}">
 <c:if test="${(not searchMode) || (searchMode && field.searchable)}">
     ${prefix} 
     <c:set var="fieldRef" value="udf.${field.userField}"/>
@@ -36,16 +37,16 @@
     <c:choose>
         <c:when test="${fn:startsWith(field.userField, 'string')==true}">            
         <input type="text" name="${fieldRef}" id="${fieldRef}" 
-            value="${crud.retrieveObjectValue(object, fieldRef)}"/> 
+            value="${tides_fn:retrieveObjectValue(object, fieldRef)}"/> 
         </c:when>
         <%--DATE RANGE PICKER when searchMode == true --%>
         <c:when test="${fn:startsWith(field.userField, 'date')==true && searchMode}">
-        <fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+        <fmt:formatDate value="${tides_fn:retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
         <input type="hidden" name="${fieldRef}" id="${field.userField}" value="${udfDate}"/>
         <div class="L">
             <a id="show${field.userField}From" title="${field.label} From" class="date-picker">
             	<c:set var="fieldRef" value="udf.${field.userField}From"/>
-            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<fmt:formatDate value="${tides_fn:retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
             	<input type="text" name="${fieldRef}" id="${field.userField}From" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
             </a>
             <img src="${url_context}<spring:theme code="trash"/>" 
@@ -56,7 +57,7 @@
         <div class="L">
             <a id="show${field.userField}To" title="${field.label} To" class="date-picker">
             	<c:set var="fieldRef" value="udf.${field.userField}To"/>
-            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<fmt:formatDate value="${tides_fn:retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
             	<input type="text" name="${fieldRef}" id="${field.userField}To" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
             </a>
             <img src="${url_context}<spring:theme code="trash"/>" 
@@ -88,7 +89,7 @@
         <c:when test="${fn:startsWith(field.userField, 'date')==true && not searchMode}">
         <div class="L">
             <a id="show${field.userField}" title="${field.label}" class="date-picker">
-            	<fmt:formatDate value="${crud.retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
+            	<fmt:formatDate value="${tides_fn:retrieveObjectValue(object, fieldRef)}" pattern="MM/dd/yyyy" var="udfDate"/>
             	<input type="text" name="${fieldRef}" id="${field.userField}" value="${udfDate}" class="num-date" readonly="true" onclick="$(this).datepicker('show'); $(this).blur();"/>
             </a>
             <img src="${url_context}<spring:theme code="trash"/>" 
@@ -115,7 +116,7 @@
         </c:when>
         <c:when test="${fn:startsWith(field.userField, 'number')==true}">
         <input type="text" name="${fieldRef}" id="${fieldRef}" class="num-date"
-            value="${crud.retrieveObjectValue(object, fieldRef)}" onkeydown="return isNumeric(event);"/>
+            value="${tides_fn:retrieveObjectValue(object, fieldRef)}" onkeydown="return isNumeric(event);"/>
         <script type="text/javascript">
 	        function isNumeric(e) {
 	    	    var evt = (e) ? e : window.event;
@@ -140,17 +141,17 @@
         <c:when test="${fn:startsWith(field.userField, 'boolean')==true}">
             <div class="radio">
                 <input type="radio" id="${fieldRef}" name="${fieldRef}" value="true" 
-                    <c:if test="${crud.retrieveObjectValue(object, fieldRef) == true}">selected</c:if> /> <span>Yes</span>
+                    <c:if test="${tides_fn:retrieveObjectValue(object, fieldRef) == true}">selected</c:if> /> <span>Yes</span>
                 <input type="radio" id="${fieldRef}" name="${fieldRef}" value="false"
-                    <c:if test="${crud.retrieveObjectValue(object, fieldRef) != true}">selected</c:if> /> <span>No</span>
+                    <c:if test="${tides_fn:retrieveObjectValue(object, fieldRef) != true}">selected</c:if> /> <span>No</span>
             </div>
         </c:when>
         <c:when test="${fn:startsWith(field.userField, 'dropdown')==true}">
         	<c:set var="fieldId" value="udf.${field.userField}.id"/>
             <select id="${fieldRef}" name="${fieldRef}">    
              	<option value=""></option>
-            <c:forEach items="${crud.retrieveObjectValue(dropList, field.userField)}" var="item">
-                <option value="${item.id}" <c:if test="${crud.retrieveObjectValue(object, fieldId) eq item.id}">selected</c:if>> ${item.value}</option>
+            <c:forEach items="${tides_fn:retrieveObjectValue(dropList, field.userField)}" var="item">
+                <option value="${item.id}" <c:if test="${tides_fn:retrieveObjectValue(object, fieldId) eq item.id}">selected</c:if>> ${item.value}</option>
             </c:forEach>
             </select>
         </c:when>

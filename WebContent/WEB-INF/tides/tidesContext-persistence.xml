@@ -9,6 +9,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">         
           
      <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+     	<property name="persistenceXmlLocation" value="classpath:META-INF/ot-persistence.xml"/>
 		<property name="dataSource"><ref bean="dataSource"/></property>
 		<property name="jpaDialect">
            	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>

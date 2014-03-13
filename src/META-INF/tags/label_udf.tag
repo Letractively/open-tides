@@ -17,10 +17,11 @@
 
 <jsp:useBean id="crud" class="org.opentides.util.CrudUtil" />
 
+<%@ taglib prefix="tides_fn" uri="http://www.ideyatech.com/tides_fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <c:forEach items="${meta}" var="field"> 
-<c:if test="${empty field.condition || crud.evaluateExpression(object, field.condition)}">
+<c:if test="${empty field.condition || tides_fn:evaluateExpression(object, field.condition)}">
 <c:if test="${field.listed}">
     ${prefix}
     ${field.label}

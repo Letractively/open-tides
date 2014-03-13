@@ -40,6 +40,7 @@ import org.opentides.bean.AuditableField;
 import org.opentides.bean.BaseEntity;
 import org.opentides.bean.Searchable;
 import org.opentides.bean.SystemCodes;
+import org.opentides.bean.user.BaseUser;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -284,7 +285,9 @@ public class CrudUtil {
 					clause.append(property)
 						.append(" like '%")
 						.append(StringUtil.escapeSql(ret.toString(), true))
-						.append("%'");
+						.append("%' ")
+						.append(" escape '\\'")
+						;
 				} else if(SystemCodes.class.isAssignableFrom(ret.getClass())) {
 					SystemCodes sc = (SystemCodes) ret;
 					clause.append(property)
@@ -398,6 +401,19 @@ public class CrudUtil {
     		return null;
     	char c = Character.toUpperCase(propertyName.charAt(0));
     	return "get"+c+propertyName.substring(1);
+    }
+    
+    /**
+     * Retrieves the setter method name for a given property.
+     * (e.g. name will return setName)
+     * @param propertyName
+     * @return
+     */
+    public static String getSetterMethodName(String propertyName) {
+    	if (StringUtil.isEmpty(propertyName) || propertyName.length()<=0)
+    		return null;
+    	char c = Character.toUpperCase(propertyName.charAt(0));
+    	return "set"+c+propertyName.substring(1);
     }
 
 	/**
@@ -634,5 +650,37 @@ public class CrudUtil {
 			String name = clazz.getSimpleName();
 			return name.replaceAll("([A-Z])", " $1").trim();
 		}
+	}
+	
+	public static void setObjectValue(Object obj, String property, Object value) {
+		if (property.contains(".")) {
+			// we need to recurse down to final object
+			String props[] = property.split("\\.");
+			try {
+				Method method = obj.getClass().getMethod(getGetterMethodName(props[0]));
+				Object ivalue = method.invoke(obj);
+				if(ivalue == null) {
+					ivalue = retrieveObjectType(obj, props[0]).newInstance();
+				}
+				setObjectValue(obj, props[0], ivalue);
+				setObjectValue(ivalue, property.substring(props[0].length()+1), value);
+			} catch (Exception e) {
+				throw new InvalidImplementationException("Failed to set value for "+property, e);
+			} 
+		} else {
+			// let's get the object value directly
+			try {
+				Method method = obj.getClass().getMethod(getSetterMethodName(property), retrieveObjectType(obj, property));
+				method.invoke(obj, value);
+			} catch (Exception e) {
+				throw new InvalidImplementationException("Failed to retrieve value for "+property, e);
+			} 
+		}
+	}
+	
+	public static void main(String[] args) {
+		BaseUser bu = new BaseUser();
+		CrudUtil.setObjectValue(bu, "credential.username", "username");
+		System.out.println(bu.getCredential().getUsername());
 	}
 }

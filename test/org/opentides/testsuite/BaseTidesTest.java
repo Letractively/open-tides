@@ -13,10 +13,12 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +32,7 @@ import org.springframework.test.jpa.AbstractJpaTests;
  * @author allantan
  *
  */
+@SuppressWarnings("deprecation")
 public class BaseTidesTest extends AbstractJpaTests {
 
     private String datasetPath = "test/xml/";
@@ -87,6 +90,8 @@ public class BaseTidesTest extends AbstractJpaTests {
             DataSource ds = jdbcTemplate.getDataSource();
             Connection con = DataSourceUtils.getConnection(ds);
             IDatabaseConnection dbUnitCon = new DatabaseConnection(con);
+            DatabaseConfig config = dbUnitCon.getConfig();
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
             IDataSet dataSet = new FlatXmlDataSetBuilder().build(datasetFile);
             databaseOperation.execute(dbUnitCon, dataSet);
             DataSourceUtils.releaseConnection(con, ds);

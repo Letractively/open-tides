@@ -81,7 +81,7 @@ public class BaseUser extends BaseProtectedEntity implements Searchable, Auditab
 	 * persisted as a large object to a database-supported large object type
 	 */
 	@Lob
-	@Column(name = "IMAGE", columnDefinition = "LONGBLOB")
+	@Column(name = "IMAGE")
 	private byte[] image;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)

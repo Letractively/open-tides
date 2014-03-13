@@ -18,7 +18,12 @@
  */
 package org.opentides.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -28,6 +33,7 @@ import org.opentides.bean.user.UserGroup;
 import org.opentides.bean.user.UserRole;
 import org.opentides.persistence.UserGroupDAO;
 import org.opentides.service.UserGroupService;
+import org.opentides.util.StringUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -88,6 +94,68 @@ public class UserGroupServiceImpl extends BaseCrudServiceImpl<UserGroup>
 	 */
 	public boolean removeUserRole(UserRole role) {
 		return userGroupDAO.removeUserRole(role);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.opentides.service.UserGroupService#setAuthoritiesFromCsvFile(java.lang.String)
+	 */
+	@Override
+	public void setAuthoritiesFromCsvFile(String csvFile) throws Exception {
+		int line = 1;
+		try {
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(csvFile)));
+			// read the column header
+			String csvLine = reader.readLine();
+			if (csvLine==null) {
+				log.error("Import file ["+csvFile+"] has no contents.");
+				throw new Exception("Import file ["+csvFile+"] has no contents.");
+			}
+			List<String> headers = StringUtil.parseCsvLine(csvLine);
+			int roleColumn = -1, groupNameColumn = -1;
+			for(int i = 0; i < headers.size(); i++) {
+				String header = headers.get(i);
+				if(header.equals(CsvColumns.GROUP_NAME.name())) {
+					groupNameColumn = i;
+				} else if(header.equals(CsvColumns.ROLE.name())) {
+					roleColumn = i;
+				}
+			}
+			if(roleColumn == -1 || groupNameColumn == -1) {
+				throw new Exception("No columns named [ROLE] and/or [GROUP_NAME]");
+			}
+			String currentGroupName = "";
+			UserGroup userGroup = null;
+			while ((csvLine = reader.readLine()) != null) {
+				List<String> values = StringUtil.parseCsvLine(csvLine);
+				List<String> tmpHeaders = new ArrayList<String>(headers);
+				// get all columns with null values
+				List<Integer> nullColumns = new ArrayList<Integer>();
+				for (int i=values.size()-1; i>=0; i--) {
+					String value = values.get(i);					
+					if (StringUtil.isEmpty(value)) {
+						nullColumns.add(i);
+					}
+				}
+				// remove headers and values with null values
+				for (int index:nullColumns) {
+					tmpHeaders.remove(index);
+					values.remove(index);
+				}
+				if(!currentGroupName.equals(values.get(groupNameColumn))) {
+					currentGroupName = values.get(groupNameColumn);
+					userGroup = this.loadUserGroupByName(currentGroupName);
+				}
+				UserRole userRole = new UserRole(userGroup, values.get(roleColumn));
+				this.userGroupDAO.assignRoles(userGroup, userRole);
+				// execute this query
+				line++;
+			}
+			reader.close();
+		} catch (Exception e) {
+			log.error("Failed to import csv file [" + csvFile + "] at line #"+line, e);
+			throw e;
+		}
 	}
 
 	/**

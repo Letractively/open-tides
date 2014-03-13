@@ -32,11 +32,11 @@
     			<option value="0">Select a Category</option>
             	<option value="0">-- New Category --</option>
 			<c:forEach items="${categories}" var="record" varStatus="status">
-				<c:choose><c:when test="${systemCode.category==record.category}">
-					<option selected="selected">${record.category}</option>
+				<c:choose><c:when test="${systemCode.category==record}">
+					<option selected="selected">${record}</option>
 				</c:when>
 				<c:otherwise>
-					<option>${record.category}</option>
+					<option>${record}</option>
 				</c:otherwise>
 				</c:choose>
             </c:forEach>

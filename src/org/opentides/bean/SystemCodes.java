@@ -25,6 +25,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,14 +38,14 @@ import org.opentides.util.StringUtil;
  */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name="SYSTEM_CODES")
+@Table(name="SYSTEM_CODES", uniqueConstraints = @UniqueConstraint(columnNames = "KEY_"))
 public class SystemCodes extends BaseProtectedEntity 
 	implements Serializable, Searchable, Auditable, Sortable {
 	
 	private static final long serialVersionUID = -4142599915292096152L;
 	private static final int CATEGORY_LIST_LENGTH = 52;
 	
-	@Column(name = "KEY_", unique=true)
+	@Column(name = "KEY_")
 	private String key;
 	@Column(name = "VALUE_", nullable=true)
 	private String value;

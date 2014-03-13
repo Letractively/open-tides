@@ -35,6 +35,8 @@ public interface SystemCodesService extends BaseCrudService<SystemCodes> {
 	public SystemCodes findByKey(String key);
 	public List<SystemCodes> findSystemCodesByCategory(String category);
 	public List<SystemCodes> getAllCategories();
+	public List<String> getAllCategoryValues();
 	public Statistics getHibernateStatistics();
 	public List<SystemCodes> getAllCategoriesExcept(String ... categories);
+	public List<String> getAllCategoryValuesExcept(String ... categories);
 }

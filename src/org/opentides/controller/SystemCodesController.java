@@ -84,7 +84,7 @@ public class SystemCodesController extends BaseCrudController<SystemCodes> {
 		Map<String,Object> model = new HashMap<String,Object>();
 		SystemCodesService scService = (SystemCodesService) this.getService();
 		//model.put("categories", scService.getAllCategories());
-		model.put("categories", scService.getAllCategoriesExcept("KEYGEN"));
+		model.put("categories", scService.getAllCategoryValuesExcept("KEYGEN"));
 		model.put("officeList", scService.findSystemCodesByCategory(BaseUser.CATEGORY_OFFICE));
 		return model;
 	}
