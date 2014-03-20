@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,21 +54,21 @@ import org.springframework.web.bind.ServletRequestDataBinder;
  */
 
 public class UserDefinedFieldController extends
-		BaseCrudController<UserDefinedField> {
+BaseCrudController<UserDefinedField> {
 
 	private static final List<String> userFields = new ArrayList<String>();
 	@SuppressWarnings("rawtypes")
 	private static final Map<Class, String> udfClasses = new HashMap<Class, String>();
 
-	private static boolean initialized = false;
+	private static String persistenceFile = "META-INF/persistence.xml";
 
-	// static initializer
-	static {
-		if (!initialized) {
-			initializeUserFields();
-			initializeUdfClasses();
-			initialized = true;
-		}
+	/**
+	 * Post construct method for initializing user fields and user classes.
+	 */
+	@PostConstruct
+	public void init() {
+		initializeUserFields();
+		initializeUdfClasses();
 	}
 
 	/**
@@ -91,10 +92,9 @@ public class UserDefinedFieldController extends
 				if ((name.startsWith("getString")
 						|| name.startsWith("getBoolean")
 						|| name.startsWith("getDropdown") || name
-							.startsWith("getDate"))
-						&& !Modifier.isTransient(field.getModifiers())) {
+						.startsWith("getDate"))
+						&& !Modifier.isTransient(field.getModifiers()))
 					userFields.add(fieldName);
-				}
 			} catch (NoSuchFieldException e) {
 
 			}
@@ -104,12 +104,13 @@ public class UserDefinedFieldController extends
 	/**
 	 * This method initialize the udfClasses by checking all classes that
 	 * implements UserDefinedRecord.
+	 * 
+	 * @param persistenceFile
 	 */
 	@SuppressWarnings("rawtypes")
 	private static void initializeUdfClasses() {
 		try {
-			URL[] urls = ClasspathUrlFinder
-					.findResourceBases("META-INF/persistence.xml");
+			URL[] urls = ClasspathUrlFinder.findResourceBases(persistenceFile);
 			AnnotationDB db = new AnnotationDB();
 			db.scanArchives(urls);
 			Set<String> entityClasses = db.getAnnotationIndex().get(
@@ -214,13 +215,22 @@ public class UserDefinedFieldController extends
 	 */
 	@SuppressWarnings("rawtypes")
 	private void refreshUdfFieldsList() {
-		if (udfClasses.keySet() != null) {
+		if (udfClasses.keySet() != null)
 			for (Class clazz : udfClasses.keySet()) {
 				List<UserDefinedField> udfList = ((UserDefinedFieldService) this
 						.getService()).findMetaByClass(clazz.getName());
 				UserDefinedRecord.setUdf(clazz, udfList);
 			}
-		}
+	}
+
+	/**
+	 * Setter method for persistenceFile.
+	 * 
+	 * @param persistenceFile
+	 *            the persistenceFile to set
+	 */
+	public void setPersistenceFile(String persistenceFile) {
+		UserDefinedFieldController.persistenceFile = persistenceFile;
 	}
 
 	// -- Start custom codes. Do not delete this comment line.
