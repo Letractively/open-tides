@@ -46,7 +46,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
-		UserService {
+UserService {
 
 	private static Logger _log = Logger.getLogger(UserServiceImpl.class);
 
@@ -69,6 +69,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	/**
 	 * @return the roles
 	 */
+	@Override
 	public Map<String, String> getRoles() {
 		return roles;
 	}
@@ -77,18 +78,19 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * @param roles
 	 *            the roles to set
 	 */
+	@Override
 	public void setRoles(Map<String, String> roles) {
 		UserServiceImpl.roles = roles;
 	}
 
+	@Override
 	public void requestPasswordReset(String emailAddress) {
 		UserDAO userDAO = (UserDAO) getDao();
-		if (!userDAO.isRegisteredByEmail(emailAddress)) {
+		if (!userDAO.isRegisteredByEmail(emailAddress))
 			throw new InvalidImplementationException(
 					"Email ["
 							+ emailAddress
 							+ "] was not validated prior to calling this service. Please validate first.");
-		}
 		PasswordReset passwd = new PasswordReset();
 		String token = StringUtil.generateRandomString(tokenLength);
 		String cipher = StringUtil.encrypt(token + emailAddress);
@@ -115,7 +117,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		dataMap.put("link", confirmURL + "?cipher=" + cipher);
 		resetPasswordMailMessage.setMsgTo(emailAddress);
 		resetPasswordMailMessage
-				.setSubject("Information regarding your password reset");
+		.setSubject("Information regarding your password reset");
 		resetPasswordMailMessage.setTemplate("password_reset.vm");
 		resetPasswordMailMessage.setDataMap(dataMap);
 		mailingService.sendMailImmediate(resetPasswordMailMessage);
@@ -124,6 +126,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	/**
 	 * Resets the password by specifying email address and token.
 	 */
+	@Override
 	public boolean confirmPasswordReset(String emailAddress, String token) {
 		// check if email and token matched
 		PasswordReset example = new PasswordReset();
@@ -159,6 +162,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * @param passwd
 	 * @return
 	 */
+	@Override
 	public boolean confirmPasswordResetByCipher(PasswordReset passwd) {
 		String decrypted = StringUtil.decrypt(passwd.getCipher());
 		if (StringUtil.isEmpty(decrypted)) {
@@ -179,6 +183,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * @param passwd
 	 * @return
 	 */
+	@Override
 	public boolean resetPassword(PasswordReset passwd) {
 		// check if password reset is active and not expired
 		PasswordReset example = new PasswordReset();
@@ -209,13 +214,14 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * Ensures that admin user is created into the database. This method is
 	 * called by ApplicationStartupListener to ensure admin user is available
 	 */
+	@Override
 	public boolean setupAdminUser() {
 		boolean exist = false;
 		// let's check if there are users in the database
 		UserDAO userDAO = (UserDAO) getDao();
-		if (userDAO.countAll() > 0) {
+		if (userDAO.countAll() > 0)
 			exist = true;
-		} else {
+		else {
 			// if none, let's create admin user
 			BaseUser user = new BaseUser();
 			UserCredential cred = new UserCredential();
@@ -251,6 +257,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * Updates last login of the user from a login event. Also logs the event in
 	 * history log.
 	 */
+	@Override
 	public void updateLogin(
 			AuthenticationSuccessEvent authenticationSuccessEvent) {
 		UserDAO userDAO = (UserDAO) getDao();
@@ -268,7 +275,7 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 		user.setSkipAudit(true);		
 		userDAO.saveEntityModel(user);
 		// userDAO.updateLastLogin(username);
-		
+
 		// force the audit user details
 		String completeName = user.getCompleteName() + " [" + username + "] ";
 		user.setAuditUserId(user.getId());
@@ -276,9 +283,9 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 			user.setAuditOfficeName(user.getOffice().getValue());
 		user.setAuditUsername(username);
 		user.setSkipAudit(false);
-		String message = completeName + " has logged-in";
+		String message = completeName + " has logged-in with IP: " + address;
 		AuditLogDAOImpl.logEvent(message, message, user);
-		
+
 	}
 
 	/**
@@ -312,14 +319,13 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * 
 	 * @return
 	 */
+	@Override
 	public List<SessionInformation> getAllLoggedUsers() {
 		List<SessionInformation> results = new ArrayList<SessionInformation>();
-		for (Object prince : sessionRegistry.getAllPrincipals()) {
+		for (Object prince : sessionRegistry.getAllPrincipals())
 			for (SessionInformation si : sessionRegistry.getAllSessions(prince,
-					false)) {
+					false))
 				results.add(si);
-			}
-		}
 		return results;
 	}
 
@@ -328,19 +334,17 @@ public class UserServiceImpl extends BaseCrudServiceImpl<BaseUser> implements
 	 * 
 	 * @see com.ideyatech.core.service.UserService#forceLogout(java.lang.String)
 	 */
+	@Override
 	public void forceLogout(String username) {
 		// let's logout all sessions of this user
-		for (Object prince : sessionRegistry.getAllPrincipals()) {
+		for (Object prince : sessionRegistry.getAllPrincipals())
 			if (prince instanceof SessionUser) {
 				SessionUser user = (SessionUser) prince;
-				if (user.getUsername().equals(username)) {
+				if (user.getUsername().equals(username))
 					for (SessionInformation si : sessionRegistry
-							.getAllSessions(prince, false)) {
+							.getAllSessions(prince, false))
 						si.expireNow();
-					}
-				}
 			}
-		}
 	}
 
 	/**
