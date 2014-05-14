@@ -111,8 +111,22 @@ BaseCrudController<UserDefinedField> {
 	private static void initializeUdfClasses() {
 		try {
 			URL[] urls = ClasspathUrlFinder.findResourceBases(persistenceFile);
+			List<URL> toAdd = new ArrayList<URL>();
+        	List<URL> finalUrls = new ArrayList<URL>();
+        	for(URL url : urls) {
+        		String file = url.getFile();
+        		if(!file.startsWith("file:")) {
+        			file = "file:" + file;
+        		}
+        		if("zip".equals(url.getProtocol())) {
+        			toAdd.add(new URL("jar", url.getHost(), url.getPort(), file));
+        		} else {
+        			toAdd.add(url);
+        		}
+        	}
+        	finalUrls.addAll(toAdd);
 			AnnotationDB db = new AnnotationDB();
-			db.scanArchives(urls);
+			db.scanArchives(finalUrls.toArray(new URL[finalUrls.size()]));
 			Set<String> entityClasses = db.getAnnotationIndex().get(
 					javax.persistence.Entity.class.getName());
 			for (String entityClass : entityClasses) {
