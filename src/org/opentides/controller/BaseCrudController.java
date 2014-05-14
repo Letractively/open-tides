@@ -62,710 +62,720 @@ import org.springframework.web.servlet.mvc.AbstractFormController;
  */
 @SuppressWarnings("deprecation")
 public class BaseCrudController<T extends BaseEntity> extends
-        AbstractFormController {
+AbstractFormController {
 
-    private static Logger _log = Logger.getLogger(BaseCrudController.class);
+	private static Logger _log = Logger.getLogger(BaseCrudController.class);
 
-    public static final String ACTION = "action";
-    public static final String CREATE = "create";
-    public static final String READ = "read";
-    public static final String UPDATE = "update";
-    public static final String DELETE = "delete";
-    public static final String SEARCH = "search";
-    public static final String ID = "codeId";
+	public static final String ACTION = "action";
+	public static final String CREATE = "create";
+	public static final String READ = "read";
+	public static final String UPDATE = "update";
+	public static final String DELETE = "delete";
+	public static final String SEARCH = "search";
+	public static final String ID = "codeId";
 
-    private BaseCrudService<T> service;
-    private BaseCrudService<SystemCodes> systemCodesService;
+	private BaseCrudService<T> service;
+	private BaseCrudService<SystemCodes> systemCodesService;
 	private BaseCrudService<FileInfo> fileInfoService;
 	private UserDefinedFieldService userDefinedFieldService;
-    private String uploadPath = File.separator + "uploads";
-    private boolean requireUpload = false;
-    private boolean multipleUpload = true;
-    private boolean supportsPaging = true;
-    private boolean skipAction = false;
-    private boolean exactMatch = false;
-    private int pageSize;
-    private int numLinks;
+	private String uploadPath = File.separator + "uploads";
+	private boolean requireUpload = false;
+	private boolean multipleUpload = true;
+	private boolean supportsPaging = true;
+	private boolean skipAction = false;
+	private boolean exactMatch = false;
+	private int pageSize;
+	private int numLinks;
 
-    /**
-     * Inject view for displaying search page
-     */
-    private String searchView;
-    /**
-     * Inject view for refresh entry on search page
-     */
-    private String refreshView;
-    /**
-     * Inject view for form page.
-     */
-    private String formView;
-    /**
-     * Internal use. Don't mess with me.
-     */
-    private String showView;
+	/**
+	 * Inject view for displaying search page
+	 */
+	private String searchView;
+	/**
+	 * Inject view for refresh entry on search page
+	 */
+	private String refreshView;
+	/**
+	 * Inject view for form page.
+	 */
+	private String formView;
+	/**
+	 * Internal use. Don't mess with me.
+	 */
+	private String showView;
 
-    /**
-     * When user requests for READ or UPDATE action, the corresponding object
-     * needs to be loaded for display. This implementation invokes {@link
-     * BaseCrudService.load(HttpServletRequest)} to retrieve the object for
-     * loading.
-     * 
-     * @see BaseCrudService.load
-     */
-    @Override
-    protected Object formBackingObject(HttpServletRequest request)
-            throws Exception {
-        String action = getAction(request);
-        if (READ.equals(action) || UPDATE.equals(action)) {
-            return service.load(request.getParameter(ID));
-        }
-        return super.formBackingObject(request);
-    }
+	/**
+	 * When user requests for READ or UPDATE action, the corresponding object
+	 * needs to be loaded for display. This implementation invokes {@link
+	 * BaseCrudService.load(HttpServletRequest)} to retrieve the object for
+	 * loading.
+	 * 
+	 * @see BaseCrudService.load
+	 */
+	@Override
+	protected Object formBackingObject(HttpServletRequest request)
+			throws Exception {
+		String action = getAction(request);
+		if (READ.equals(action) || UPDATE.equals(action))
+			return service.load(request.getParameter(ID));
+		return super.formBackingObject(request);
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.web.servlet.mvc.BaseCommandController#suppressValidation
-     * (javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    protected boolean suppressValidation(HttpServletRequest request) {
-        String action = getAction(request);
-        if (SEARCH.equals(action) || DELETE.equals(action))
-            return true;
-        return false;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.BaseCommandController#suppressValidation
+	 * (javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected boolean suppressValidation(HttpServletRequest request) {
+		String action = getAction(request);
+		if (SEARCH.equals(action) || DELETE.equals(action))
+			return true;
+		return false;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.springframework.web.servlet.mvc.AbstractFormController#isFormSubmission
-     * (javax.servlet.http.HttpServletRequest)
-     */
-    @Override
-    protected boolean isFormSubmission(HttpServletRequest request) {
-        if ("POST".equals(request.getMethod()))
-            return true;
-        String action = getAction(request);
-        if (SEARCH.equals(action) || DELETE.equals(action))
-            return true;
-        // make sure showView is set in case it is not form Submission
-        if (CREATE.equals(action) || UPDATE.equals(action))
-            showView = getFormView();
-        else if (READ.equals(action)) {
-            showView = getRefreshView();
-        }
-        return false;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.mvc.AbstractFormController#isFormSubmission
+	 * (javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
+	protected boolean isFormSubmission(HttpServletRequest request) {
+		if ("POST".equals(request.getMethod()))
+			return true;
+		String action = getAction(request);
+		if (SEARCH.equals(action) || DELETE.equals(action))
+			return true;
+		// make sure showView is set in case it is not form Submission
+		if (CREATE.equals(action) || UPDATE.equals(action))
+			showView = getFormView();
+		else if (READ.equals(action))
+			showView = getRefreshView();
+		return false;
+	}
 
-    /**
-     * This implementation shows the configured form view, delegating to the
-     * analogous
-     * {@link #showForm(HttpServletRequest, HttpServletResponse, BindException, Map)}
-     * variant with a "controlModel" argument.
-     * <p>
-     * Can be called within
-     * {@link #onSubmit(HttpServletRequest, HttpServletResponse, Object, BindException)}
-     * implementations, to redirect back to the form in case of custom
-     * validation errors (errors not determined by the validator).
-     * <p>
-     * Can be overridden in subclasses to show a custom view, writing directly
-     * to the response or preparing the response before rendering a view.
-     * <p>
-     * If calling showForm with a custom control model in subclasses, it's
-     * preferable to override the analogous showForm version with a controlModel
-     * argument (which will handle both standard form showing and custom form
-     * showing then).
-     * 
-     * @see #setFormView
-     * @see #showForm(HttpServletRequest, HttpServletResponse, BindException,
-     *      Map)
-     */
-    @Override
-    protected ModelAndView showForm(HttpServletRequest request,
-            HttpServletResponse response, BindException errors)
-            throws Exception {
-        return showForm(request, response, errors, null);
-    }
-
-    /**
-     * This implementation shows the configured form view.
-     * <p>
-     * Can be called within
-     * {@link #onSubmit(HttpServletRequest, HttpServletResponse, Object, BindException)}
-     * implementations, to redirect back to the form in case of custom
-     * validation errors (errors not determined by the validator).
-     * <p>
-     * Can be overridden in subclasses to show a custom view, writing directly
-     * to the response or preparing the response before rendering a view.
-     * 
-     * @param request
-     *            current HTTP request
-     * @param errors
-     *            validation errors holder
-     * @param controlModel
-     *            model map containing controller-specific control data (e.g.
-     *            current page in wizard-style controllers or special error
-     *            message)
-     * @return the prepared form view
-     * @throws Exception
-     *             in case of invalid state or arguments
-     * @see #setFormView
-     */
-    @SuppressWarnings("rawtypes")
+	/**
+	 * This implementation shows the configured form view, delegating to the
+	 * analogous
+	 * {@link #showForm(HttpServletRequest, HttpServletResponse, BindException, Map)}
+	 * variant with a "controlModel" argument.
+	 * <p>
+	 * Can be called within
+	 * {@link #onSubmit(HttpServletRequest, HttpServletResponse, Object, BindException)}
+	 * implementations, to redirect back to the form in case of custom
+	 * validation errors (errors not determined by the validator).
+	 * <p>
+	 * Can be overridden in subclasses to show a custom view, writing directly
+	 * to the response or preparing the response before rendering a view.
+	 * <p>
+	 * If calling showForm with a custom control model in subclasses, it's
+	 * preferable to override the analogous showForm version with a controlModel
+	 * argument (which will handle both standard form showing and custom form
+	 * showing then).
+	 * 
+	 * @see #setFormView
+	 * @see #showForm(HttpServletRequest, HttpServletResponse, BindException,
+	 *      Map)
+	 */
+	@Override
 	protected ModelAndView showForm(HttpServletRequest request,
-            HttpServletResponse response, BindException errors, Map controlModel)
-            throws Exception {
-        return showForm(request, errors, getShowView(), controlModel);
-    }
+			HttpServletResponse response, BindException errors)
+					throws Exception {
+		return showForm(request, response, errors, null);
+	}
 
-    /**
-     * Create a reference data map for the given request and command, consisting
-     * of bean name/bean instance pairs as expected by ModelAndView.
-     * <p>
-     * The default implementation delegates to
-     * {@link #referenceData(HttpServletRequest)}. Subclasses can override this
-     * to set reference data used in the view.
-     * 
-     * @param request
-     *            current HTTP request
-     * @param command
-     *            form object with request parameters bound onto it
-     * @param errors
-     *            validation errors holder
-     * @return a Map with reference data entries, or <code>null</code> if none
-     * @throws Exception
-     *             in case of invalid state or arguments
-     * @see ModelAndView
-     */
-    @SuppressWarnings("rawtypes")
+	/**
+	 * This implementation shows the configured form view.
+	 * <p>
+	 * Can be called within
+	 * {@link #onSubmit(HttpServletRequest, HttpServletResponse, Object, BindException)}
+	 * implementations, to redirect back to the form in case of custom
+	 * validation errors (errors not determined by the validator).
+	 * <p>
+	 * Can be overridden in subclasses to show a custom view, writing directly
+	 * to the response or preparing the response before rendering a view.
+	 * 
+	 * @param request
+	 *            current HTTP request
+	 * @param errors
+	 *            validation errors holder
+	 * @param controlModel
+	 *            model map containing controller-specific control data (e.g.
+	 *            current page in wizard-style controllers or special error
+	 *            message)
+	 * @return the prepared form view
+	 * @throws Exception
+	 *             in case of invalid state or arguments
+	 * @see #setFormView
+	 */
+	@SuppressWarnings("rawtypes")
+	protected ModelAndView showForm(HttpServletRequest request,
+			HttpServletResponse response, BindException errors, Map controlModel)
+					throws Exception {
+		return showForm(request, errors, getShowView(), controlModel);
+	}
+
+	/**
+	 * Create a reference data map for the given request and command, consisting
+	 * of bean name/bean instance pairs as expected by ModelAndView.
+	 * <p>
+	 * The default implementation delegates to
+	 * {@link #referenceData(HttpServletRequest)}. Subclasses can override this
+	 * to set reference data used in the view.
+	 * 
+	 * @param request
+	 *            current HTTP request
+	 * @param command
+	 *            form object with request parameters bound onto it
+	 * @param errors
+	 *            validation errors holder
+	 * @return a Map with reference data entries, or <code>null</code> if none
+	 * @throws Exception
+	 *             in case of invalid state or arguments
+	 * @see ModelAndView
+	 */
+	@Override
+	@SuppressWarnings("rawtypes")
 	protected Map referenceData(HttpServletRequest request, Object command,
-            Errors errors) throws Exception {
-        return referenceData(request);
-    }
+			Errors errors) throws Exception {
+		return referenceData(request);
+	}
 
-    /**
-     * Create a reference data map for the given request. Called by the
-     * {@link #referenceData(HttpServletRequest, Object, Errors)} variant with
-     * all parameters.
-     * <p>
-     * The default implementation returns <code>null</code>. Subclasses can
-     * override this to set reference data used in the view.
-     * 
-     * @param request
-     *            current HTTP request
-     * @return a Map with reference data entries, or <code>null</code> if none
-     * @throws Exception
-     *             in case of invalid state or arguments
-     * @see #referenceData(HttpServletRequest, Object, Errors)
-     * @see ModelAndView
-     */
-    @SuppressWarnings("rawtypes")
+	/**
+	 * Create a reference data map for the given request. Called by the
+	 * {@link #referenceData(HttpServletRequest, Object, Errors)} variant with
+	 * all parameters.
+	 * <p>
+	 * The default implementation returns <code>null</code>. Subclasses can
+	 * override this to set reference data used in the view.
+	 * 
+	 * @param request
+	 *            current HTTP request
+	 * @return a Map with reference data entries, or <code>null</code> if none
+	 * @throws Exception
+	 *             in case of invalid state or arguments
+	 * @see #referenceData(HttpServletRequest, Object, Errors)
+	 * @see ModelAndView
+	 */
+	@SuppressWarnings("rawtypes")
 	protected Map referenceData(HttpServletRequest request) throws Exception {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * This implementation performs the corresponding action for CRUD operation.
-     * Operations include CREATE, UPDATE, DELETE and SEARCH. To override the
-     * operations, you may override the corresponding action methods.
-     * 
-     * @see #processFormSubmission(HttpServletRequest, HttpServletResponse,
-     *      Object, BindException)
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @Override
-    protected ModelAndView processFormSubmission(HttpServletRequest request,
-            HttpServletResponse response, Object command, BindException errors)
-            throws Exception {
-        // check for bind errors - extracted from SimpleFormController
-        if (errors.hasErrors()) {
-            if (_log.isDebugEnabled()) {
-                _log.debug("Data binding errors: " + errors.getErrorCount());
-                _log.debug(errors.toString());
-            }
-            return showForm(request, response, errors);
-        }
+	/**
+	 * This implementation performs the corresponding action for CRUD operation.
+	 * Operations include CREATE, UPDATE, DELETE and SEARCH. To override the
+	 * operations, you may override the corresponding action methods.
+	 * 
+	 * @see #processFormSubmission(HttpServletRequest, HttpServletResponse,
+	 *      Object, BindException)
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	protected ModelAndView processFormSubmission(HttpServletRequest request,
+			HttpServletResponse response, Object command, BindException errors)
+					throws Exception {
+		// check for bind errors - extracted from SimpleFormController
+		if (errors.hasErrors()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Data binding errors: " + errors.getErrorCount());
+				_log.debug(errors.toString());
+			}
+			return showForm(request, response, errors);
+		}
 
-        try {
-            processUpload(request, response, command, errors, "attachment");
+		try {
+			processUpload(request, response, command, errors, "attachment");
 
-            String action = getAction(request);
-            setSkipAction(false);
-            T obj = (T) command;
-            SearchResults results = new SearchResults<T>(pageSize, numLinks);
+			String action = getAction(request);
+			setSkipAction(false);
+			T obj = (T) command;
+			SearchResults results = new SearchResults<T>(pageSize, numLinks);
 
-            // perform the action
-            if (action.equals(UPDATE)) {
-                showView = getRefreshView();
-                this.preUpdateAction(request, response, obj, errors);
-                if (!skipAction) {
-                    service.save(obj);
-                }
-                this.postUpdateAction(request, response, obj, errors);
-            } else if (action.equals(CREATE)) {
-                showView = getRefreshView();
-                this.preCreateAction(request, response, obj, errors);
-                if (!skipAction) {
-                    service.save(obj);
-                }
-                this.postCreateAction(request, response, obj, errors);
-            } else if (action.equals(DELETE)) {
-                showView = getRefreshView();
-                this.preDeleteAction(request, response, errors, request
-                        .getParameter(ID));
-                if (!skipAction) {
-                    service.delete(request.getParameter(ID));
-                }
-                this.postDeleteAction(request, response, errors, request
-                        .getParameter(ID));
-            } else if (action.equals(SEARCH)) {
-                showView = getSearchView();
-                this.preSearchAction(request, response, obj, errors);
-                if (!skipAction) {
-                    long startTime = System.currentTimeMillis();
-                    String strPage = request.getParameter("page");
-                    int currPage = StringUtil.convertToInt(strPage, 1);
-                    results.setCurrPage(currPage);
-                    results.setTotalResults(this.countAction(obj));
-                    int start = results.getStartIndex();
-                    int total = results.getPageSize();
-                    if (supportsPaging) {
-                        if (command == null) {
-                            // no command, let's search everything
-                            results.addResults(service.findAll(start, total));
-                        } else {
-                            // let's do a query by example
-                            results.addResults(service.findByExample(obj,
-                                    exactMatch, start, total));
-                        }
-                    } else {
-                        if (command == null) {
-                            // no command, let's search everything
-                            results.addResults(service.findAll());
-                        } else {
-                            // let's do a query by example
-                            results.addResults(service.findByExample(obj,
-                                    exactMatch));
-                        }
-                    }
-                    results.setSearchTime(System.currentTimeMillis()
-                            - startTime);
-                }
-                results = this.postSearchAction(request, response, obj, errors,
-                        results);
-            }
+			// perform the action
+			if (action.equals(UPDATE)) {
+				showView = getRefreshView();
+				this.preUpdateAction(request, response, obj, errors);
+				if (!skipAction)
+					service.save(obj);
+				this.postUpdateAction(request, response, obj, errors);
+			} else if (action.equals(CREATE)) {
+				showView = getRefreshView();
+				this.preCreateAction(request, response, obj, errors);
+				if (!skipAction)
+					service.save(obj);
+				this.postCreateAction(request, response, obj, errors);
+			} else if (action.equals(DELETE)) {
+				showView = getRefreshView();
+				this.preDeleteAction(request, response, errors, request
+						.getParameter(ID));
+				if (!skipAction)
+					service.delete(request.getParameter(ID));
+				this.postDeleteAction(request, response, errors, request
+						.getParameter(ID));
+			} else if (action.equals(SEARCH)) {
+				showView = getSearchView();
+				this.preSearchAction(request, response, obj, errors);
+				if (!skipAction) {
+					long startTime = System.currentTimeMillis();
+					String strPage = request.getParameter("page");
+					int currPage = StringUtil.convertToInt(strPage, 1);
+					results.setCurrPage(currPage);
+					results.setTotalResults(this.countAction(obj));
+					int start = results.getStartIndex();
+					int total = results.getPageSize();
+					if (supportsPaging) {
+						if (command == null)
+							// no command, let's search everything
+							results.addResults(service.findAll(start, total));
+						else
+							// let's do a query by example
+							results.addResults(service.findByExample(obj,
+									exactMatch, start, total));
+					} else if (command == null)
+						// no command, let's search everything
+						results.addResults(service.findAll());
+					else
+						// let's do a query by example
+						results.addResults(service.findByExample(obj,
+								exactMatch));
+					results.setSearchTime(System.currentTimeMillis()
+							- startTime);
+				}
+				results = this.postSearchAction(request, response, obj, errors,
+						results);
+			}
 
-            // return the response and view
-            Map<String, Object> model = referenceData(request, command, errors);
-            if (model == null)
-                model = new HashMap<String, Object>();
-            if (UserDefinable.class.isAssignableFrom(command.getClass()))
-            	model.put("dropList",userDefinedFieldService.getDropDownReferenceData(command.getClass().getName()));
-            model.put(getCommandName(), obj);
-            model.put("results", results);
-            model.putAll(errors.getModel());
-            if (action.equals(CREATE))
-                model.put("newRow", true);
-            return new ModelAndView(getShowView(), model);
-        } catch (ControllerException ce) {
-            // check for bind errors - most likely due to no file uploaded
-            if (errors.hasErrors()) {
-                if (_log.isDebugEnabled()) {
-                    _log
-                            .debug("Data binding errors: "
-                                    + errors.getErrorCount());
-                    _log.debug(errors.toString());
-                }
-                return showForm(request, response, errors);
-            } else {
-                String message = "ControllerException thrown but no errors reported.";
-                _log.error(message, ce);
-                throw new InvalidImplementationException(message, ce);
-            }
-        }
-    }
+			// return the response and view
+			Map<String, Object> model = referenceData(request, command, errors);
+			if (model == null)
+				model = new HashMap<String, Object>();
+			if (UserDefinable.class.isAssignableFrom(command.getClass()))
+				model.put("dropList",userDefinedFieldService.getDropDownReferenceData(command.getClass().getName()));
+			model.put(getCommandName(), obj);
+			model.put("results", results);
+			model.putAll(errors.getModel());
+			if (action.equals(CREATE))
+				model.put("newRow", true);
+			return new ModelAndView(getShowView(), model);
+		} catch (ControllerException ce) {
+			// check for bind errors - most likely due to no file uploaded
+			if (errors.hasErrors()) {
+				if (_log.isDebugEnabled()) {
+					_log
+					.debug("Data binding errors: "
+							+ errors.getErrorCount());
+					_log.debug(errors.toString());
+				}
+				return showForm(request, response, errors);
+			} else {
+				String message = "ControllerException thrown but no errors reported.";
+				_log.error(message, ce);
+				throw new InvalidImplementationException(message, ce);
+			}
+		}
+	}
 
-    /**
-     * 
-     * This is an internal helper that process file upload if supported. File
-     * upload must use htmlId to refer html upload element.
-     * 
-     * @param request
-     * @param response
-     * @param command
-     * @param errors
-     * @param htmlId
-     * @throws IOException
-     */
-    protected FileInfo processUpload(HttpServletRequest request,
-            HttpServletResponse response, Object command, BindException errors,
-            String htmlId) throws IOException {
+	/**
+	 * 
+	 * This is an internal helper that process file uploads if supported. File
+	 * uploads must use htmlId as name to refer html upload element.
+	 * 
+	 * @param request
+	 * @param response
+	 * @param command
+	 * @param errors
+	 * @param htmlId
+	 * @throws IOException
+	 */
+	protected List<FileInfo> processUpload(HttpServletRequest request,
+			HttpServletResponse response, Object command, BindException errors,
+			String htmlId) throws IOException {
 		FileInfoService fileInfoService = (FileInfoService) this.fileInfoService;
-		
-        // are we expecting file upload?
-        if (Uploadable.class.isAssignableFrom(command.getClass())
-                && request instanceof MultipartHttpServletRequest) {
-            Uploadable upload = (Uploadable) command;
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-            MultipartFile multipartFile = multipartRequest.getFile(htmlId);
 
-            // check if there is anything to process
-            if (multipartFile != null && !multipartFile.isEmpty()) {
-                FileInfo fileInfo = new FileInfo();
-                fileInfo.setFilename(multipartFile.getOriginalFilename());
-                fileInfo.setFileSize(multipartFile.getSize());
-                fileInfo.setFullPath(uploadPath);
+		// are we expecting file upload?
+		if (Uploadable.class.isAssignableFrom(command.getClass())
+				&& request instanceof MultipartHttpServletRequest) {
+			List<FileInfo> files = null;
+			Uploadable upload = (Uploadable) command;
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			List<MultipartFile> multipartFiles = multipartRequest
+					.getFiles(htmlId);
 
-                try {
-                    // setup the directory
-                    File directory;
-                    directory = FileUtil.createDirectory(uploadPath);
-                    String subdir = directory.getAbsoluteFile()
-                            + File.separator
-                            + DateUtil.convertShortDate(new Date());
-                    File subDirectory = FileUtil.createDirectory(subdir);
-					
-					String filePath = subDirectory.getAbsoluteFile() + File.separator + multipartFile.getOriginalFilename();
+			// check if there is anything to process
+			if (multipartFiles != null && !multipartFiles.isEmpty())
+				// loop through all the attachments
+				for (MultipartFile multipartFile : multipartFiles) {
+					// check if there is anything to process
+					if (multipartFile != null && !multipartFile.isEmpty()) {
+						FileInfo fileInfo = new FileInfo();
+						fileInfo.setFilename(multipartFile.getOriginalFilename());
+						fileInfo.setFileSize(multipartFile.getSize());
+						fileInfo.setFullPath(uploadPath);
 
-					// change filename if already existing in the given path to avoid overriding of files
-					if(fileInfoService.getFileInfoByFullPath(filePath) != null){
-						Long fileCnt = 1L;
-						String newFilePath = subDirectory.getAbsoluteFile() + File.separator + fileCnt.toString() + "_" + multipartFile.getOriginalFilename() ;
-						while (fileInfoService.getFileInfoByFullPath(newFilePath)!=null) {
-							fileCnt++;
-							newFilePath = subDirectory.getAbsoluteFile() + File.separator + fileCnt.toString() + "_" +  multipartFile.getOriginalFilename();
-						} 		
+						try {
+							// setup the directory
+							File directory;
+							directory = FileUtil.createDirectory(uploadPath);
+							String subdir = directory.getAbsoluteFile()
+									+ File.separator
+									+ DateUtil.convertShortDate(new Date());
+							File subDirectory = FileUtil.createDirectory(subdir);
 
-						filePath = newFilePath;
-						fileInfo.setOriginalFileName(multipartFile.getOriginalFilename());
+							String filePath = subDirectory.getAbsoluteFile()
+									+ File.separator
+									+ multipartFile.getOriginalFilename();
+
+							// change filename if already existing in the given path
+							// to avoid overriding of files
+							if (fileInfoService.getFileInfoByFullPath(filePath) != null) {
+								Long fileCnt = 1L;
+								String newFilePath = subDirectory.getAbsoluteFile()
+										+ File.separator + fileCnt.toString() + "_"
+										+ multipartFile.getOriginalFilename();
+								while (fileInfoService
+										.getFileInfoByFullPath(newFilePath) != null) {
+									fileCnt++;
+									newFilePath = subDirectory.getAbsoluteFile()
+											+ File.separator + fileCnt.toString()
+											+ "_"
+											+ multipartFile.getOriginalFilename();
+								}
+
+								filePath = newFilePath;
+								fileInfo.setOriginalFileName(multipartFile
+										.getOriginalFilename());
+							}
+
+							File uploadFile = new File(filePath);
+
+							// update file path information
+							fileInfo.setFullPath(uploadFile.getAbsolutePath());
+							_log.debug("Uploading file to "
+									+ fileInfo.getFullPath());
+							// now copy the file
+							FileUtil.copyMultipartFile(multipartFile, uploadFile);
+							// add fileinfo
+							if (isMultipleUpload())
+								files = upload.getFiles();
+							if (files == null)
+								files = new ArrayList<FileInfo>();
+							files.add(fileInfo);
+							upload.setFiles(files);
+
+						} catch (IOException e) {
+							_log.error("Failed to upload file.", e);
+							throw e;
+						}
 					}
-					
-					File uploadFile = new File(filePath);
-					
-                    // update file path information
-                    fileInfo.setFullPath(uploadFile.getAbsolutePath());
-                    _log.debug("Uploading file to " + fileInfo.getFullPath());
-                    // now copy the file
-                    FileUtil.copyMultipartFile(multipartFile, uploadFile);
-                    // add fileinfo
-                    List<FileInfo> files = null;
-                    if (multipleUpload)
-                        files = upload.getFiles();
-                    if (files == null)
-                        files = new ArrayList<FileInfo>();
-                    files.add(fileInfo);
-                    upload.setFiles(files);
-                    return fileInfo;
-                } catch (IOException e) {
-                    _log.error("Failed to upload file.", e);
-                    throw e;
-                }
-            } else {
-                if (isRequireUpload()) {
-                    errors.reject(htmlId, null, "No uploaded file selected.");
-                    throw new ControllerException("No uploaded file selected.");
-                }
-            }
-        }
-        return null;
-    }
+				}
 
-    /**
-     * This is an internal helper that retrieves the proper ACTION based on
-     * request parameters. When no action is found, defaults to SEARCH.
-     * 
-     * @param request
-     * @return action to perform
-     */
-    protected String getAction(HttpServletRequest request) {
-        String action = request.getParameter("action");
-        // default to SEARCH
-        if (StringUtil.isEmpty(action)) {
-            action = SEARCH;
-        }
-        return action;
-    }
+			else if (isRequireUpload()) {
+				errors.reject(htmlId, null, "No uploaded file selected.");
+				throw new ControllerException("No uploaded file selected.");
+			}
 
-    /**
-     * Override this method to perform pre-processing on new data being saved.
-     * To terminate processing, call setSkipAction with parameter true.
-     * 
-     * @param command
-     */
+			return files;
+		}
 
-    protected void preCreateAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors) {
-        preCreateAction(command);
-    }
+		return null;
+	}
 
-    protected void preCreateAction(T command) {
-    }
+	/**
+	 * This is an internal helper that retrieves the proper ACTION based on
+	 * request parameters. When no action is found, defaults to SEARCH.
+	 * 
+	 * @param request
+	 * @return action to perform
+	 */
+	protected String getAction(HttpServletRequest request) {
+		String action = request.getParameter("action");
+		// default to SEARCH
+		if (StringUtil.isEmpty(action))
+			action = SEARCH;
+		return action;
+	}
 
-    /**
-     * Override this method to perform post-processing on new data being saved.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform pre-processing on new data being saved.
+	 * To terminate processing, call setSkipAction with parameter true.
+	 * 
+	 * @param command
+	 */
 
-    protected void postCreateAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors) {
-        postCreateAction(command);
-    }
+	protected void preCreateAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors) {
+		preCreateAction(command);
+	}
 
-    protected void postCreateAction(T command) {
-    }
+	protected void preCreateAction(T command) {
+	}
 
-    /**
-     * Override this method to perform pre-processing on data being updated. To
-     * terminate processing, call setSkipAction with parameter true.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform post-processing on new data being saved.
+	 * 
+	 * @param command
+	 */
 
-    protected void preUpdateAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors) {
-        preUpdateAction(command);
-    }
+	protected void postCreateAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors) {
+		postCreateAction(command);
+	}
 
-    protected void preUpdateAction(T command) {
-    }
+	protected void postCreateAction(T command) {
+	}
 
-    /**
-     * Override this method to perform post-processing on data being updated.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform pre-processing on data being updated. To
+	 * terminate processing, call setSkipAction with parameter true.
+	 * 
+	 * @param command
+	 */
 
-    protected void postUpdateAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors) {
-        postUpdateAction(command);
-    }
+	protected void preUpdateAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors) {
+		preUpdateAction(command);
+	}
 
-    protected void postUpdateAction(T command) {
-    }
+	protected void preUpdateAction(T command) {
+	}
 
-    /**
-     * Override this method to perform pre-processing on data being deleted. To
-     * terminate processing, call setSkipAction with parameter true.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform post-processing on data being updated.
+	 * 
+	 * @param command
+	 */
 
-    protected void preDeleteAction(HttpServletRequest request,
-            HttpServletResponse response, BindException errors, String id) {
-        preDeleteAction(id);
-    }
+	protected void postUpdateAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors) {
+		postUpdateAction(command);
+	}
 
-    protected void preDeleteAction(String id) {
-    }
+	protected void postUpdateAction(T command) {
+	}
 
-    /**
-     * Override this method to perform post-processing on data being deleted.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform pre-processing on data being deleted. To
+	 * terminate processing, call setSkipAction with parameter true.
+	 * 
+	 * @param command
+	 */
 
-    protected void postDeleteAction(HttpServletRequest request,
-            HttpServletResponse response, BindException errors, String id) {
-        postDeleteAction(id);
-    }
+	protected void preDeleteAction(HttpServletRequest request,
+			HttpServletResponse response, BindException errors, String id) {
+		preDeleteAction(id);
+	}
 
-    protected void postDeleteAction(String id) {
-    }
+	protected void preDeleteAction(String id) {
+	}
 
-    /**
-     * Override this method to perform pre-processing on data search. To
-     * terminate processing, call setSkipAction with parameter true.
-     * 
-     * @param command
-     *            criteria used for search
-     */
+	/**
+	 * Override this method to perform post-processing on data being deleted.
+	 * 
+	 * @param command
+	 */
 
-    protected void preSearchAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors) {
-        preSearchAction(command);
-    }
+	protected void postDeleteAction(HttpServletRequest request,
+			HttpServletResponse response, BindException errors, String id) {
+		postDeleteAction(id);
+	}
 
-    protected void preSearchAction(T command) {
-    }
+	protected void postDeleteAction(String id) {
+	}
 
-    /**
-     * Override this method to perform post-processing on data search.
-     * 
-     * @param command
-     */
+	/**
+	 * Override this method to perform pre-processing on data search. To
+	 * terminate processing, call setSkipAction with parameter true.
+	 * 
+	 * @param command
+	 *            criteria used for search
+	 */
 
-    protected SearchResults<T> postSearchAction(HttpServletRequest request,
-            HttpServletResponse response, T command, BindException errors,
-            SearchResults<T> result) {
-        return postSearchAction(result);
-    }
+	protected void preSearchAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors) {
+		preSearchAction(command);
+	}
 
-    protected SearchResults<T> postSearchAction(SearchResults<T> result) {
-        return result;
-    }
+	protected void preSearchAction(T command) {
+	}
 
-    /**
-     * Override this method if you want to control how data will be searched
-     * along with searchAction(). This method returns the total result count.
-     * 
-     * @param command
-     * @return
-     */
-    protected long countAction(T command) {
-        if (command == null) {
-            // no command, let's search everything
-            return service.countAll();
-        } else {
-            return service.countByExample(command, exactMatch);
-        }
-    }
+	/**
+	 * Override this method to perform post-processing on data search.
+	 * 
+	 * @param command
+	 */
 
-    /**
-     * Retrieves all registered system codes for a category.
-     * 
-     * @param String
-     *            categoryName
-     * @return
-     */
-    protected final List<SystemCodes> getSystemCodesByCategory(
-            String categoryName) {
-    	SystemCodesService service = (SystemCodesService) systemCodesService;
-    	return service.findSystemCodesByCategory(categoryName);
-    }
+	protected SearchResults<T> postSearchAction(HttpServletRequest request,
+			HttpServletResponse response, T command, BindException errors,
+			SearchResults<T> result) {
+		return postSearchAction(result);
+	}
 
-    /**
-     * @param service
-     *            the service to set
-     */
-    public final void setService(BaseCrudService<T> service) {
-        this.service = service;
-    }
+	protected SearchResults<T> postSearchAction(SearchResults<T> result) {
+		return result;
+	}
 
-    /**
-     * @return the searchView
-     */
-    public final String getSearchView() {
-        return searchView;
-    }
+	/**
+	 * Override this method if you want to control how data will be searched
+	 * along with searchAction(). This method returns the total result count.
+	 * 
+	 * @param command
+	 * @return
+	 */
+	protected long countAction(T command) {
+		if (command == null)
+			// no command, let's search everything
+			return service.countAll();
+		else
+			return service.countByExample(command, exactMatch);
+	}
 
-    /**
-     * @param searchView
-     *            the searchView to set
-     */
-    public final void setSearchView(String searchView) {
-        this.searchView = searchView;
-    }
+	/**
+	 * Retrieves all registered system codes for a category.
+	 * 
+	 * @param String
+	 *            categoryName
+	 * @return
+	 */
+	protected final List<SystemCodes> getSystemCodesByCategory(
+			String categoryName) {
+		SystemCodesService service = (SystemCodesService) systemCodesService;
+		return service.findSystemCodesByCategory(categoryName);
+	}
 
-    /**
-     * @return the refreshView
-     */
-    public final String getRefreshView() {
-        return refreshView;
-    }
+	/**
+	 * @param service
+	 *            the service to set
+	 */
+	public final void setService(BaseCrudService<T> service) {
+		this.service = service;
+	}
 
-    /**
-     * @param refreshView
-     *            the refreshView to set
-     */
-    public final void setRefreshView(String refreshView) {
-        this.refreshView = refreshView;
-    }
+	/**
+	 * @return the searchView
+	 */
+	public final String getSearchView() {
+		return searchView;
+	}
 
-    /**
-     * @return the formView
-     */
-    public final String getFormView() {
-        return formView;
-    }
+	/**
+	 * @param searchView
+	 *            the searchView to set
+	 */
+	public final void setSearchView(String searchView) {
+		this.searchView = searchView;
+	}
 
-    /**
-     * @param formView
-     *            the formView to set
-     */
-    public final void setFormView(String formView) {
-        this.formView = formView;
-    }
+	/**
+	 * @return the refreshView
+	 */
+	public final String getRefreshView() {
+		return refreshView;
+	}
 
-    /**
-     * @return the showView
-     */
-    public final String getShowView() {
-        return showView;
-    }
+	/**
+	 * @param refreshView
+	 *            the refreshView to set
+	 */
+	public final void setRefreshView(String refreshView) {
+		this.refreshView = refreshView;
+	}
 
-    /**
-     * @param showView
-     *            the showView to set
-     */
-    protected final void setShowView(String showView) {
-        this.showView = showView;
-    }
+	/**
+	 * @return the formView
+	 */
+	public final String getFormView() {
+		return formView;
+	}
 
-    /**
-     * @return the service
-     */
-    protected final BaseCrudService<T> getService() {
-        return service;
-    }
+	/**
+	 * @param formView
+	 *            the formView to set
+	 */
+	public final void setFormView(String formView) {
+		this.formView = formView;
+	}
 
-    /**
-     * @return the pageSize
-     */
-    public final int getPageSize() {
-        return pageSize;
-    }
+	/**
+	 * @return the showView
+	 */
+	public final String getShowView() {
+		return showView;
+	}
 
-    /**
-     * @param pageSize
-     *            the pageSize to set
-     */
-    public final void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+	/**
+	 * @param showView
+	 *            the showView to set
+	 */
+	protected final void setShowView(String showView) {
+		this.showView = showView;
+	}
 
-    /**
-     * @return the numLinks
-     */
-    public final int getNumLinks() {
-        return numLinks;
-    }
+	/**
+	 * @return the service
+	 */
+	protected final BaseCrudService<T> getService() {
+		return service;
+	}
 
-    /**
-     * @param numLinks
-     *            the numLinks to set
-     */
-    public final void setNumLinks(int numLinks) {
-        this.numLinks = numLinks;
-    }
+	/**
+	 * @return the pageSize
+	 */
+	public final int getPageSize() {
+		return pageSize;
+	}
 
-    /**
-     * @param systemCodesService
-     *            the systemCodesService to set
-     */
-    public final void setSystemCodesService(
-            BaseCrudService<SystemCodes> systemCodesService) {
-        this.systemCodesService = systemCodesService;
-    }
+	/**
+	 * @param pageSize
+	 *            the pageSize to set
+	 */
+	public final void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
-    /**
-     * @return the systemCodesService
-     */
-    public final BaseCrudService<SystemCodes> getSystemCodesService() {
-        return systemCodesService;
-    }
+	/**
+	 * @return the numLinks
+	 */
+	public final int getNumLinks() {
+		return numLinks;
+	}
 
-    /**
+	/**
+	 * @param numLinks
+	 *            the numLinks to set
+	 */
+	public final void setNumLinks(int numLinks) {
+		this.numLinks = numLinks;
+	}
+
+	/**
+	 * @param systemCodesService
+	 *            the systemCodesService to set
+	 */
+	public final void setSystemCodesService(
+			BaseCrudService<SystemCodes> systemCodesService) {
+		this.systemCodesService = systemCodesService;
+	}
+
+	/**
+	 * @return the systemCodesService
+	 */
+	public final BaseCrudService<SystemCodes> getSystemCodesService() {
+		return systemCodesService;
+	}
+
+	/**
 	 * @param userDefinedFieldService the userDefinedFieldService to set
 	 */
 	public final void setUserDefinedFieldService(
 			UserDefinedFieldService userDefinedFieldService) {
 		this.userDefinedFieldService = userDefinedFieldService;
 	}
-	
+
 	/**
 	 * Getter method for userDefinedFieldService.
 	 *
@@ -776,87 +786,87 @@ public class BaseCrudController<T extends BaseEntity> extends
 	}
 
 	/**
-     * @return the supportsPaging
-     */
-    public final boolean isSupportsPaging() {
-        return supportsPaging;
-    }
+	 * @return the supportsPaging
+	 */
+	public final boolean isSupportsPaging() {
+		return supportsPaging;
+	}
 
-    /**
-     * @param supportsPaging
-     *            the supportsPaging to set
-     */
-    public final void setSupportsPaging(boolean supportsPaging) {
-        this.supportsPaging = supportsPaging;
-    }
+	/**
+	 * @param supportsPaging
+	 *            the supportsPaging to set
+	 */
+	public final void setSupportsPaging(boolean supportsPaging) {
+		this.supportsPaging = supportsPaging;
+	}
 
-    /**
-     * @param skipAction
-     *            the skipAction to set
-     */
-    protected void setSkipAction(boolean skipAction) {
-        this.skipAction = skipAction;
-    }
+	/**
+	 * @param skipAction
+	 *            the skipAction to set
+	 */
+	protected void setSkipAction(boolean skipAction) {
+		this.skipAction = skipAction;
+	}
 
-    /**
-     * @return the uploadPath
-     */
-    public final String getUploadPath() {
-        return uploadPath;
-    }
+	/**
+	 * @return the uploadPath
+	 */
+	public final String getUploadPath() {
+		return uploadPath;
+	}
 
-    /**
-     * @param uploadPath
-     *            the uploadPath to set
-     */
-    public final void setUploadPath(String uploadPath) {
-        this.uploadPath = uploadPath;
-    }
+	/**
+	 * @param uploadPath
+	 *            the uploadPath to set
+	 */
+	public final void setUploadPath(String uploadPath) {
+		this.uploadPath = uploadPath;
+	}
 
-    /**
-     * @return the requireUpload
-     */
-    public final boolean isRequireUpload() {
-        return requireUpload;
-    }
+	/**
+	 * @return the requireUpload
+	 */
+	public final boolean isRequireUpload() {
+		return requireUpload;
+	}
 
-    /**
-     * @param requireUpload
-     *            the requireUpload to set
-     */
-    public final void setRequireUpload(boolean requireUpload) {
-        this.requireUpload = requireUpload;
-    }
+	/**
+	 * @param requireUpload
+	 *            the requireUpload to set
+	 */
+	public final void setRequireUpload(boolean requireUpload) {
+		this.requireUpload = requireUpload;
+	}
 
-    /**
-     * @return the multipleUpload
-     */
-    public boolean isMultipleUpload() {
-        return multipleUpload;
-    }
+	/**
+	 * @return the multipleUpload
+	 */
+	public boolean isMultipleUpload() {
+		return multipleUpload;
+	}
 
-    /**
-     * @param multipleUpload
-     *            the multipleUpload to set
-     */
-    public void setMultipleUpload(boolean multipleUpload) {
-        this.multipleUpload = multipleUpload;
-    }
+	/**
+	 * @param multipleUpload
+	 *            the multipleUpload to set
+	 */
+	public void setMultipleUpload(boolean multipleUpload) {
+		this.multipleUpload = multipleUpload;
+	}
 
-    /**
-     * @return the exactMatch
-     */
-    public final boolean isExactMatch() {
-        return exactMatch;
-    }
+	/**
+	 * @return the exactMatch
+	 */
+	public final boolean isExactMatch() {
+		return exactMatch;
+	}
 
-    /**
-     * @param exactMatch
-     *            the exactMatch to set
-     */
-    public final void setExactMatch(boolean exactMatch) {
-        this.exactMatch = exactMatch;
-    }
+	/**
+	 * @param exactMatch
+	 *            the exactMatch to set
+	 */
+	public final void setExactMatch(boolean exactMatch) {
+		this.exactMatch = exactMatch;
+	}
 
 	public void setFileInfoService(BaseCrudService<FileInfo> fileInfoService) {
 		this.fileInfoService = fileInfoService;
