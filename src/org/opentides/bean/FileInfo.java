@@ -18,6 +18,8 @@
  */
 package org.opentides.bean;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -31,26 +33,26 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="FILE_INFO")
-public class FileInfo extends BaseEntity {
+public class FileInfo extends BaseEntity implements Auditable {
 
 	private static final long serialVersionUID = 3526479205130157604L;
 
 	@Column(name="FILENAME", nullable=false)
 	private String filename;
-	
+
 	@Column(name="FULL_PATH", length=2000)
 	private String fullPath;
-	
+
 	@Column(name="FILE_SIZE", nullable=false)
 	private Long fileSize;
-	
+
 	@Column(name="ORIGINAL_FILENAME")
 	private String originalFileName;
-	
+
 	@Column(name="AUTHOR_ID")
 	private Long authorId;
-	
-	
+
+
 	public String getFilename() {
 		return filename;
 	}
@@ -66,7 +68,7 @@ public class FileInfo extends BaseEntity {
 
 	@Deprecated
 	public final void setFileName(String fileName) {
-		this.filename = fileName;
+		filename = fileName;
 	}
 
 	/**
@@ -126,6 +128,32 @@ public class FileInfo extends BaseEntity {
 	public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.opentides.bean.BaseEntity#getAuditableFields()
+	 */
+	@Override
+	public List<AuditableField> getAuditableFields() {
+		List<AuditableField> auditableFields = super.getAuditableFields();
+		auditableFields.add(new AuditableField("authorId", "Author ID"));
+		auditableFields.add(new AuditableField("originalFileName",
+				"Original File Name"));
+		auditableFields.add(new AuditableField("fileSize", "File Size"));
+		auditableFields.add(new AuditableField("fullPath", "Full Path"));
+
+		return auditableFields;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.opentides.bean.Auditable#getPrimaryField()
+	 */
+	@Override
+	public AuditableField getPrimaryField() {
+		return new AuditableField("fileName", "File Name");
+	}
+
 }
